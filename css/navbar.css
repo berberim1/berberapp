@@ -1,0 +1,159 @@
+/* ===============================
+   NAVBAR – Scroll ile görünen, hero içine bindirilmiş
+=================================*/
+body, html {
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
+/* Navbar yapısı */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  padding: 12px 40px;
+  background-color: rgba(26, 27, 30, 0.88); /* yarı saydam koyu */
+  backdrop-filter: blur(8px); /* modern blur */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  font-family: 'Inter', sans-serif;
+  z-index: 999;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: all 0.4s ease;
+}
+
+.navbar.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Logo kısmı */
+.logo-text {
+  font-size: 24px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo-text:hover {
+  transform: scale(1.05);
+}
+
+/* Orta arama alanı */
+.search-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 0 40px;
+  max-width: 680px;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+  height: 44px;
+  padding: 10px 16px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: box-shadow 0.3s ease;
+}
+
+.search-box:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.search-box i {
+  color: #888;
+  font-size: 16px;
+}
+
+.search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Sağ taraf: profil / dil / buton */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.profile-circle {
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  color: #1a1b1e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.lang-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.lang-select img {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+}
+
+.list-btn {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #fff;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.list-btn:hover {
+  background: #eaeaea;
+}
+
+/* ===============================
+   RESPONSIVE
+=================================*/
+@media (max-width: 768px) {
+  .search-section {
+    display: none;
+  }
+}

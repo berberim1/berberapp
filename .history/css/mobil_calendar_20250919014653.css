@@ -1,0 +1,138 @@
+/* Yalnızca mobil: genişlik <= 900px */
+@media (max-width: 900px) {
+  :root{
+    /* Mobil takvim ölçüleri */
+    --timeW: 64px; /* saat sütunu */
+    --colW: calc((100vw - var(--timeW) - 24px) / 2); /* ekranda 2 personel */
+    --cellH: 64px;
+    --wkRowH: 300px;
+    --miniPad: 12px; --miniGap: 8px; --miniCell: 52px;
+  }
+
+  /* Masaüstü kilitlerini söndür */
+  html, body, .container {
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  html, body, .app { height: 100%; }
+  body { margin: 0 !important; }
+
+  /* Genel yerleşim */
+  .main{
+    padding-left: 0 !important;   /* sol rail boşluğu yok */
+    padding-bottom: 80px;          /* bottom bar alanı */
+    min-width: 0;                  /* mobilde genişlik kısıtı yok */
+  }
+
+  /* TOPBAR */
+  .topbar-inner{ padding: 10px 12px; gap: 8px; }
+  .view-chip{ height: 38px; min-width: 126px; }
+  .icon-btn{ width: 36px; height: 36px; }
+  .date-chip{ min-width: 220px; padding: 6px 12px; }
+
+  /* Mini takvim (merkez) */
+  .center-pop{
+    width: 96vw;
+    left: 50%; transform: translateX(-50%);
+    top: 12px;
+    border-radius: 14px;
+    padding: 12px var(--miniPad) 14px;
+  }
+  .calendar-grid .cell{ width: var(--miniCell); height: 44px; }
+
+  /* GÜN görünümü */
+  .calendar{
+    margin: 12px;
+    height: calc(100vh - 56px - 64px - 24px); /* topbar ~56, bottom bar 64 */
+    min-height: 520px;
+    border-radius: 14px;
+  }
+
+  /* Başlık şeridi (2 kişi görünür; fazlası sağa kayar) */
+  .staff-row{
+    grid-template-columns: var(--timeW) repeat(2, var(--colW));
+    grid-auto-columns: var(--colW);
+    min-width: calc(var(--timeW) + (2 * var(--colW)));
+    height: 52px;
+  }
+  .staff-head{ padding: 0 10px; gap: 8px; }
+  .avatar{ width: 26px; height: 26px; font-size: 12px; }
+  .name{ font-size: 13px; }
+  .sub{ font-size: 11px; }
+
+  /* Grid kolonları (2 görünür) */
+  .grid{
+    grid-template-columns: var(--timeW) repeat(2, var(--colW));
+    grid-auto-columns: var(--colW);
+    min-width: calc(var(--timeW) + (2 * var(--colW)));
+  }
+  .time-cell{ font-size: 11px; padding: 6px 6px; }
+  .booking{ border-radius: 10px; padding: 6px 8px; font-size: 13px; }
+
+  /* HAFTA görünümü */
+  .week{ margin: 10px 12px 12px; border-radius: 14px; }
+  .wk-head{ grid-template-columns: 140px repeat(7, minmax(120px, 1fr)); }
+  .wk-grid{ grid-template-columns: 140px repeat(7, minmax(120px, 1fr)); }
+  .wk-staff{ padding: 8px 10px; }
+  .wk-day-btn{ padding: 6px 8px; }
+  .wk-day .date{ font-size: 13px; }
+  .wk-col-inner{ height: var(--wkRowH); }
+  .wk-chip{ font-size: 11px; padding: 5px 8px; }
+
+  /* ARAMA */
+  .topbar .search{ width: 200px; }
+  .topbar .search input{ height: 38px; padding-right: 38px; }
+  .topbar .search .magnifier{ right: 10px; }
+
+  /* MODALLAR */
+  .notify{ width: 92vw; right: -92vw; }
+  .notify.open{ right: 0; }
+  .drawer, .svc-panel{ width: 92vw; }
+  .drawer-head h3{ font-size: 20px; }
+  .drawer .field .label{ font-size: 11px; }
+  .modal .box{ width: 92vw; border-radius: 14px; }
+  .bm-box{ width: 92vw; border-radius: 14px; }
+  .bm-head h3{ font-size: 20px; }
+
+  /* PERSONEL & KAYNAKLAR popover */
+  .staff-pop{
+    width: 92vw;
+    left: 50%; transform: translateX(-50%);
+    top: 56px;
+    padding: 10px;
+  }
+
+  /* === SOL RAIL -> BOTTOM BAR === */
+  .rail{
+    position: fixed !important;
+    inset: auto 0 0 0 !important;      /* altta tam genişlik */
+    width: 100% !important;
+    height: 64px !important;
+    padding: 8px 10px !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    border-right: none !important;
+    border-top: 1px solid var(--rail-divider) !important;
+    z-index: 1000 !important;
+  }
+  .rail__list{
+    width: 100% !important;
+    height: 100% !important;
+    flex-direction: row !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .rail__item{ width: auto !important; }
+  .rail__btn{
+    width: 42px !important; height: 42px !important;
+    border-radius: 12px !important;
+  }
+  .rail__btn[aria-current="page"]::before{ display:none !important; }
+  .rail__bottom{ display:none !important; }
+  .avatar-btn{ width: 40px !important; height: 40px !important; }
+
+  /* FAB alt bara çarpmasın */
+  .fab{ bottom: 86px; }
+}

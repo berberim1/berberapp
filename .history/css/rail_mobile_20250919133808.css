@@ -1,0 +1,42 @@
+/* Masaüstünde solda dikey rail zaten var; bu dosya sadece mobil davranışı ekler */
+@media (max-width:900px){
+  .main{ padding-left:0 !important; }
+
+  .rail{
+    position: fixed !important;
+    inset: auto 0 0 0 !important;         /* altta tam genişlik */
+    width: 100% !important;
+    height: 60px !important;
+    padding: 6px 8px !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    border-right: none !important;
+    border-top: 1px solid #2a2d34 !important;
+    z-index: 1000 !important;
+    backdrop-filter: saturate(1.2) blur(4px);
+  }
+  .rail__list{
+    width: 100% !important; height: 100% !important;
+    flex-direction: row !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .rail__item{ width: auto !important; }
+  .rail__btn{
+    width: 40px !important; height: 40px !important;
+    border-radius: 12px !important;
+    display: grid; place-items: center;
+  }
+  .rail__btn[aria-current="page"]::before{ display:none !important; }
+
+  /* Profil rozeti */
+  .rail .avatar-btn .avatar-circle{
+    width: 28px; height: 28px; border-radius: 999px;
+    display:grid; place-items:center;
+    font: 600 12px/1 "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    color:#fff; background:#7c6cff;
+    box-shadow: 0 2px 8px rgba(124,108,255,.35), inset 0 0 0 1px rgba(255,255,255,.25);
+  }
+}

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+  <title>Yönetici Kaydı – Yol Ücreti</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --border:#e5e7eb; --primary:#191919;
+      --accent:#22c55e; --current:#2563eb;
+      --radius:18px; --shadow:0 14px 40px rgba(0,0,0,.10);
+      --input:#f9fafb; --danger:#ef4444;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0b0b; --card:#111214; --text:#f3f4f6; --muted:#a3a3a3;
+        --border:#1f2937; --primary:#e5e7eb; --accent:#10b981; --current:#60a5fa;
+        --input:#0f0f10; --shadow:0 18px 50px rgba(0,0,0,.6);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      padding:clamp(16px,3vw,18px) clamp(12px,3vw,16px) calc(env(safe-area-inset-bottom,0) + 40px);
+      padding-top:calc(env(safe-area-inset-top,0) + 12px);
+    }
+
+    /* Stepper */
+    .stepper{
+      width:min(960px,100%); margin:4px auto 16px; display:flex; align-items:center; gap:10px; padding:0 4px;
+      overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    }
+    .stepper::-webkit-scrollbar{display:none}
+    .step{ display:flex; align-items:center; gap:10px; flex:0 0 auto; min-width:54px; }
+    .dot{ width:34px; height:34px; border-radius:999px; display:grid; place-items:center; font-weight:800; border:2px solid var(--border); background:var(--card); color:var(--muted); }
+    .step.done .dot{ border-color:var(--accent); color:#fff; background:var(--accent); }
+    .step.current .dot{ border-color:var(--current); color:var(--current); background:var(--card); }
+    .bar{ height:6px; border-radius:999px; width:52px; background:#e9ecef; }
+    .bar.done{ background:var(--accent); }
+    @media (prefers-color-scheme: dark){ .bar{ background:#151a21; } }
+
+    /* Card */
+    .card{ width:100%; max-width:620px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
+    .top{ display:flex; align-items:center; gap:16px; padding:16px 22px 8px; }
+    .back-btn{
+      width:40px; height:40px; border-radius:12px; border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center; background:var(--card); color:var(--text);
+      cursor:pointer; transition:transform .12s ease;
+    }
+    .back-btn:active{ transform:scale(.98); }
+
+    .header{ text-align:center; padding:4px 26px 12px; border-bottom:1px solid var(--border); }
+    .header h1{ margin:10px 0 6px; font-size:24px; font-weight:800; }
+    .header p{ margin:0; color:var(--muted); }
+
+    /* Form alanları */
+    form{ padding:18px 26px 0; }
+    .field{ margin-bottom:18px; }
+    .label{ font-size:12px; font-weight:700; color:var(--muted); margin-bottom:8px; display:block; }
+
+    .row2{ display:grid; grid-template-columns:180px 1fr; gap:10px; }
+    @media (max-width:460px){ .row2{ grid-template-columns:1fr; } }
+
+    select, input[type="text"]{
+      height:46px; border-radius:12px; border:1px solid var(--border); background:var(--input);
+      padding:0 12px; font-size:14px; width:100%; color:var(--text);
+    }
+
+    input[disabled]{ opacity:.6; cursor:not-allowed; }
+
+    .hint{ font-size:12px; color:var(--muted); margin-top:6px; }
+    .error{ font-size:12px; color:var(--danger); margin-top:6px; display:none; }
+
+    .footer{ padding:10px 26px 26px; }
+    .btn{
+      width:100%; height:48px; border-radius:12px; border:none; font-weight:800; letter-spacing:.3px; cursor:pointer;
+      background:var(--primary); color:#fff; transition:opacity .15s ease, transform .12s ease;
+    }
+    .btn:active{ transform:scale(.995); }
+    .btn:disabled{ background:#d1d5db; color:#888; cursor:not-allowed; }
+
+    /* Toast */
+    .toast{
+      position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#111827; color:#fff;
+      padding:10px 14px; border-radius:10px; font-size:14px; display:none; z-index:1000
+    }
+    .toast.show{ display:block; animation:fade 2.2s ease both }
+    .toast.err{ background:#dc2626; }
+    @keyframes fade{ 0%{opacity:0;transform:translate(-50%,8px)} 10%{opacity:1;transform:translate(-50%,0)} 90%{opacity:1} 100%{opacity:0;transform:translate(-50%,8px)} }
+  </style>
+</head>
+<body>
+  <!-- Adım çubuğu -->
+  <nav class="stepper" aria-label="Kayıt adımları">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot">4</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">5</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">6</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">7</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">8</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">9</div></div>
+  </nav>
+
+  <main class="card" role="main">
+    <div class="top">
+      <button class="back-btn" id="btnBack" aria-label="Geri"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <div class="header">
+      <h1 id="title">Yol ücretiniz nedir?</h1>
+      <p>Mobil hizmetler için minimum yol ücretinizi ekleyin.</p>
+    </div>
+
+    <form id="fareForm" novalidate>
+      <div class="field">
+        <label class="label" for="priceType">ÜCRET TÜRÜ</label>
+        <div class="row2">
+          <select id="priceType" aria-describedby="feeHint">
+            <option value="free">Ücretsiz</option>
+            <option value="fixed">Sabit</option>
+            <option value="per_km">Km başına</option>
+          </select>
+          <input id="fee" type="text" inputmode="decimal" pattern="[0-9., ]*" placeholder="₺ ile giriniz" aria-describedby="feeError feeHint"/>
+        </div>
+        <div id="feeError" class="error" role="alert" aria-live="assertive">Lütfen geçerli bir ücret girin.</div>
+        <div id="feeHint" class="hint">“Km başına” seçeneğinde değer, kilometre başına uygulanır. “1.200,50” veya “120.50” yazabilirsiniz.</div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="distance">AZAMİ GİDİŞ MESAFESİ</label>
+        <select id="distance">
+          <option value="5">5 km</option>
+          <option value="10">10 km</option>
+          <option value="15" selected>15 km</option>
+          <option value="20">20 km</option>
+          <option value="25">25 km</option>
+          <option value="30">30 km</option>
+        </select>
+      </div>
+
+      <div class="footer">
+        <button id="continueBtn" type="submit" class="btn" disabled>DEVAM ET</button>
+      </div>
+    </form>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    const $=(s,r=document)=>r.querySelector(s);
+
+    // ---- Akış doğrulama ----
+    const K_EMAIL="pending_admin_email";
+    const K_FLOW ="admin_onboarding_flow";
+    const K_LAST ="admin_onboarding_last_step";
+    const email=(localStorage.getItem(K_EMAIL)||"").trim().toLowerCase();
+    const flow =(localStorage.getItem(K_FLOW)||"").trim().toLowerCase();
+    if(!email || flow!=="admin"){
+      alert("Geçersiz akış. Lütfen yönetici kaydına baştan başlayın.");
+      location.replace("admin-register-login.html");
+    }
+
+    // 3. adım kontrolü
+    let step3=null;
+    try{ step3 = JSON.parse(localStorage.getItem("step3")||"null"); }catch{}
+    if(!step3){
+      alert("Önceki adım eksik. Lütfen 3. adıma dönün.");
+      location.replace("admin-register3.html");
+    } else if(step3.hasMobileService===false){
+      // Mobil hizmet yoksa 4. adımı atla
+      location.replace("admin-register5.html");
+    }
+
+    // ---- Elemanlar ----
+    const form      = $("#fareForm");
+    const priceType = $("#priceType");
+    const feeInput  = $("#fee");
+    const feeError  = $("#feeError");
+    const distance  = $("#distance");
+    const btn       = $("#continueBtn");
+
+    // yardımcılar
+    const parseKm = (s)=>Number(String(s||"").replace(/\D/g,"")||0);
+
+    // TR & serbest biçim parse:
+    // - Binlik ayırıcılar (.) temizlenir
+    // - Virgüller noktaya çevrilir
+    // - ₺ ve diğer harf/simgeler yok sayılır
+    function parseMoney(s){
+      if(s==null) return NaN;
+      const raw = String(s).trim()
+        .replace(/\s/g,'')           // boşlukları sil
+        .replace(/[₺TRYtry]/g,'')    // para simgelerini sil
+        .replace(/\./g,'')           // binlik ayırıcıları sil
+        .replace(/,/g,'.');          // , => .
+      const n = Number(raw);
+      return Number.isFinite(n) ? n : NaN;
+    }
+
+    // --- DRAFT kaydet (anlık) ---
+    function saveDraft(){
+      const data = {
+        priceType: priceType.value,
+        fee: priceType.value==="free" ? 0 : (parseMoney(feeInput.value)||0),
+        feeText: feeInput.value,         // ham metin (geri geldiğinde gösterilir)
+        currency: "TRY",
+        maxDistanceKm: parseKm(distance.value)
+      };
+      localStorage.setItem("step4", JSON.stringify({ travel: data }));
+    }
+
+    // --- Prefill ---
+    (function prefill(){
+      try{
+        const prev = JSON.parse(localStorage.getItem("step4")||"null");
+        if(prev && prev.travel){
+          const t=prev.travel;
+          if(t.priceType) priceType.value=t.priceType;
+          if(typeof t.feeText==="string") feeInput.value = t.feeText;
+          else if(typeof t.fee==="number" && t.fee>0) feeInput.value = String(t.fee);
+          if(typeof t.maxDistanceKm==="number"){
+            distance.value = String(t.maxDistanceKm);
+          }
+        }
+      }catch{}
+    })();
+
+    // --- State & doğrulama ---
+    function syncFeeState(){
+      if(priceType.value==="free"){
+        feeInput.value = "";
+        feeInput.disabled = true;
+        feeInput.placeholder = "Ücretsiz seçildi";
+      }else{
+        feeInput.disabled = false;
+        if(!feeInput.value) feeInput.placeholder = "₺ ile giriniz";
+      }
+      validate();
+      saveDraft();
+    }
+
+    function validate(showMsg=false){
+      let ok = true;
+      feeError.style.display = "none";
+      if(priceType.value!=="free"){
+        const val = parseMoney(feeInput.value);
+        if(!(val>0)){
+          ok=false;
+          if(showMsg) feeError.style.display="block";
+        }
+      }
+      btn.disabled = !ok;
+      return ok;
+    }
+
+    // --- Oto-kaydet (debounce) ---
+    let t=null;
+    function autoSave(){ clearTimeout(t); t=setTimeout(()=>{ saveDraft(); }, 250); }
+
+    priceType.addEventListener("change", ()=>{ syncFeeState(); });
+    feeInput .addEventListener("input", ()=>{ validate(); autoSave(); });
+    feeInput .addEventListener("blur",  ()=>{ validate(true); });
+    feeInput .addEventListener("keydown",(e)=>{ if(e.key==="Enter"){ e.preventDefault(); form.requestSubmit(); }});
+    distance .addEventListener("change", ()=>{ autoSave(); });
+
+    // ---- Geri: önce kaydet, sonra 3. adıma dön ----
+    let allowLeave=false;
+    window.addEventListener("beforeunload",(e)=>{ if(!allowLeave){ e.preventDefault(); e.returnValue=""; }});
+    document.getElementById("btnBack").addEventListener("click",(e)=>{
+      e.preventDefault();
+      saveDraft();
+      localStorage.setItem(K_LAST,"3");
+      allowLeave=true;
+      location.replace("admin-register3.html");
+    });
+
+    // ---- Devam ----
+    form.addEventListener("submit",(e)=>{
+      e.preventDefault();
+      if(!validate(true)) return;
+
+      const feeVal = priceType.value==="free" ? 0 : (parseMoney(feeInput.value)||0);
+      const data = {
+        priceType: priceType.value,
+        fee: feeVal,
+        feeText: feeInput.value,
+        currency:"TRY",
+        maxDistanceKm: parseKm(distance.value)
+      };
+      localStorage.setItem("step4", JSON.stringify({ travel: data }));
+      localStorage.setItem(K_LAST, "4");
+
+      allowLeave=true;
+      location.replace("admin-register5.html");
+    });
+
+    // başlangıç durumu
+    syncFeeState();
+  </script>
+</body>
+</html>

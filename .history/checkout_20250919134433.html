@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ödeme — Checkout</title>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Masaüstü stilleri (checkout sayfanın ana CSS’i) -->
+  <link rel="stylesheet" href="css/checkout.css">
+
+  <!-- Ortak mobil rail davranışı (tüm sayfalarda aynı alt bar) -->
+  <link rel="stylesheet" href="css/rail_mobile.css">
+
+  <!-- Bu sayfaya özel mobil uyarlama (eski mobil kodların yerine) -->
+  <link rel="stylesheet" href="css/mobil_checkout.css">
+
+  <style>
+    /* Sadece masaüstü sabitle (mobilde devre dışı) – istersen kaldırabilirsin */
+    @media (min-width: 1200px) {
+      html { min-width: 1200px; }
+      body, .container { width: 1200px; margin: 0 auto; }
+    }
+  </style>
+</head>
+
+<body class="has-rail">
+  <!-- Ortak bar menu mount (rail loader buraya yükleyecek) -->
+  <div id="rail-mount" aria-hidden="true"></div>
+
+  <div class="app">
+    <main class="main">
+      <!-- ====== SAYFA: CHECKOUT ====== -->
+      <header class="page-head">
+        <h1>Ödeme</h1>
+      </header>
+
+      <!-- İÇERİK: Buraya mevcut checkout HTML’ini (sepet özeti, adres, ödeme formu) yerleştir -->
+      <section class="checkout">
+        <div class="checkout-grid">
+          <!-- Adres / Teslimat -->
+          <div class="col col-left">
+            <!-- adres formu, teslimat seçenekleri -->
+          </div>
+
+          <!-- Ödeme -->
+          <div class="col col-middle">
+            <!-- kart bilgileri, taksit, kupon -->
+          </div>
+
+          <!-- Sipariş Özeti -->
+          <aside class="col col-right">
+            <!-- ürün özeti, ara toplam, kargo, toplam -->
+          </aside>
+        </div>
+
+        <div class="checkout-actions">
+          <button class="btn back-btn" type="button">Geri</button>
+          <button class="btn primary pay-btn" type="button">Ödemeyi Tamamla</button>
+        </div>
+      </section>
+      <!-- ====== /SAYFA: CHECKOUT ====== -->
+    </main>
+  </div>
+
+  <!-- (Opsiyonel) Bildirim Paneli – rail’deki bildirim tetikleyicisini kullanıyorsan -->
+  <aside class="notify" id="notify" aria-hidden="true">
+    <div class="notify-head">
+      <span>Bildirimler</span>
+      <button class="icon-btn" id="notifyClose" title="Kapat">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <div class="notify-body">Henüz bildiriminiz yok…</div>
+  </aside>
+
+  <!-- (Opsiyonel) Profil Modal – rail’deki profil butonunu kullanıyorsan -->
+  <div class="bm-modal" id="bmModal" aria-hidden="true">
+    <div class="bm-box" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+      <div class="bm-head">
+        <button class="bm-x" id="bmClose" title="Kapat">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <h3 id="bmTitle">Profil</h3>
+      </div>
+      <div class="bm-body">
+        <div class="bm-search">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+            <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="bm-list" id="bmList"></div>
+      </div>
+      <div class="bm-foot">
+        <div class="bm-user">
+          <div class="avatar" id="bmAvatar">A</div>
+          <div class="bm-ident">
+            <div class="lbl">GİRİŞ YAPILDI</div>
+            <strong id="bmName">—</strong>
+            <div class="muted" id="bmBusiness"></div>
+            <div class="muted" id="bmMail">—</div>
+          </div>
+        </div>
+        <button class="bm-logout" type="button" id="bmLogout">ÇIKIŞ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Basit bildirim & profil kapatma güvence -->
+  <script>
+    document.getElementById('notifyClose')?.addEventListener('click', ()=> {
+      document.getElementById('notify')?.classList.remove('open');
+    });
+    document.addEventListener('mousedown', (e)=>{
+      const panel = document.getElementById('notify');
+      const open = panel?.classList.contains('open');
+      const inside = e.target.closest('#notify') || e.target.closest('[data-open="notify"]');
+      if (open && !inside) panel.classList.remove('open');
+    });
+    document.getElementById('bmClose')?.addEventListener('click', ()=>{
+      const bm = document.getElementById('bmModal');
+      bm?.classList.remove('show');
+      bm?.setAttribute('aria-hidden','true');
+    });
+    document.addEventListener('mousedown', (e)=>{
+      const bm = document.getElementById('bmModal');
+      if (!bm?.classList.contains('show')) return;
+      const inside = e.target.closest('#bmModal') || e.target.closest('.avatar-btn') || e.target.closest('#railProfile');
+      if (!inside) {
+        bm.classList.remove('show');
+        bm.setAttribute('aria-hidden','true');
+      }
+    });
+  </script>
+
+  <!-- Ortak rail loader (alt bar + aktif sayfa işaretleme) -->
+  <script src="js/rail_loader.js"></script>
+
+  <!-- Sayfanın kendi JS’i (masaüstü davranışları) -->
+  <script src="js/checkout.js"></script>
+
+  <!-- Bu sayfanın mobil davranışları -->
+  <script src="js/mobil_checkout.js"></script>
+</body>
+</html>

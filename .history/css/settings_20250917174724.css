@@ -1,0 +1,197 @@
+/* ===========================
+   SETTINGS PAGE + BAR-MENU
+   =========================== */
+
+/* ====== BAR-MENU ====== */
+:root{
+  --rail-bg:#0f1115; --rail-fg:#d6dae3; --rail-active:#ffffff; --rail-accent:#7c6cff;
+  --rail-hover:#1b1f29; --rail-divider:#232733; --rail-width:72px;
+
+  --border:#e7e9ee; --muted:#6b7280;
+  --bg:#f5f7fb; --ink:#0b0b0c; --card:#fff; --shadow:0 12px 32px rgba(18,24,40,.08);
+  --radius:18px; --primary:#111; --primary-ink:#fff; --chip:#eff1f5;
+
+  /* Mobil ölçüler */
+  --topbar-h:56px;      /* JS ölçüp güncelliyor */
+  --staff-h:44px;       /* JS ölçüp güncelliyor */
+  --hour-h:56px;        /* 1 saat satır yüksekliği varsayımı */
+
+  /* staff bar’ı takvim kartına hizalamak için */
+  --cal-left: 0px;
+  --cal-width: 100vw;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 "Inter",system-ui}
+
+/* RAIL (desktop) */
+.rail{
+  position:fixed; inset:0 auto 0 0; width:var(--rail-width); background:var(--rail-bg); color:var(--rail-fg);
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between; z-index:1000;
+  border-right:1px solid var(--rail-divider); padding:12px 0; box-shadow:6px 0 24px rgba(15,17,21,.28);
+}
+.rail__list{list-style:none;margin:0;padding:0;width:100%;flex:1;display:flex;flex-direction:column;justify-content:space-evenly;align-items:center}
+.rail__item{width:100%;display:flex;justify-content:center}
+.rail__btn{
+  width:44px;height:44px;display:grid;place-items:center;border-radius:12px;color:var(--rail-fg);text-decoration:none;position:relative;
+  transition:background .15s,color .15s, box-shadow .15s, transform .06s;
+}
+.rail__btn:hover{background:var(--rail-hover);color:var(--rail-active)}
+.rail__btn:active{transform:translateY(1px)}
+.rail__btn[aria-current="page"]{
+  background:linear-gradient(180deg,rgba(124,108,255,.18),rgba(124,108,255,.12));
+  color:var(--rail-active);
+  box-shadow:inset 0 0 0 1px rgba(124,108,255,.35), 0 8px 18px rgba(0,0,0,.25);
+}
+.rail__btn[aria-current="page"]::before{content:"";position:absolute;left:-8px;top:6px;bottom:6px;width:3px;background:var(--rail-accent);border-radius:8px}
+.rail__btn[data-tip]::after{
+  content:attr(data-tip); position:absolute; left:58px; top:50%; transform:translateY(-50%);
+  background:#0f1115; color:#fff; border:1px solid #2a2f3a; border-radius:10px; padding:6px 10px; font-weight:800; font-size:12px; white-space:nowrap;
+  opacity:0; pointer-events:none; transition:opacity .15s; box-shadow:0 12px 28px rgba(0,0,0,.35);
+}
+.rail__btn:hover::after{opacity:1}
+nav.rail .ico{width:22px;height:22px;stroke:var(--rail-fg)!important;fill:none;stroke-width:1.9}
+nav.rail .rail__btn[aria-current="page"] .ico{stroke:var(--rail-active)!important}
+.rail__bottom{display:flex;flex-direction:column;align-items:center;gap:10px}
+.avatar-btn{width:42px;height:42px;border-radius:50%;background:#24262c;display:grid;place-items:center;color:#e8ebf2;border:1px solid #2b2e35;cursor:pointer}
+
+/* SAYFA İSKELETİ */
+.page{margin-left:84px; padding:22px 22px 40px;}
+.wrap{max-width:1120px; margin:0 auto;}
+.pagehead{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:14px}
+.pagehead h1{margin:0;font-size:28px;font-weight:900}
+.save{position:sticky;top:12px;z-index:20;background:#111;color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.22);cursor:pointer}
+.save:active{transform:translateY(1px)}
+.save:disabled{opacity:.6;cursor:not-allowed}
+
+/* Kart/Forms/Buttons (kısaltıldı) */
+.card{background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow);border-radius:var(--radius);padding:18px;margin:14px 0}
+.card h2{margin:0 0 6px;font-size:20px;font-weight:900}
+.sub{color:var(--muted);margin:0 0 10px}
+.grid{display:grid;gap:12px}
+.grid-2{grid-template-columns:1fr 1fr}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+@media (max-width:980px){.grid-2,.grid-3{grid-template-columns:1fr}}
+.input, select, .select, textarea{width:100%;border:1.6px solid #e6e8ec;border-radius:12px;padding:12px 14px;font-size:15px;background:#fff}
+.input:focus, select:focus, textarea:focus{outline:none;border-color:#cfe3ff;box-shadow:0 0 0 3px rgba(99,102,241,.16)}
+label{font-weight:700;font-size:13px;margin-bottom:6px;display:block;color:#1b1d23}
+.hint{color:var(--muted);font-size:12px;margin-top:6px}
+textarea{min-height:110px;resize:vertical;line-height:1.45;}
+.btn{border:1px solid #e6e8ec;background:#fff;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer}
+.btn.primary{background:#111;color:#fff;border-color:#111}
+.btn:focus-visible,.save:focus-visible,.avatar-btn:focus-visible,.rail__btn:focus-visible{outline:3px solid rgba(99,102,241,.35);outline-offset:2px}
+
+/* Toast */
+.toast{position:fixed;left:50%;top:84px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:5000}
+.toast.show{opacity:1}
+
+/* 🔹 Switch Business MODAL (BM) */
+.bm-overlay{position:fixed; inset:0; background:rgba(17,19,24,.45); z-index:1200; opacity:0; pointer-events:none; transition:.18s;}
+.bm-overlay.show{opacity:1; pointer-events:auto;}
+.bm-modal{position:fixed; inset:0; display:grid; place-items:center; z-index:1201; opacity:0; pointer-events:none; transition:.18s;}
+.bm-modal.show{opacity:1; pointer-events:auto;}
+.bm-box{width:720px; max-width:calc(100vw - 40px); background:#fff; border:1px solid #e7e9ee; border-radius:16px; box-shadow:0 12px 32px rgba(0,0,0,.22); overflow:hidden;}
+
+/* 🔔 Bildirim paneli – kompakt, kapanabilir kart */
+.notify{
+  position:fixed; right:12px; bottom:calc(76px + env(safe-area-inset-bottom));
+  width:min(360px, 92vw); max-height:60vh; overflow:auto;
+  background:#fff; border:1px solid var(--border); border-radius:14px;
+  box-shadow:0 18px 44px rgba(0,0,0,.22);
+  transform:translateY(10px); opacity:0; pointer-events:none; transition:.18s;
+  z-index:1202;
+}
+.notify.open{ transform:none; opacity:1; pointer-events:auto; }
+.notify-head{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--border);font-weight:800}
+.notify-body{padding:12px}
+
+/* ===========================
+   MOBILE OVERRIDES (≤768px)
+   =========================== */
+@media (max-width: 768px) {
+
+  /* RAIL → Bottom Nav */
+  .rail{
+    inset:auto 0 0 0; width:100%; height:64px; flex-direction:row; padding:8px 10px;
+    border-right:0; border-top:1px solid var(--rail-divider);
+    box-shadow:0 -8px 22px rgba(15,17,21,.18);
+  }
+  .rail__list{width:100%; flex-direction:row; justify-content:space-around; align-items:center}
+  .rail__item{flex:1}
+  .rail__bottom{display:none}
+  .rail__btn{width:52px;height:44px;border-radius:12px}
+  .rail__btn[aria-current="page"]::before{display:none}
+  .rail__btn[data-tip]::after{display:none}
+  nav.rail .ico{width:22px;height:22px}
+
+  /* Sayfa boşlukları – alttaki nav için */
+  .page{margin-left:0; padding:16px 14px max(90px, 14px + env(safe-area-inset-bottom))}
+  .app .main{padding-bottom:max(90px, 24px + env(safe-area-inset-bottom))}
+
+  /* TOPBAR kompakt + sticky + sol üst profil */
+  .topbar{
+    position:sticky; top:0; z-index:900; background:var(--bg); border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    position:relative; padding:8px 10px; padding-left:54px;
+    display:grid; grid-template-columns:1fr auto; gap:8px;
+    grid-template-areas:"date actions" "view actions";
+  }
+  .date-nav{grid-area:date} .view-select{grid-area:view} .actions{grid-area:actions;align-items:center}
+  .actions .search{display:none}
+
+  /* Sol üst yuvarlak profil butonu */
+  .avatar-mini{
+    display:grid; place-items:center; position:absolute; left:10px; top:8px;
+    width:32px; height:32px; border-radius:999px; font-weight:800;
+    background:#fff; color:#111; border:1.6px solid var(--border); box-shadow:0 6px 18px rgba(0,0,0,.06);
+  }
+
+  /* === STAFF BAR SABİT === */
+  /* Bazı tarayıcılarda atalar transform uyguladığında fixed bozulur.
+     Bu yüzden üst atalar için transform/perspective resetliyoruz. */
+  .app, .main, .page, .wrap, .calendar{ transform:none !important; perspective:none !important; filter:none !important; }
+
+  #staffRow{
+    position: fixed !important;
+    top: calc(var(--topbar-h) + env(safe-area-inset-top));
+    left: var(--cal-left);
+    width: var(--cal-width);
+    z-index: 880;
+    background: var(--bg);
+    padding: 8px 10px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 1px solid var(--border);
+  }
+  #staffRow::-webkit-scrollbar{display:none}
+  #staffRow > *{
+    flex:0 0 auto;
+    background: var(--chip);
+    border:1px solid var(--border);
+    padding:8px 12px;
+    border-radius:999px;
+    font-weight:700;
+    white-space:nowrap;
+  }
+
+  /* Sabit barın altında içerik çakışmasın */
+  #dayView, #weekView{ padding-top:calc(var(--staff-h) + 8px) }
+
+  /* Haftalık başlık da topbara göre sabit */
+  .week .wk-head{
+    position:sticky; top:calc(var(--topbar-h) + var(--staff-h)); z-index:870;
+    background:var(--bg); padding:6px 8px; border-bottom:1px solid var(--border);
+  }
+
+  /* 24:00 sonrası sadece 1 saatlik tampon */
+  #dayGrid, #wkGrid{
+    min-height:auto !important;
+    padding-bottom:calc(var(--hour-h) + env(safe-area-inset-bottom)) !important;
+  }
+
+  /* Dokunma alanları */
+  .ico-btn, .save, .btn{min-height:42px}
+}

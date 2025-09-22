@@ -1,0 +1,217 @@
+:root{
+  --bg:#f4f5f7; --panel:#ffffff; --muted:#6b7280; --text:#1f2937; --line:#e6e8ee;
+  --btn:#111827; --btnText:#fff; --chip:#eef2f7; --ok:#22c55e; --ink:#fff;
+  --rail-width:72px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  margin-left:var(--rail-width);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+  background:var(--bg);color:var(--text);letter-spacing:.1px
+}
+
+/* ====== LAYOUT ====== */
+.app{display:grid;grid-template-columns:1fr;min-height:100vh;overflow:hidden}
+.content{min-width:1200px;overflow:auto;padding:16px 16px 28px}
+
+/* ====== ÜST TABS ====== */
+.top-tabs{display:flex;gap:24px;margin:6px 0 16px;border-bottom:1px solid var(--line)}
+.tab{padding:12px 0;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;user-select:none}
+.tab.active{color:var(--text);border-color:var(--text)}
+
+/* ---- YENİ SATIŞ ---- */
+.workarea{display:grid;grid-template-columns:380px 1fr;gap:16px}
+
+/* Sol panel */
+.left-col{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.left-head{padding:14px 16px;border-bottom:1px solid var(--line);font-weight:800;font-size:14px;color:#111827}
+.left-nav{display:flex;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.left-nav button{padding:8px 12px;border:1px solid var(--line);background:#fff;border-radius:10px;font-weight:700;color:#111827;cursor:pointer}
+.left-nav button.active{outline:2px solid rgba(17,24,39,.12)}
+.section{display:none;padding:16px}
+.section.active{display:block}
+
+/* Hizmetler listesi */
+.search{margin-bottom:10px}
+.search input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;outline:0}
+.svc-list{display:flex;flex-direction:column;gap:10px}
+.svc-row{
+  border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px 12px 40px;
+  display:flex;justify-content:space-between;align-items:center;background:#fff;cursor:pointer;position:relative
+}
+.svc-row::before{content:"";position:absolute;left:16px;top:10px;bottom:10px;width:4px;border-radius:6px;background:var(--row-stripe,#22c55e)}
+.svc-row .meta{font-size:12px;color:var(--muted)}
+.svc-price{font-weight:900}
+
+/* Özel Tutar */
+.amount-input{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.amount-input span{
+  display:flex;align-items:center;justify-content:center;
+  width:38px;color:var(--muted);border-right:1px solid var(--line)
+}
+.amount-input input{flex:1;border:0;outline:0;padding:12px;font-size:18px;font-weight:700}
+.desc-input input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;outline:0;background:#fff;margin:8px 0 14px}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.keypad button{height:60px;border-radius:12px;border:1px solid var(--line);background:#fff;font-size:18px;font-weight:800;cursor:pointer}
+.add-btn{margin-top:14px;width:100%;height:48px;border-radius:12px;border:0;background:var(--btn);color:var(--btnText);font-weight:900;cursor:pointer}
+
+/* Sağ panel */
+.right-col{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.cart{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}
+.cart-header,.cart-row{display:grid;grid-template-columns:1fr 80px;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.cart-header{background:#fafbfc;font-size:12px;font-weight:800}
+.cart-row .title{font-weight:800}
+.cart-row .note{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:8px}
+.staff-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:20px;padding:4px 8px;font-size:12px}
+.staff-chip .av{width:18px;height:18px;border-radius:999px;background:#eef2f7;display:inline-block}
+.change-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.tap-change{padding:10px 14px;font-size:12px;color:var(--muted);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.tap-dot{width:7px;height:7px;border-radius:999px;background:#d6dae5}
+.sums{padding:8px 14px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line)}
+.sum-row{display:flex;justify-content:space-between;font-size:14px;color:var(--muted)}
+.discount{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+.plus{width:28px;height:28px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;color:var(--muted)}
+.discount input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100px;outline:0}
+.total{text-align:right;font-size:26px;font-weight:900;padding:10px 14px}
+.actions{display:flex;gap:10px;align-items:center}
+.trash{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer}
+.pay{flex:1;height:44px;border-radius:12px;border:0;background:var(--btn);color:var(--btnText);font-weight:900;cursor:pointer}
+
+/* Düzenle Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(17,24,39,.55);display:none;align-items:center;justify-content:center;z-index:1050}
+.modal{width:min(720px,90vw);background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.25);overflow:visible}
+.modal header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;font-weight:900;font-size:20px;border-bottom:1px solid var(--line)}
+.modal .x{cursor:pointer}
+.modal .body{padding:16px 22px;display:grid;gap:16px;overflow:visible}
+.modal .row{display:grid;grid-template-columns:1fr 260px;gap:16px;align-items:center}
+.item-box{border:1px solid var(--line);border-radius:12px;padding:12px}
+.price-input{display:flex;align-items:center;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.price-input span{padding:0 10px;color:var(--muted);border-right:1px solid var(--line)}
+.price-input input{flex:1;border:0;outline:0;padding:10px 12px;font-weight:800}
+
+/* ===== Dropdown (Personel) ===== */
+.dropdown{position:relative}
+.dropdown>button{width:100%;height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-weight:700}
+.dropdown-menu{
+  position:absolute;top:calc(100% + 6px);left:0;right:0;
+  background:#fff;border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 10px 30px rgba(0,0,0,.08);
+  display:none;
+  max-height:240px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  z-index:10000;
+}
+.dropdown-menu .opt{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.dropdown-menu .opt:hover{background:#f8f9fb}
+
+.buttons{display:flex;gap:10px}
+.btn{height:44px;border-radius:12px;border:1px solid var(--line);background:#fff;font-weight:800;flex:1;cursor:pointer}
+.btn.primary{background:var(--btn);border-color:var(--btn);color:#fff}
+.btn.danger{border-color:#fee2e2;background:#fee2e2;color:#991b1b;font-weight:900}
+
+/* ---- ÖDEME / TAMAMLANDI / İŞLEMLER ---- */
+.paylayout{display:grid;grid-template-columns:1fr 420px;gap:16px}
+.pay-left{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.pay-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.back{display:inline-flex;align-items:center;gap:8px;font-weight:800;cursor:pointer}
+.pm-grid{display:grid;grid-template-columns:repeat(2,220px);gap:14px;margin-top:6px}
+.pm-card{border:2px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;cursor:pointer}
+.pm-card.active{border-color:#111827;box-shadow:0 0 0 3px rgba(17,24,39,.06) inset}
+.pm-ttl{font-weight:900}
+.pay-right{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column}
+.readonly-row .note{display:none}
+.readonly-row .tap-change{display:none}
+.confirm{margin-top:auto;display:flex;gap:10px;align-items:center}
+.confirm .trash{width:44px;height:44px}
+.confirm .pay{flex:1}
+
+.complete-wrap{display:grid;grid-template-columns:1fr 560px;gap:24px}
+.done-left{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.big-ok{width:88px;height:88px;border-radius:999px;background:rgba(34,197,94,.12);display:grid;place-items:center;color:var(--ok);font-size:42px;margin-bottom:18px}
+.done-title{font-size:24px;font-weight:900;margin-bottom:6px}
+.cal-btn{margin-top:18px;height:44px;border-radius:12px;border:0;background:var(--btn);color:#fff;font-weight:900;padding:0 20px;cursor:pointer}
+.receipt{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+.pill{display:inline-block;background:#e9f9ef;color:#16a34a;font-weight:800;border-radius:999px;padding:6px 12px;margin-bottom:10px}
+.rc-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.rc-line{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}
+.rc-sub{color:var(--muted);font-size:12px}
+.rc-total{font-weight:900}
+
+/* ===== İŞLEMLER ===== */
+.tx-layout{display:grid;grid-template-columns:280px 1fr;gap:16px}
+.tx-left{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
+.tx-tabs{display:flex;background:#f7f8fb;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.tx-tab{flex:1;padding:8px 10px;text-align:center;font-weight:800;font-size:12px;cursor:pointer;color:#6b7488}
+.tx-tab.active{background:#fff;color:#111827}
+.tx-search{margin:10px 0}
+.tx-search input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;outline:0}
+.tx-group{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:10px}
+.tx-group .g-head{padding:10px 12px;background:#fafbfc;font-weight:900;font-size:13px;border-bottom:1px solid var(--line)}
+.tx-row{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.tx-row:last-child{border-bottom:0}
+.tx-row .sub{color:#9aa0ae;font-size:12px;cursor:default}
+.tx-right{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+
+/* Eski kart tipi (kullanılıyorsa) */
+.tx-item{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+
+/* Rozet */
+.badge{font-size:11px;padding:2px 8px;border-radius:999px;background:#e9f9ef;color:#16a34a;font-weight:800}
+
+/* === Yeni: sağ panel buton listesi + fiş === */
+.tx-list-head{padding:8px 10px;font-weight:900;color:#6b7280;margin-bottom:6px}
+.tx-item-btn{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  border:1px solid var(--line);background:#fff;border-radius:12px;
+  padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:background .12s ease
+}
+.tx-item-btn:hover{background:#f8f9fb}
+.tx-item-btn .left{display:flex;align-items:center;gap:10px}
+.tx-item-btn .titlebox{display:flex;flex-direction:column}
+.tx-item-btn .title{font-weight:800}
+.tx-item-btn .amt{font-weight:900}
+.tx-back{
+  margin-bottom:10px;border:1px solid var(--line);background:#fff;
+  border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer
+}
+.tx-link{color:#51607a;font-weight:800}
+.tx-receipt{margin-top:4px}
+
+/* ===== Switch Business (bm-*) ===== */
+.bm-overlay{position:fixed;inset:0;background:rgba(17,19,24,.45);z-index:4000;opacity:0;pointer-events:none;transition:.2s}
+.bm-overlay.show{opacity:1;pointer-events:auto}
+.bm-modal{position:fixed;inset:0;display:grid;place-items:center;z-index:4010;pointer-events:none;opacity:0;transition:.2s}
+.bm-modal.show{opacity:1;pointer-events:auto}
+.bm-box{width:720px;max-width:calc(100vw - 40px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 6px 20px rgba(16,24,40,.12);overflow:hidden}
+.bm-head{display:flex;align-items:center;gap:10px;padding:16px 18px;border-bottom:1px solid var(--line)}
+.bm-head h3{font-size:22px;margin:0;font-weight:800}
+.bm-x{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;cursor:pointer}
+.bm-body{padding:14px 18px 20px}
+.bm-search{position:relative;margin-bottom:12px}
+.bm-search input{width:100%;height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px 0 40px;outline:none}
+.bm-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;opacity:.7}
+.bm-list{display:grid;gap:10px}
+.bm-item{width:100%;text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;justify-content:space-between}
+.bm-item:hover{background:#f8f9fc}
+.bm-item .left{display:flex;gap:10px;align-items:center}
+.bm-dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+.bm-meta{font-size:12px;color:#7b8190}
+.bm-status{font-size:12px;color:#10b981;font-weight:700;display:none}
+.bm-item[aria-current="true"] .bm-status{display:inline}
+.bm-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-top:1px solid var(--line);background:#fafbff}
+.bm-user{display:flex;align-items:center;gap:10px}
+.bm-user .avatar{width:32px;height:32px;border-radius:50%;background:#eef1f6;color:#555;display:grid;place-items:center;font-weight:700}
+.bm-user .lbl{font-size:11px;color:#9aa0ae}
+.bm-logout{height:38px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:700}
+
+/* ----- Bar-menu ikon izolasyonu (çakışma fix) ----- */
+nav.rail .ico{width:22px;height:22px;stroke:currentColor !important;fill:none;stroke-width:1.9}
+nav.rail .rail__btn[aria-current="page"] .ico{stroke:#fff !important}

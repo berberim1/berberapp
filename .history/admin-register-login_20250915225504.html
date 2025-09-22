@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yönetici Kayıt / Giriş</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{
+      --bg:#f2f2f2; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --primary:#191919; --primary-contrast:#ffffff;
+      --radius:14px; --shadow:0 4px 20px rgba(0,0,0,0.08);
+      --input:#f9fafb; --input-border:#e5e7eb;
+      --divider:#e5e7eb; --pill:#f3f4f6; --danger:#ef4444;
+      --ok-bg:#ecfdf5; --ok-bd:#a7f3d0; --ok-fg:#065f46;
+    }
+    *{box-sizing:border-box} html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text); background:var(--bg); display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+    .card{ width:100%; max-width:540px; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:28px 28px 22px; position:relative; }
+    .tabs{ display:inline-flex; background:var(--pill); border-radius:999px; padding:4px; gap:4px; margin:0 auto 18px; }
+    .tabs button{ border:none; background:transparent; padding:8px 18px; border-radius:999px; font-weight:600; color:var(--muted); cursor:pointer; }
+    .tabs button.active{ background:#fff; color:var(--text); box-shadow:0 1px 2px rgba(0,0,0,0.08);} 
+    .title{ text-align:center; font-size:22px; font-weight:700; margin:6px 0 18px; }
+    .form-row{ margin-bottom:12px; }
+    label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; }
+    input[type="email"],input[type="password"]{
+      width:100%; height:44px; border-radius:10px; border:1px solid var(--input-border);
+      background:var(--input); padding:0 14px; font-size:14px; outline:none;
+    }
+    input[aria-invalid="true"]{ border-color:var(--danger); }
+    .error-text,.warn-text{ font-size:12px; margin-top:6px; display:none; }
+    .error-text.show{ display:block; color:var(--danger); }
+    .warn-text.show{ display:block; color:var(--danger); }
+
+    .btn{ width:100%; height:44px; border-radius:10px; border:none; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; }
+    .btn-primary{ background:var(--primary); color:var(--primary-contrast); }
+    .btn-ghost{ background:#fff; border:1px solid var(--input-border); color:#111; }
+    .btn i{ font-size:18px; }
+    .btn-google i{ font-size:20px; color:#4285F4; }
+
+    .or{ display:flex; align-items:center; gap:12px; color:var(--muted); font-size:12px; margin:18px 0; }
+    .or::before, .or::after{ content:""; flex:1; height:1px; background:var(--divider); }
+
+    .pane{ display:none; } .pane.active{ display:block; }
+    @media (max-width:560px){ .card{ padding:22px 18px; } }
+
+    /* banners */
+    .ok-banner,.info-banner{
+      display:none; align-items:flex-start; gap:10px;
+      margin:-6px 0 12px; padding:10px 12px;
+      border-radius:10px; font-size:13px;
+    }
+    .ok-banner{ border:1px solid var(--ok-bd); background:var(--ok-bg); color:var(--ok-fg); }
+    .info-banner{ border:1px solid #c7d2fe; background:#eef2ff; color:#3730a3; }
+    .ok-banner.show,.info-banner.show{ display:flex; }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-live="polite">
+    <!-- Kayıt tamamlandı bildirimi -->
+    <div id="okBanner" class="ok-banner">
+      <i class="fa-solid fa-circle-check" style="margin-top:2px"></i>
+      <div><strong>Kayıt tamamlandı.</strong> Şimdi giriş yapabilirsiniz.</div>
+      <button id="okDismiss" class="btn-ghost" style="height:30px;padding:0 10px;border-radius:8px;margin-left:auto;">Kapat</button>
+    </div>
+
+    <!-- Zaten kayıtlı uyarısı -->
+    <div id="infoBanner" class="info-banner">
+      <i class="fa-solid fa-circle-info" style="margin-top:2px"></i>
+      <div><strong>Bu e-posta zaten kayıtlı.</strong> Giriş yapabilirsiniz.</div>
+      <button id="infoDismiss" class="btn-ghost" style="height:30px;padding:0 10px;border-radius:8px;margin-left:auto;">Kapat</button>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Kimlik doğrulama sekmeleri">
+      <button id="tab-login"  type="button" role="tab" aria-controls="pane-login">Giriş</button>
+      <button id="tab-signup" type="button" role="tab" aria-controls="pane-signup" class="active">Kayıt ol</button>
+    </div>
+
+    <!-- KAYIT -->
+    <section id="pane-signup" class="pane active" role="tabpanel" aria-labelledby="tab-signup">
+      <h2 class="title">Hesap oluştur</h2>
+      <div class="form-row">
+        <label for="signup-email">E-posta adresi</label>
+        <input id="signup-email" type="email" placeholder="ornek@eposta.com" autocomplete="email" />
+        <div id="warn-signup-exists" class="warn-text">Bu e-posta zaten kayıtlı.</div>
+      </div>
+      <button id="btn-signup-email" type="button" class="btn btn-primary">
+        <i class="fa-regular fa-envelope"></i> E-posta ile devam et
+      </button>
+    </section>
+
+    <!-- GİRİŞ -->
+    <section id="pane-login" class="pane" role="tabpanel" aria-labelledby="tab-login">
+      <h2 class="title">Tekrar hoş geldiniz</h2>
+      <div class="form-row">
+        <label for="login-email">E-posta adresi</label>
+        <input id="login-email" type="email" placeholder="ornek@eposta.com" autocomplete="email" />
+        <div id="err-email" class="error-text">Lütfen e-posta adresinizi girin.</div>
+      </div>
+      <div class="form-row">
+        <label for="login-pass">Şifre</label>
+        <input id="login-pass" type="password" placeholder="••••••••" autocomplete="current-password" />
+        <div id="err-pass" class="error-text">Lütfen şifrenizi girin.</div>
+      </div>
+      <button id="btn-login" type="button" class="btn btn-primary">
+        <i class="fa-regular fa-envelope"></i> E-posta ile giriş yap
+      </button>
+      <div style="text-align:center; margin-top:10px;">
+        <a href="#" id="link-forgot" style="font-weight:600; color:#111; text-decoration:underline;">Şifremi unuttum?</a>
+      </div>
+      <div class="or">veya</div>
+      <button id="btn-google-login" type="button" class="btn btn-ghost btn-google">
+        <i class="fa-brands fa-google"></i> Google ile giriş yap
+      </button>
+    </section>
+
+    <p class="footnote" id="footnote-switch" style="text-align:center; color:#6b7280; font-size:12px;">
+      Zaten hesabın var mı? <a href="#" id="link-switch">Giriş yap</a>
+    </p>
+  </main>
+
+<script type="module">
+  import { auth, db } from "./js/firebase.js";
+  import {
+    fetchSignInMethodsForEmail, signInWithEmailAndPassword,
+    sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup,
+    signOut, setPersistence, browserLocalPersistence, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+  const $=(s,r=document)=>r.querySelector(s);
+  const emailOk=v=>/^\S+@\S+\.\S+$/.test((v||"").trim());
+
+  // localStorage keys
+  const K_METHOD="admin_onboarding_method";
+  const K_FLOW="admin_onboarding_flow"; // admin akışı bayrağı
+  const K_EMAIL="pending_admin_email";
+  const K_RETURN="return_to";
+  const K_REGOK="__reg_ok";
+
+  // Basit throttle için anahtarlar
+  const K_FAILS="auth_fail_count";
+  const K_BLOCK_UNTIL="auth_block_until"; // ms timestamp
+
+  // --- HATA MESAJI SÖZLÜĞÜ & YARDIMCILAR ---
+  const ERRMAP = {
+    "auth/invalid-credential": "E-posta veya şifre hatalı.",
+    "auth/invalid-email": "Geçerli bir e-posta adresi girin.",
+    "auth/missing-password": "Lütfen şifrenizi girin.",
+    "auth/user-disabled": "Hesabınız devre dışı bırakılmış.",
+    "auth/user-not-found": "Bu e-posta ile kullanıcı bulunamadı.",
+    "auth/wrong-password": "E-posta veya şifre hatalı.",
+    "auth/too-many-requests": "Çok sayıda başarısız deneme. Lütfen biraz sonra tekrar deneyin.",
+    "auth/network-request-failed": "Ağ hatası. İnternet bağlantınızı kontrol edin.",
+    "auth/operation-not-allowed": "Bu giriş yöntemi devre dışı.",
+    "auth/popup-blocked": "Açılır pencere engellendi. Tarayıcı ayarlarınızı kontrol edin.",
+    "auth/popup-closed-by-user": "İşlem iptal edildi.",
+    "auth/cancelled-popup-request": "Başka bir giriş penceresi açık.",
+    "auth/weak-password": "Şifre çok zayıf. Daha güçlü bir şifre belirleyin.",
+    "auth/email-already-in-use": "Bu e-posta zaten kayıtlı.",
+    "auth/quota-exceeded": "Kota aşıldı. Lütfen daha sonra deneyin.",
+    "auth/internal-error": "Sunucu hatası. Lütfen tekrar deneyin."
+  };
+  function friendly(err, fallback = "İşlem yapılamadı. Lütfen tekrar deneyin.") {
+    const code = (err && err.code) ? String(err.code) : "";
+    const msg = ERRMAP[code];
+    if (!msg) console.warn("[auth-error]", code || err, err?.message);
+    return msg || fallback;
+  }
+  function safeRedirect(url){
+    try{
+      const u=new URL(url, location.origin);
+      if (u.origin === location.origin) location.replace(u.href);
+    }catch{/* yoksay */}
+  }
+  // -----------------------------------------
+
+  // UI helpers
+  const errE=$("#err-email"), errP=$("#err-pass");
+  function showErr(el,box,msg){ box.textContent=msg; el.setAttribute("aria-invalid","true"); box.classList.add("show"); }
+  function clearErr(){ errE.classList.remove("show"); errP.classList.remove("show"); $("#login-email").removeAttribute("aria-invalid"); $("#login-pass").removeAttribute("aria-invalid"); }
+
+  const warnSignupExists=$("#warn-signup-exists");
+  function clearSignupWarnings(){ warnSignupExists.classList.remove("show"); $("#signup-email").removeAttribute("aria-invalid"); }
+  $("#signup-email").addEventListener("input", clearSignupWarnings);
+
+  // banners
+  const okBanner=$("#okBanner"), okDismiss=$("#okDismiss");
+  okDismiss.addEventListener("click",()=>okBanner.classList.remove("show"));
+  const infoBanner=$("#infoBanner"), infoDismiss=$("#infoDismiss");
+  function showInfo(msg){
+    if(msg) infoBanner.querySelector("div").innerHTML = "<strong>Uyarı:</strong> " + msg;
+    infoBanner.classList.add("show");
+  }
+  infoDismiss.addEventListener("click",()=>infoBanner.classList.remove("show"));
+
+  // tabs
+  const loginTab=$("#tab-login"), signupTab=$("#tab-signup"),
+        loginPane=$("#pane-login"), signupPane=$("#pane-signup"), foot=$("#footnote-switch");
+  function activate(which){
+    const isLogin=which==="login";
+    loginTab.classList.toggle("active",isLogin);
+    signupTab.classList.toggle("active",!isLogin);
+    loginPane.classList.toggle("active",isLogin);
+    signupPane.classList.toggle("active",!isLogin);
+    foot.innerHTML=isLogin
+      ? 'Hesabın yok mu? <a href="#" id="link-switch">Kayıt ol</a>'
+      : 'Zaten hesabın var mı? <a href="#" id="link-switch">Giriş yap</a>';
+    $("#link-switch").addEventListener("click",e=>{ e.preventDefault(); activate(isLogin?"signup":"login"); });
+    clearSignupWarnings(); clearErr();
+  }
+  loginTab.addEventListener("click",()=>activate("login"));
+  signupTab.addEventListener("click",()=>activate("signup"));
+  function initFromHash(){ (location.hash||"").toLowerCase()==="#login"?activate("login"):activate("signup"); }
+  window.addEventListener("hashchange",initFromHash);
+  setPersistence(auth, browserLocalPersistence).catch(()=>{});
+
+  async function isAdmin(uid){
+    try{
+      const s=await getDoc(doc(db,"roles",uid));
+      return s.exists() && s.data()?.role==="admin";
+    }catch{return false;}
+  }
+  onAuthStateChanged(auth, async (u)=>{ if(u&&await isAdmin(u.uid)) location.replace("calendar.html"); });
+
+  async function finishLogin(cred){
+    const rt=localStorage.getItem(K_RETURN);
+    if(rt){ localStorage.removeItem(K_RETURN); safeRedirect(rt); return; }
+    if(await isAdmin(cred.user.uid)){ location.replace("calendar.html"); }
+    else{ await signOut(auth); alert("Bu e-posta ile admin hesabı bulunamadı."); activate("signup"); }
+  }
+
+  // --- Sign-in method kontrolü + fallback ---
+  async function getSignInMethods(email){
+    try{
+      const sdk = await fetchSignInMethodsForEmail(auth, email);
+      if (sdk && sdk.length >= 0) return sdk;
+    }catch(e){ /* SDK başarısız ise aşağıdaki fallback denenir */ }
+    try{
+      const res = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:createAuthUri?key=${auth.app.options.apiKey}`,
+        {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({ identifier: email, continueUri: location.origin })
+        }
+      );
+      if (!res.ok) return [];
+      const d = await res.json();
+      if(d?.registered) return ["password"];
+      return d?.signinMethods || [];
+    }catch(e){
+      return [];
+    }
+  }
+  // ------------------------------------
+
+  // E-posta → rol ipucu kontrolü (email_index)
+  async function getRoleHintByEmail(emailLower){
+    try{
+      const snap = await getDoc(doc(db, "email_index", encodeURIComponent(emailLower)));
+      if(snap.exists()){
+        const d = snap.data();
+        if(d && typeof d.roleHint === "string") return d.roleHint.toLowerCase();
+      }
+    }catch(e){}
+    return null; // bulunamadı
+  }
+
+  // SIGNUP (admin akışını başlatma veya bloklama)
+  $("#btn-signup-email").addEventListener("click", async ()=>{
+    clearSignupWarnings();
+    const email = ($("#signup-email").value||"").trim().toLowerCase();
+    if(!emailOk(email)){
+      $("#signup-email").focus();
+      $("#signup-email").setAttribute("aria-invalid","true");
+      return;
+    }
+    const btn=$("#btn-signup-email"); btn.disabled=true;
+
+    try{
+      const methods = await getSignInMethods(email);
+
+      if(methods.length === 0){
+        // Yeni kayıt akışına gir
+        localStorage.setItem(K_METHOD, "password");
+        localStorage.setItem(K_EMAIL, email);
+        localStorage.setItem(K_FLOW, "admin");
+        location.replace("admin-register1.html");
+        return;
+      }
+
+      // E-posta zaten kayıtlı
+      const roleHint = await getRoleHintByEmail(email);
+      if(roleHint === "admin"){
+        showInfo("Bu e-posta admin olarak zaten kayıtlı.");
+      } else {
+        showInfo("Bu e-posta kullanıcı için kayıtlı. Lütfen başka bir e-posta deneyiniz.");
+      }
+      $("#signup-email").setAttribute("aria-invalid","true");
+      warnSignupExists.classList.add("show");
+
+    } catch(e) {
+      alert(friendly(e, "E-posta kontrolü şu anda yapılamıyor."));
+    } finally {
+      btn.disabled=false;
+    }
+  });
+
+  // LOGIN + throttle
+  function isBlocked(){
+    const until = parseInt(localStorage.getItem(K_BLOCK_UNTIL)||"0",10);
+    return Date.now() < until;
+  }
+  function registerFail(){
+    const c = parseInt(localStorage.getItem(K_FAILS)||"0",10)+1;
+    if(c >= 5){
+      localStorage.setItem(K_BLOCK_UNTIL, String(Date.now()+30_000)); // 30 sn blokla
+      localStorage.setItem(K_FAILS, "0");
+    } else {
+      localStorage.setItem(K_FAILS, String(c));
+    }
+  }
+  function resetFails(){
+    localStorage.removeItem(K_FAILS);
+    localStorage.removeItem(K_BLOCK_UNTIL);
+  }
+
+  $("#btn-login").addEventListener("click", async ()=>{
+    clearErr();
+    const email=($("#login-email").value||"").trim().toLowerCase();
+    const pass=($("#login-pass").value||"").trim();
+
+    if(isBlocked()){
+      showErr($("#login-pass"), errP, "Çok fazla deneme yapıldı. Lütfen 30 saniye sonra tekrar deneyin.");
+      return;
+    }
+
+    if(!email||!pass){
+      if(!email)showErr($("#login-email"),errE,"E-posta girin.");
+      if(!pass)showErr($("#login-pass"),errP,"Şifre girin.");
+      return;
+    }
+    try{
+      const cred=await signInWithEmailAndPassword(auth,email,pass);
+      resetFails();
+      await finishLogin(cred);
+    }catch(e){
+      // Sık görülen kimlik hatalarında sayacı artır
+      if (["auth/invalid-credential","auth/wrong-password","auth/user-not-found"].includes(e.code)) {
+        registerFail();
+      }
+      showErr($("#login-pass"), errP, friendly(e, "Giriş yapılamadı."));
+    }
+  });
+  $("#login-pass").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#btn-login").click(); });
+
+  // Google login
+  const provider=new GoogleAuthProvider(); provider.setCustomParameters({prompt:"select_account"});
+  $("#btn-google-login").addEventListener("click", async ()=>{
+    try{
+      const cred=await signInWithPopup(auth,provider);
+      resetFails();
+      await finishLogin(cred);
+    }catch(e){
+      if(e.code!=="auth/popup-closed-by-user") alert(friendly(e, "Google ile giriş yapılamadı."));
+    }
+  });
+
+  // reset password
+  $("#link-forgot").addEventListener("click", async e=>{
+    e.preventDefault();
+    const email=($("#login-email").value||"").trim().toLowerCase();
+    if(!emailOk(email)){ showErr($("#login-email"),errE,"Önce e-posta girin."); return; }
+    try{ await sendPasswordResetEmail(auth,email); alert("Şifre sıfırlama e-postası gönderildi."); }
+    catch(e){ alert(friendly(e, "Şifre sıfırlama e-postası gönderilemedi.")); }
+  });
+
+  // kayıt sonrası dönüş banner
+  function showRegistrationOk(){
+    if(localStorage.getItem(K_REGOK)==="1"){
+      okBanner.classList.add("show");
+      const email=localStorage.getItem(K_EMAIL)||""; if(email) $("#login-email").value=email;
+      activate("login"); localStorage.removeItem(K_REGOK);
+    }
+  }
+
+  initFromHash(); showRegistrationOk();
+</script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LeOxMgrAAAAANHG5q2IiflzNs-VCHBjzRIvSmPN"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+/* ===========================================================
+   MOBIL STATS & REPORTS OVERRIDES (≤1024px)
+   Masaüstüne dokunmaz; sadece mobil/tablet
+   =========================================================== */
+
+/* 0) Rail boşluğunu kapat */
+@media (max-width: 1024px){
+  :root{ --rail-width:0px; }
+  body{ margin-left:0; }
+}
+
+/* 1) Alt bar (rail) – checkout/settings ile aynı çizgi */
+@media (max-width: 1024px){
+  nav.rail{
+    position:fixed !important;
+    left:0; right:0; bottom:0; top:auto !important;
+    width:100% !important;
+    height:calc(60px + env(safe-area-inset-bottom, 0));
+    border-top:1px solid var(--border); border-right:0 !important;
+    background:#0f172a; z-index:5000;
+    display:flex; flex-direction:row; align-items:center; justify-content:space-around;
+    padding:0 6px env(safe-area-inset-bottom, 0);
+  }
+  nav.rail .rail__list{ display:flex; width:100%; height:100%; align-items:center; justify-content:space-around; }
+  nav.rail .rail__item{ list-style:none; height:100%; flex:1; }
+  nav.rail .rail__btn{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100%; gap:4px; color:#cbd5e1; border-radius:0; padding:0;
+  }
+  nav.rail .rail__btn[aria-current="page"]{ color:#fff; }
+  nav.rail .ico{ width:20px; height:20px; stroke:currentColor; fill:none; }
+  nav.rail .rail__bottom{ display:none !important; }
+
+  /* Profil butonu sağ üstte gezer */
+  .avatar-btn{
+    position:fixed !important; top:12px; right:12px;
+    width:44px; height:44px; border-radius:9999px;
+    background:#0f172a; color:#fff; display:grid; place-items:center;
+    box-shadow:0 8px 24px rgba(0,0,0,.22); z-index:6000;
+  }
+}
+
+/* 2) İçerik alt barda ezilmesin */
+@media (max-width: 1024px){
+  .wrap{ padding-bottom:calc(60px + env(safe-area-inset-bottom, 0) + 16px); }
+}
+
+/* 3) Başlık ve sekmeleri yapışkan */
+@media (max-width: 1024px){
+  .header{
+    position:sticky; top:0; z-index:1200;
+    background:var(--page-bg);
+    padding:12px 12px;
+    border-bottom:1px solid var(--border);
+    margin-bottom:0;
+  }
+  .header .title{ font-size:18px; font-weight:800; }
+  .header .period .btn{ height:36px; }
+
+  .tabs{
+    position:sticky; top:56px; z-index:1190;
+    background:var(--page-bg);
+    border-bottom:1px solid var(--border);
+    overflow:auto hidden; -webkit-overflow-scrolling:touch;
+    display:flex; gap:6px; padding:8px 12px; margin-bottom:12px;
+  }
+  .tabs::-webkit-scrollbar{ display:none; }
+  /* desktop ile tutarlı: aria-selected */
+  .tabs .tab{ white-space:nowrap; padding:8px 10px; border-radius:10px; }
+  .tabs .tab[aria-selected="true"]{
+    background:#fff; border:1px solid var(--border);
+  }
+}
+
+/* 4) Ana gridleri tek kolona indir, aside en alta */
+@media (max-width: 1024px){
+  .grid{ display:grid; grid-template-columns:1fr; gap:12px; }
+  .grid > .right{ order:2; }
+  .grid--single{ display:grid; grid-template-columns:1fr; gap:12px; }
+}
+
+/* 5) Kart/tablolar için boşluklar ve yatay kaydırma */
+@media (max-width: 1024px){
+  .card.panel{ border-radius:12px; }
+  .card .card-body{ padding:14px; overflow-x:auto; }
+  .card .card-title{ font-size:14px; font-weight:800; }
+  .mini h4{ font-size:14px; margin:0 0 8px; }
+  /* Chart.js canvas’ları taşmasın */
+  canvas{ max-width:100%; height:auto; }
+}
+
+/* 6) Tablolar taşma yapmasın */
+@media (max-width: 1024px){
+  .table{ width:100%; min-width:640px; border-collapse:collapse; }
+  .table th, .table td{ padding:8px; font-size:13px; }
+}
+
+/* 7) Küçük görsel öğeler */
+@media (max-width: 1024px){
+  .dot{ display:inline-block; width:10px; height:10px; border-radius:999px; margin-right:6px; }
+  .bar{ width:100%; height:8px; background:#eef2f7; border-radius:999px; overflow:hidden; }
+  .bar i{ display:block; height:100%; background:#16a34a; }
+  .avatar{ width:28px; height:28px; border-radius:50%; background:#eef1f6; display:grid; place-items:center; font-weight:700; }
+}
+
+/* 8) Ay seçici modal – mobil genişliğinde */
+@media (max-width: 640px){
+  .overlay .modal{ width:min(95vw, 560px); max-height:90vh; overflow:auto; border-radius:16px; }
+  .m-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; }
+  .m-head{ padding:12px; }
+  .m-foot{ padding:12px; }
+}
+
+/* 9) Daha küçük tipografi */
+@media (max-width: 480px){
+  .header .title{ font-size:16px; }
+  .mini .row{ font-size:13px; }
+  .card .card-title{ font-size:13px; }
+}
+
+/* 10) Bar-menu ikon izolasyonu (tüm ekranlar) */
+nav.rail .ico{ stroke-width:1.9; }

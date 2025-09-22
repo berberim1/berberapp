@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kasa</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+<!-- bar-menu.html buraya yüklenecek -->
+<div id="bar-menu"></div>
+
+<div class="app">
+  <main class="content">
+    <div class="top-tabs">
+      <div class="tab active" data-view="sale">YENİ SATIŞ</div>
+      <div class="tab" data-view="txs">İŞLEMLER</div>
+    </div>
+
+    <!-- YENİ SATIŞ -->
+    <div id="saleView">
+      <div class="workarea">
+        <section class="left-col">
+          <div class="left-head">HIZLI SATIŞ</div>
+          <div class="left-nav">
+            <button class="nav-btn active" data-target="services">Hizmetler</button>
+            <button class="nav-btn" data-target="custom">Özel Tutar</button>
+          </div>
+
+          <div class="section active" id="services">
+            <div class="left-head" style="border-bottom:0;padding:0 0 10px 0;">HİZMETLER</div>
+            <div class="search"><input id="svcSearch" placeholder="Hizmet ara..." /></div>
+            <div class="svc-list" id="svcList"></div>
+          </div>
+
+          <div class="section" id="custom">
+            <div class="left-head" style="border-bottom:0;padding:0 0 10px 0;">ÖZEL TUTAR</div>
+            <div class="amount-input"><span>₺</span><input id="caAmount" type="text" inputmode="decimal" value="0"></div>
+            <div class="desc-input"><input id="caDesc" placeholder="Açıklama"></div>
+            <div class="keypad" id="pad"></div>
+            <button class="add-btn" id="addCustom">SEPETE EKLE</button>
+          </div>
+        </section>
+
+        <aside class="right-col">
+          <div class="cart" id="cart">
+            <div class="cart-header"><div>Kalem</div><div style="text-align:right">Tutar</div></div>
+            <div class="tap-change"><span class="tap-dot"></span><span class="tap-dot"></span><span class="tap-dot"></span> KALEMİ DÜZENLEMEK İÇİN TIKLAYIN</div>
+
+            <div class="sums">
+              <div class="sum-row"><span>Ara toplam</span><span id="subtotal">₺0,00</span></div>
+            </div>
+
+            <div class="discount">
+              <div class="plus">+</div><div style="font-weight:800">İndirim</div>
+              <input id="discountInput" type="number" min="0" step="1" value="0" />
+            </div>
+
+            <div class="total" id="total">₺0,00</div>
+          </div>
+
+          <div class="actions">
+            <button class="trash" id="clearCart" title="Sepeti temizle">🗑️</button>
+            <button class="pay" id="goPayment">ÖDEME YÖNTEMİ SEÇ</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ÖDEME EKRANI -->
+    <div id="paymentView" style="display:none">
+      <div class="paylayout">
+        <section class="pay-left">
+          <div class="pay-hdr">
+            <div class="back" id="backFromPayment">← Geri</div>
+          </div>
+
+          <div style="font-weight:900;margin:8px 0 8px">Ödeme yöntemi</div>
+          <div class="pm-grid">
+            <div class="pm-card active" data-method="Nakit">
+              <div class="pm-ttl">Nakit</div>
+              <div class="rc-sub">Nakit ödeme</div>
+            </div>
+            <div class="pm-card" data-method="Kart">
+              <div class="pm-ttl">Kart</div>
+              <div class="rc-sub">Kartla ödeme</div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="pay-right">
+          <div class="cart" id="payCart">
+            <div class="cart-header"><div>Kalem</div><div style="text-align:right">Tutar</div></div>
+            <div class="sums">
+              <div class="sum-row"><span>Ara toplam</span><span id="pSubtotal">₺0,00</span></div>
+              <div class="sum-row"><span>İndirim</span><span id="pDiscount">₺0,00</span></div>
+            </div>
+            <div class="total" id="pTotal">₺0,00</div>
+          </div>
+
+          <div class="confirm">
+            <button class="trash" id="trashOnPayment" title="Sepeti temizle">🗑️</button>
+            <button class="pay" id="confirmPay">ONAYLA VE ÖDE</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- TAMAMLANDI -->
+    <div id="completeView" style="display:none">
+      <div class="complete-wrap">
+        <section class="done-left">
+          <div class="big-ok">✓</div>
+          <div class="done-title">Ödeme tamamlandı!</div>
+          <div class="rc-sub" id="changeInfo">₺0,00 para üstü / ₺0,00</div>
+          <a class="cal-btn" href="calendar.html">TAKVİME GİT</a>
+        </section>
+
+        <aside class="receipt">
+          <span class="pill">ÖDENDİ</span>
+          <div class="rc-header">
+            <div style="font-weight:900" id="rcptId">Fiş · No</div>
+            <div class="rc-sub" id="rcptDate"></div>
+          </div>
+          <div class="rc-sub" style="margin-bottom:8px">İşletme Adı<br>123 Cadde, Şehir</div>
+          <div id="rcptItems"></div>
+          <div class="rc-line"><span class="rc-sub">Ara toplam</span><span id="rcSub" class="rc-sub">₺0,00</span></div>
+          <div class="rc-line"><span class="rc-sub">İndirim</span><span id="rcDis" class="rc-sub">₺0,00</span></div>
+          <div class="rc-line"><span class="rc-sub">Bahşiş tutarı</span><span class="rc-sub">₺0,00</span></div>
+          <div class="rc-line" style="font-weight:900"><span>Toplam</span><span id="rcTot" class="rc-total">₺0,00</span></div>
+          <div class="rc-line"><span id="rcPaidLine" class="rc-sub">Ödendi - Nakit</span><span id="rcPaidAmt" class="rc-sub">₺0,00</span></div>
+          <div class="rc-line" style="border-bottom:0"><span class="rc-sub">Ödenen Toplam</span><span id="rcTotalPaid" class="rc-sub">₺0,00</span></div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- İŞLEMLER -->
+    <div id="txsView" style="display:none">
+      <div class="tx-layout">
+        <aside class="tx-left">
+          <div class="tx-tabs">
+            <div class="tx-tab active" data-mode="days">Gün</div>
+            <div class="tx-tab" data-mode="months">Ay</div>
+            <div class="tx-tab" data-mode="custom">Özel</div>
+          </div>
+          <div class="tx-search"><input id="txSearch" placeholder="Müşteri veya işlem no ara" /></div>
+          <div id="txGroups"></div>
+        </aside>
+
+        <section class="tx-right">
+          <div id="txList"></div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- DÜZENLE MODAL -->
+<div id="modal" class="modal-backdrop" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true">
+    <header>
+      <span>Satışı Ata</span>
+      <span class="x" id="closeModal">✕</span>
+    </header>
+    <div class="body">
+      <div class="row">
+        <div class="item-box">
+          <div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px">KALEM</div>
+          <div id="mItemTitle" style="font-weight:800">Saç Kesimi (30dk)</div>
+          <div style="color:var(--muted);font-size:12px" id="mItemBase"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px">Personel</div>
+          <div class="dropdown" id="staffDropdown">
+            <button type="button" id="staffBtn"><span class="staff-chip"><span class="av"></span><span id="staffLbl">Abdullah</span></span> ▾</button>
+            <div class="dropdown-menu" id="staffMenu">
+              <div class="opt" data-staff="Abdullah"><span class="av"></span> Abdullah</div>
+              <div class="opt" data-staff="Muhittin"><span class="av"></span> Muhittin</div>
+              <div class="opt" data-staff=""><span class="av"></span> Personel atama yok</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:12px;color:var(--muted);font-weight:800;margin-bottom:6px">Fiyat</div>
+        <div class="price-input"><span>₺</span><input id="priceInput" type="number" min="0" step="0.01"></div>
+      </div>
+    </div>
+    <div class="buttons" style="padding:16px 22px;border-top:1px solid var(--line)">
+      <button class="btn danger" id="removeBtn">KALDIR</button>
+      <button class="btn" id="cancelBtn">İPTAL</button>
+      <button class="btn primary" id="saveBtn">KAYDET</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BM MODAL HTML (İşletme Değiştir) ===== -->
+<div class="bm-overlay" id="bmOverlay"></div>
+<div class="bm-modal" id="bmModal" aria-hidden="true">
+  <div class="bm-box" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+    <div class="bm-head">
+      <button class="bm-x" id="bmClose" title="Kapat">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <h3 id="bmTitle">İşletme Değiştir</h3>
+    </div>
+    <div class="bm-body">
+      <div class="bm-search">
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="bmQuery" type="text" placeholder="Ara..." />
+      </div>
+      <div class="bm-list" id="bmList"></div>
+    </div>
+    <div class="bm-foot">
+      <div class="bm-user">
+        <div class="avatar">A</div>
+        <div>
+          <div class="lbl">OTURUM AÇAN</div>
+          <strong>Abdullah</strong>
+        </div>
+      </div>
+      <button class="bm-logout" id="bmLogout" type="button">ÇIKIŞ YAP</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase entegre JS (module) -->
+<script type="module" src="js/checkout.js?v=2"></script>
+
+</body>
+</html>

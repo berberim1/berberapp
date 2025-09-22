@@ -1,0 +1,109 @@
+:root{
+  --rail-bg:#151619; --rail-fg:#b9bec7; --rail-active:#fff; --rail-accent:#7c6cff;
+  --rail-hover:#1d1f24; --rail-divider:#2a2d34;
+  --sb-border:#e5e7eb; --sb-muted:#6b7280; --sb-green:#10b981;
+}
+
+/* SOL RAIL */
+.rail{
+  position:fixed; inset:0 auto 0 0; width:72px;
+  background:var(--rail-bg); color:var(--rail-fg);
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  z-index:1000; border-right:1px solid var(--rail-divider); padding:12px 0;
+}
+.rail__list{list-style:none; margin:0; padding:0; width:100%; flex:1;
+  display:flex; flex-direction:column; justify-content:space-evenly; align-items:center}
+.rail__item{width:100%; display:flex; justify-content:center}
+.rail__btn{
+  width:44px; height:44px; display:grid; place-items:center; border-radius:12px;
+  color:var(--rail-fg); text-decoration:none; position:relative;
+  transition:background .15s,color .15s,box-shadow .15s;
+}
+.rail__btn:hover{background:var(--rail-hover); color:var(--rail-active)}
+
+/* Aktif sayfa (mor vurgu + ikon mor) */
+.rail__btn[aria-current="page"]{
+  background:rgba(124,108,255,.12);
+  color:var(--rail-accent);
+  box-shadow:inset 0 0 0 1px rgba(124,108,255,.35);
+}
+.rail__btn[aria-current="page"]::before{
+  content:""; position:absolute; left:-8px; top:6px; bottom:6px; width:3px;
+  background:var(--rail-accent); border-radius:8px;
+}
+.rail__btn[aria-current="page"] .ico{stroke:var(--rail-accent) !important}
+.rail__btn[aria-current="page"]:hover,
+.rail__btn[aria-current="page"]:focus-visible{color:var(--rail-accent)}
+
+.ico{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8}
+.rail__bottom{display:flex; flex-direction:column; align-items:center; gap:10px}
+.avatar-btn{
+  width:42px; height:42px; border-radius:50%;
+  background:#24262c; display:grid; place-items:center;
+  color:#cfd3dc; border:none; cursor:pointer
+}
+
+/* Hover balonu (data-tip) */
+.rail__btn[data-tip]::after{
+  content:attr(data-tip);
+  position:absolute; left:62px; top:50%; transform:translateY(-50%);
+  background:#0f1116; color:#fff; padding:6px 10px; border-radius:8px; white-space:nowrap;
+  font-size:12px; opacity:0; pointer-events:none; transition:.15s;
+  box-shadow:0 6px 18px rgba(0,0,0,.25)
+}
+.rail__btn[data-tip]::before{
+  content:""; position:absolute; left:58px; top:50%; transform:translateY(-50%);
+  border:6px solid transparent; border-right-color:#0f1116; opacity:0; transition:.15s;
+}
+.rail__btn:hover::after, .rail__btn:hover::before{opacity:1}
+
+/* SB modal (İşletme Değiştir / Çıkış) */
+.sb-overlay{
+  position:fixed; inset:0; background:rgba(0,0,0,.45);
+  backdrop-filter:blur(2px) saturate(120%);
+  display:none; align-items:center; justify-content:center;
+  z-index:4000; padding:24px
+}
+.sb-overlay.show{display:flex}
+.sb-modal{
+  width:min(560px,96vw); background:#fff; border:1px solid var(--sb-border);
+  border-radius:16px; box-shadow:0 30px 80px rgba(0,0,0,.25);
+  overflow:hidden; color:#0f172a
+}
+.sb-head{display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--sb-border)}
+.sb-x{
+  width:36px; height:36px; border-radius:10px; border:1px solid var(--sb-border);
+  background:#fff; display:grid; place-items:center; cursor:pointer
+}
+.sb-title{font-weight:800; font-size:18px; margin-left:6px}
+.sb-body{padding:14px 16px}
+.sb-search{position:relative; margin-bottom:12px}
+.sb-search input{
+  width:100%; height:42px; border-radius:10px; border:1px solid var(--sb-border);
+  padding:0 12px 0 38px; background:#f7f8fa; outline:none
+}
+.sb-search svg{
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  width:18px; height:18px; stroke:#9aa0a6; fill:none; stroke-width:1.8
+}
+.sb-card{
+  display:flex; align-items:flex-start; gap:12px; padding:12px;
+  border:1px solid var(--sb-border); border-radius:12px; margin-bottom:8px
+}
+.sb-dot{width:8px; height:8px; border-radius:50%; background:var(--sb-green)}
+.sb-sub{color:var(--sb-muted); font-size:12px}
+.sb-foot{
+  padding:12px 16px; border-top:1px solid var(--sb-border);
+  display:flex; align-items:center; justify-content:space-between; gap:12px
+}
+.sb-avatar{
+  width:36px; height:36px; border-radius:50%;
+  display:grid; place-items:center; color:#fff;
+  background:#374151; font-weight:800
+}
+.sb-logout{
+  height:38px; padding:0 14px; border-radius:10px;
+  border:1px solid #111; background:#111; color:#fff;
+  font-weight:800; cursor:pointer
+}
+.sb-logout:hover{filter:brightness(.95)}

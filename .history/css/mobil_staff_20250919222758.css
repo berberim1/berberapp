@@ -1,0 +1,131 @@
+/* ===========================================================
+   STAFF — MOBILE/TABLET (≤1024px)
+   - Yatay scroll YOK
+   - Sol personel kartı + sağ panel TEK KOLON
+   - Alt sabit rail için güvenli boşluk
+   - Modallar mobilde tam ekran / büyük dokunma hedefleri
+   =========================================================== */
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-x: none;
+}
+img, svg, canvas, video { display:block; max-width:100% !important; height:auto !important; }
+
+@media (max-width:1024px){
+  :root{
+    --rail-width:0px;                 /* base CSS’teki has-rail boşluğunu sıfırla */
+    --rail-height:60px;               /* alt bar yüksekliği */
+  }
+
+  /* Rail soldaki marjı kapat */
+  body { margin-left: 0 !important; }
+
+  /* Sayfa iç boşluk ve alt güvenli alan */
+  .container{
+    padding: 12px 12px calc(env(safe-area-inset-bottom,0px) + var(--rail-height) + 24px) !important;
+  }
+
+  /* === Alt rail (bar-menu.html’den gelen nav.rail) === */
+  nav.rail{
+    position: fixed !important;
+    left: 0; right: 0; bottom: 0; top: auto !important;
+    width: 100% !important; height: var(--rail-height) !important;
+    border-top: 1px solid var(--line);
+    border-right: 0 !important;
+    background: #0f172a;
+    z-index: 5000;
+    display: flex; align-items: center; justify-content: space-around; padding: 0 6px;
+  }
+  nav.rail .rail__list{ display:flex; width:100%; height:100%; align-items:center; justify-content:space-around; }
+  nav.rail .rail__item{ list-style:none; height:100%; flex:1; }
+  nav.rail .rail__btn{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    height:100%; gap:4px; color:#cbd5e1; padding:0; flex:1;
+  }
+  nav.rail .rail__btn[aria-current="page"]{ color:#fff; }
+  nav.rail .ico{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.9; }
+  nav.rail .rail__bottom{ display:none !important; } /* desktop alt bölümü gizle */
+
+  /* === Yerleşim: tek kolon === */
+  .page{ display:block !important; grid-template-columns:none !important; gap:12px !important; margin-top:0 !important; }
+  .staff-card{ height:auto !important; }
+  .panel{ margin-top:12px !important; }
+
+  /* Staff listesi: başlığı yapışkan yap, uzun listelerde kolay seçim */
+  .staff-card header{
+    position: sticky; top: 0; z-index: 1200;
+    background: var(--card); border-bottom:1px solid var(--line);
+  }
+  .staff-list{ max-height: none !important; overflow: visible !important; }
+
+  /* Panel üst bar + sekmeler: yapışkan */
+  .panel > header{
+    position: sticky; top: 0; z-index: 1190;
+    background: var(--card);
+  }
+  .tabs{
+    position: sticky; top: 48px;           /* header’ın altında */
+    z-index: 1180;
+    background: var(--card);
+    padding: 8px 12px; margin: 0 -12px 12px; /* mobil dolgu */
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  }
+  .tab{ white-space:nowrap; padding:8px 10px; border-radius:10px; }
+  .tab[aria-selected="true"]{ background:#eef2ff; border:1px solid #c7d2fe; }
+
+  /* Saat satırları (panel içi) daha dar kolonlar */
+  .row{
+    grid-template-columns: 110px 1fr 84px !important;
+    gap:10px !important; padding:8px 10px !important;
+  }
+  .sel{ height:36px !important; }
+
+  /* Hizmet atama toolbar’ı tek satıra sığmasa da esnek olsun */
+  .svc-bar{ gap:10px !important; }
+  #srvSearch{ width: min(320px, 100%) !important; }
+  .svc-wrap{ margin-top: 10px !important; }
+  .svc-item{ padding:10px 12px !important; }
+
+  /* Modal: mobilde tam ekran benzeri */
+  .modal{
+    width: 100% !important; max-width: 100% !important;
+    height: auto; max-height: 90vh; border-radius: 16px;
+    margin: 0 12px;
+  }
+  .modal .content{ max-height: calc(90vh - 120px) !important; }
+
+  /* Büyük modal (Yeni Personel) tek kolon */
+  .modal-lg{ width: 100% !important; max-width: 100% !important; }
+  .addstaff-wrap{ grid-template-columns: 1fr !important; }
+  .addstaff-left{ border-right: none !important; border-bottom: 1px solid var(--line) !important; }
+
+  /* BM (Switch Business) modalı mobil genişlik */
+  .bm-box{ width: min(95vw, 560px) !important; }
+
+  /* Dokunma hedefleri */
+  .btn{ height: 36px !important; }
+  .btn-icon{ width: 36px !important; height: 36px !important; }
+
+  /* Güvenlik: yatay taşmayı kes */
+  .panel, .staff-card, .modal .content{ overflow-x: clip !important; }
+}
+
+/* Çok dar telefonlar */
+@media (max-width:640px){
+  /* Çalışma saatleri satırı: chip’i satır sonuna al */
+  .row{ grid-template-columns: 96px 1fr 72px !important; }
+  .tabs{ top: 46px; }
+}
+
+/* En dar: içerik biraz daha kompakt */
+@media (max-width:480px){
+  .panel > header{ padding: 12px !important; }
+  .panel .panel-body{ padding: 12px !important; }
+  .svc-item{ padding:8px 10px !important; }
+}

@@ -1,0 +1,654 @@
+/* Gün + Hafta görünümü
+   Firestore: adminOnboarding/{uid}
+   step2.adminName, step6.workingHours, step8.staff[] (opsiyonel personel saatleri)
+   + bookings: businessId, startAt, endAt, items[], totalPrice, staffName? (opsiyonel)
+*/
+import { auth, db } from "./firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+import {
+  doc, getDoc,
+  collection, query, where, orderBy, onSnapshot, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+/* =============== helpers =============== */
+const DAY_TR = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const DAY_TR_SHORT = ["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+const fmtTR  = new Intl.DateTimeFormat("tr-TR",{weekday:"short", day:"2-digit", month:"short"});
+const dShort = new Intl.DateTimeFormat("tr-TR",{day:"2-digit", month:"short"});
+const monthTR = (d)=> d.toLocaleString("tr-TR",{month:"long",year:"numeric"});
+const $  = (s,r=document)=>r.querySelector(s);
+const $$ = (s,r=document)=>[...r.querySelectorAll(s)];
+const pad = (n)=>String(n).padStart(2,"0");
+
+/* HÜCRE YÜKSEKLİĞİNİ CSS'ten oku (ondalık kalsın) */
+function cellH(){
+  const v = getComputedStyle(document.documentElement).getPropertyValue('--cellH') || "";
+  const n = parseFloat(v);
+  return Number.isFinite(n) && n > 0 ? n : 64;
+}
+
+/* Sub-pixel ölçüleri fiziksel piksele kilitle */
+function px(n){
+  const dpr = window.devicePixelRatio || 1;
+  return Math.round(n * dpr) / dpr;
+}
+
+/* float(9.5) -> "09:30" | "09:00" */
+function floatToHM(f){
+  const h = Math.floor(f || 0);
+  const m = Math.round(((f || 0) - h) * 60);
+  return `${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}`;
+}
+/* "09:30" -> 9.5 */
+function timeStrToFloat(s){ const [h,m]=String(s||"").split(":").map(Number); return (h||0)+((m||0)/60); }
+function initials(n){ return (n||"?").split(" ").filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
+
+/* case-insensitive, trim’li tekilleştirme (ilk görüleni korur) */
+function uniqueNames(names){
+  const seen = new Set(); const out = [];
+  for(const raw of names){
+    const name = (raw||"").trim(); if(!name) continue;
+    const key = name.toLowerCase(); if(seen.has(key)) continue;
+    seen.add(key); out.push(name);
+  }
+  return out;
+}
+
+/* =============== state =============== */
+let current = new Date();          // referans gün
+let view = "day";                  // "day" | "week"
+let OWNER = "Ben";
+let STAFF = [];                    // [OWNER, ...çalışanlar]
+let WORKING_HOURS = {};            // işletme geneli (TR gün anahtarları)
+let STAFF_HOURS = {};              // personel bazlı saatler (varsa)
+let selectedStaff = [];            // filtre (Personel & Kaynaklar)
+
+/* RANDEVULAR */
+let BOOKINGS = [];                 // aktif aralıktaki kayıtlar
+let unsubBookings = null;          // onSnapshot unsubscribe
+let ADMIN_UID = "";                // auth uid == businessId
+
+/* =============== AUTH =============== */
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){ location.replace("admin-register-login.html#login"); return; }
+  ADMIN_UID = user.uid;
+  await loadFromFirestore(user.uid);
+  injectBookingStyles();
+  boot();
+  watchBookingsForCurrent();       // ilk sorgu
+});
+
+/* =============== yardımcılar (sahip ayıklama & ad birleştirme) =============== */
+function isOwnerRecord(s, ownerName){
+  const role = (s?.role || s?.position || "").toLowerCase();
+  const nm   = (s?.name || "").trim().toLowerCase();
+  const o    = (ownerName || "").trim().toLowerCase();
+  return role === "sahip" || role === "owner" || role === "admin" || nm === o;
+}
+// “Admin / Owner / Sahip / owner adı” → tek bir kanonik isim (OWNER)
+function canonicalName(name, ownerName){
+  const t = String(name||"").trim().toLowerCase();
+  if(!t) return "";
+  if (t === "admin" || t === "owner" || t === "sahip" || t === String(ownerName||"").trim().toLowerCase()) {
+    return ownerName; // tekilleştir
+  }
+  return String(name||"").trim();
+}
+
+/* =============== LOAD DATA (güncellendi) =============== */
+async function loadFromFirestore(uid){
+  const snap = await getDoc(doc(db,"adminOnboarding",uid));
+  if(!snap.exists()){ console.warn("adminOnboarding yok"); return; }
+
+  const data = snap.data() || {};
+  const s2 = data.step2 || {};
+  const s6 = data.step6 || {};
+  const s8 = data.step8 || {};
+
+  // İşletme sahibi ve genel çalışma saatleri
+  OWNER = (s2.adminName || s2.ownerName || "Ben").trim();
+  WORKING_HOURS = (s6 && s6.workingHours) || {};
+
+  // ---- Personel isimleri (sahip hariç) ----
+  const staffArr = Array.isArray(s8?.staff)
+    ? s8.staff
+        .filter(x => !isOwnerRecord(x, OWNER))
+        .map(x => typeof x?.name === "string" ? x.name.trim() : "")
+        .filter(Boolean)
+    : [];
+
+  // Admin + personeller -> tekilleştir
+  STAFF = uniqueNames([OWNER, ...staffArr]);
+  if (STAFF.length === 0) STAFF = [OWNER];
+  selectedStaff = [...STAFF];
+
+  // ---- Personel bazlı saatler (kanonik isimlerle) ----
+  STAFF_HOURS = {};
+
+  // 1) step8.staff içindeki alanlar
+  if (Array.isArray(s8?.staff)) {
+    s8.staff.forEach(s=>{
+      const rawName = s?.name || "";
+      const name = canonicalName(rawName, OWNER);
+      if(!name) return;
+      const perHours = s.workingHours || s.weeklyHours || s.hours || s.staff_hours || {};
+      if (perHours && typeof perHours === "object") {
+        STAFF_HOURS[name] = perHours;
+      }
+    });
+  }
+
+  // üst seviye haritaları da kanonik isme taşı
+  const applyTopMap = (mapObj)=>{
+    if (!mapObj || typeof mapObj !== "object") return;
+    Object.keys(mapObj).forEach(keyName=>{
+      const name = canonicalName(keyName, OWNER);
+      if(!name) return;
+      if (!STAFF.some(n => n.toLowerCase() === name.toLowerCase())) {
+        STAFF.push(name); selectedStaff.push(name);
+      }
+      const hours = mapObj[keyName];
+      if (hours && typeof hours === "object") {
+        STAFF_HOURS[name] = hours;
+      }
+    });
+  };
+  applyTopMap(data.staff_hours || data.staffHours);
+  applyTopMap(s8.staff_hours || s8.staffHours);
+
+  // Personel & Kaynaklar popover’ını kur (liste güncellendiği için yeniden)
+  buildStaffPopover();
+}
+
+/* =============== HOURS HELPERS =============== */
+function hoursFor(name, d=current){
+  const dayTR = DAY_TR[d.getDay()];
+  const biz = WORKING_HOURS?.[dayTR] || {};
+  const per = STAFF_HOURS?.[name]?.[dayTR] || {};
+
+  // Öncelik: personel tanımı varsa onu kullan, yoksa işletme.
+  const row = (typeof per.open === "boolean" || per.from || per.to) ? per : biz;
+
+  // Açıklama:
+  // - open === false ise kesin kapalı (from/to olsa bile)
+  // - open === true ise açık
+  // - open tanımlı değilse from & to varsa açık say.
+  let open = false;
+  if (row.open === false) open = false;
+  else if (row.open === true) open = true;
+  else open = !!row.from && !!row.to;
+
+  const start = row.from ? timeStrToFloat(row.from) : (biz.from ? timeStrToFloat(biz.from) : 9);
+  const end   = row.to   ? timeStrToFloat(row.to)   : (biz.to   ? timeStrToFloat(biz.to)   : 20);
+
+  return { open, start, end };
+}
+
+/* sabit günlük pencere 08:00–24:00 */
+const VSTART = 8, VEND = 24;
+
+/* Off band */
+function addOff(container, fromH, toH){
+  const CH = cellH();
+  const s = Math.max(fromH, VSTART);
+  const e = Math.min(toH, VEND);
+  if(e<=s) return;
+  const band=document.createElement("div");
+  band.className="offband";
+  band.style.top    = px((s - VSTART)*CH) + "px";
+  band.style.height = px((e - s)*CH) + "px";
+  container.appendChild(band);
+}
+
+/* =============== BOOKING: yardımcılar =============== */
+function injectBookingStyles(){
+  if(document.getElementById("bk-style")) return;
+  const css = `
+    .staff-col{position:relative}
+    .booking{position:absolute;left:6px;right:6px;background:#0ea5e9;color:#fff;border-radius:10px;padding:6px 8px;
+             box-shadow:0 8px 18px rgba(0,0,0,.18);font-weight:800;font-size:14px;line-height:1.2}
+    .booking .b-time{font-size:12px;font-weight:700;opacity:.95}
+    .wk-chip{display:inline-block;margin:4px 4px 0 0;background:#0ea5e9;color:#fff;border-radius:999px;
+             padding:6px 10px;font-weight:800;font-size:12px;box-shadow:0 6px 12px rgba(0,0,0,.15)}
+  `;
+  const el=document.createElement("style"); el.id="bk-style"; el.textContent=css; document.head.appendChild(el);
+}
+
+function dayStart(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0,0,0,0); return x; }
+function dayEnd(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()+1, 0,0,0,0); return x; }
+function weekStart(d){ const s=new Date(d); s.setDate(s.getDate()-s.getDay()); return dayStart(s); }          // Pazardan
+function weekEnd(d){ const s=weekStart(d); const e=new Date(s); e.setDate(e.getDate()+7); return e; }         // [start, end)
+
+function fmtHM(date){ return `${pad(date.getHours())}:${pad(date.getMinutes())}`; }
+
+function bookingStaffName(b){
+  const raw = b.staffName || b.staff || b.assignedTo || OWNER;
+  return canonicalName(raw, OWNER) || OWNER;
+}
+
+/* Firestore’dan aktif aralık için canlı dinleme */
+function watchBookingsForCurrent(){
+  if(!ADMIN_UID) return;
+  unsubBookings?.();
+
+  const rangeStart = (view==="day") ? dayStart(current) : weekStart(current);
+  const rangeEnd   = (view==="day") ? dayEnd(current)   : weekEnd(current);
+
+  const q = query(
+    collection(db, "bookings"),
+    where("businessId","==", ADMIN_UID),
+    where("startAt", ">=", Timestamp.fromDate(rangeStart)),
+    where("startAt", "<",  Timestamp.fromDate(rangeEnd)),
+    orderBy("startAt","asc")
+  );
+  unsubBookings = onSnapshot(q, (qs)=>{
+    BOOKINGS = qs.docs.map(d=>({ id:d.id, ...d.data() }));
+    (view==="day") ? renderDay() : renderWeek();   // veri geldiğinde yeniden çiz
+  }, (err)=>{
+    console.error("[bookings] watch error:", err);
+  });
+}
+
+/* =============== RENDER (DAY) =============== */
+function renderDay(){
+  $("#dayView").hidden = false;
+  $("#weekView").hidden = true;
+
+  $("#dateLabel").textContent = fmtTR.format(current);
+  $("#dateRange").textContent = "";
+
+  const row  = $("#staffRow");
+  const grid = $("#dayGrid");
+  row.innerHTML = "";
+  grid.innerHTML = "";
+
+  // sol başlık
+  const timeHead = document.createElement("div");
+  timeHead.className = "time-head";
+  row.appendChild(timeHead);
+
+  const CH = cellH();
+  const HOURS = VEND - VSTART;              // 8–24 = 16 saat
+  const colH  = px(HOURS * CH) + "px";
+  document.documentElement.style.setProperty("--calH", colH);
+
+  // zaman kolonu
+  const timeCol = document.createElement("div");
+  timeCol.id = "timeCol";
+  timeCol.className = "time-col";
+  timeCol.style.height = colH;
+
+  // 24:00 etiketi yok — 8..23 arası 16 satır
+  for (let h = VSTART; h < VEND; h++) {
+    const t = document.createElement("div");
+    t.className = "time-cell";
+    t.textContent = `${String(h).padStart(2,'0')}:00`;
+    t.style.height = px(CH) + "px";
+    timeCol.appendChild(t);
+  }
+  grid.appendChild(timeCol);
+
+  // personeller (filtre)
+  selectedStaff.forEach(name=>{
+    const {open,start,end} = hoursFor(name, current);
+
+    // header
+    const h=document.createElement("div");
+    h.className="staff-head";
+    h.dataset.head=name;
+    h.innerHTML = `
+      <div class="avatar">${initials(name)}</div>
+      <div class="meta">
+        <div class="name">${name}</div>
+        <div class="sub">${ open ? `${floatToHM(start)}–${floatToHM(end)}` : "Kapalı" }</div>
+      </div>`;
+    row.appendChild(h);
+
+    // column
+    const c=document.createElement("div");
+    c.className="staff-col";
+    c.dataset.staff=name;
+    c.style.height = colH;
+
+    // saat çizgileri (8–24 arası 16 adet)
+    for (let hh = VSTART; hh < VEND; hh++) {
+      const cell=document.createElement("div");
+      cell.className="hour-cell";
+      cell.style.height = px(CH) + "px";
+      c.appendChild(cell);
+    }
+
+    if(open){
+      addOff(c, VSTART, start); // sabah kapalı
+      addOff(c, end, VEND);     // akşam kapalı
+    }else{
+      c.classList.add("closed");
+      const full=document.createElement("div");
+      full.className="offband";
+      full.style.top="0";
+      full.style.height=colH;
+      c.appendChild(full);
+    }
+
+    grid.appendChild(c);
+  });
+
+  // 2 kişide yan yana, fazlası yatay kaydırma
+  const vis = Math.max(2, selectedStaff.length);
+  row.style.gridTemplateColumns  = `var(--timeW) repeat(${vis}, 1fr)`;
+  grid.style.gridTemplateColumns = `var(--timeW) repeat(${vis}, 1fr)`;
+
+  drawDayBookings();
+}
+
+/* Gün görünümünde randevuları sütunlarına bas */
+function drawDayBookings(){
+  const CH = cellH();
+  const sDay = dayStart(current), eDay = dayEnd(current);
+
+  BOOKINGS
+    .filter(b => {
+      const d = b.startAt instanceof Timestamp ? b.startAt.toDate() : new Date(b.startAt);
+      return d >= sDay && d < eDay;
+    })
+    .forEach(b => {
+      const start = b.startAt.toDate();
+      const end   = b.endAt?.toDate?.() || new Date(start.getTime() + (b.totalMin||30)*60000);
+
+      const stf = bookingStaffName(b);
+      const col = $(`.staff-col[data-staff="${CSS.escape(stf)}"]`);
+      if(!col) return;
+
+      const sh = start.getHours() + start.getMinutes()/60;
+      const eh = end.getHours() + end.getMinutes()/60;
+      const top = (Math.max(sh, VSTART) - VSTART) * CH;
+      const h   = Math.max(14, (Math.min(eh, VEND) - Math.max(sh, VSTART)) * CH - 6);
+
+      const el = document.createElement("div");
+      el.className = "booking";
+      const label = (b.items||[]).map(i=>i.name).join(", ") || "Randevu";
+      el.innerHTML = `<div>${label}</div><div class="b-time">${pad(start.getHours())}:${pad(start.getMinutes())} – ${pad(end.getHours())}:${pad(end.getMinutes())}</div>`;
+      el.style.top = px(top) + "px";
+      el.style.height = px(h) + "px";
+      col.appendChild(el);
+    });
+}
+
+/* =============== RENDER (WEEK) =============== */
+function startOfWeek(d){
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  x.setDate(x.getDate() - x.getDay()); // Pazardan başlat
+  return x;
+}
+function endOfWeek(d){
+  const s = startOfWeek(d);
+  const e = new Date(s); e.setDate(s.getDate()+6);
+  return e;
+}
+
+function renderWeek(){
+  $("#dayView").hidden = true;
+  $("#weekView").hidden = false;
+
+  const s = startOfWeek(current), e = endOfWeek(current);
+  $("#dateLabel").textContent = `${dShort.format(s)} – ${dShort.format(e)}`;
+  $("#dateRange").textContent = "";
+
+  const head = $("#wkHead");
+  const grid = $("#wkGrid");
+  head.innerHTML = "";
+  grid.innerHTML = "";
+
+  // HEAD
+  const left = document.createElement("div");
+  left.className = "left";
+  left.textContent = "";
+  head.appendChild(left);
+
+  for(let i=0;i<7;i++){
+    const d=new Date(s); d.setDate(s.getDate()+i);
+    const btn = document.createElement("button");
+    btn.className = "wk-day-btn";
+    btn.innerHTML = `<div class="date">${DAY_TR_SHORT[d.getDay()]} ${String(d.getDate()).padStart(2,"0")}</div>
+                     <div class="sub"> </div>`;
+    btn.addEventListener("click", ()=>{
+      current = new Date(d);
+      setView("day");
+    });
+    const day = document.createElement("div");
+    day.className = "wk-day";
+    day.appendChild(btn);
+    head.appendChild(day);
+  }
+
+  // GRID (seçili personeller için birer satır)
+  selectedStaff.forEach(name=>{
+    const staffCell = document.createElement("div");
+    staffCell.className = "wk-staff";
+    staffCell.innerHTML = `<div class="avatar">${initials(name)}</div><div>${name}</div>`;
+    staffCell.dataset.staff = name;
+    grid.appendChild(staffCell);
+
+    for(let i=0;i<7;i++){
+      const d=new Date(s); d.setDate(s.getDate()+i);
+      const col = document.createElement("div");
+      col.className = "wk-col";
+      const inner = document.createElement("div");
+      inner.className = "wk-col-inner";
+      inner.dataset.staff = name;
+      inner.dataset.date  = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+
+      const {open} = hoursFor(name, d);
+      if(!open){ inner.classList.add("closed"); }
+      col.appendChild(inner);
+      grid.appendChild(col);
+    }
+  });
+
+  // —— Görüntüde varsayılan 2 satır görünsün, fazlasında dikey kaydırma
+  const wkView = $("#weekView");
+  const headH  = $("#wkHead").getBoundingClientRect().height || 0;
+  const rowH = parseFloat(
+    getComputedStyle(document.documentElement).getPropertyValue('--wkRowH')
+  ) || 220;
+  const visibleRows = 2;
+  wkView.style.maxHeight = px(headH + visibleRows*rowH + 24) + "px";
+  wkView.style.overflowY = (selectedStaff.length > visibleRows) ? "auto" : "visible";
+
+  drawWeekBookings();
+}
+
+/* Hafta görünümünde küçük yonga olarak göster */
+function drawWeekBookings(){
+  const ws = weekStart(current), we = weekEnd(current);
+
+  const cellMap = {};
+  $$(".wk-col-inner").forEach(el=>{
+    cellMap[`${el.dataset.staff}__${el.dataset.date}`] = el;
+  });
+
+  BOOKINGS
+    .filter(b=>{
+      const d = b.startAt.toDate();
+      return d >= ws && d < we;
+    })
+    .forEach(b=>{
+      const start = b.startAt.toDate();
+      const stf   = bookingStaffName(b);
+      const key   = `${stf}__${start.getFullYear()}-${pad(start.getMonth()+1)}-${pad(start.getDate())}`;
+      const cell  = cellMap[key];
+      if(!cell) return;
+
+      const label = (b.items||[]).map(i=>i.name).join(", ") || "Randevu";
+      const chip  = document.createElement("span");
+      chip.className = "wk-chip";
+      chip.textContent = `${fmtHM(start)} • ${label}`;
+      cell.appendChild(chip);
+    });
+}
+
+/* =============== VIEW SWITCH =============== */
+function setView(next){
+  view = next;
+  $("#currentView").textContent = (view==="day" ? "Gün" : "Hafta");
+  if(view==="day") renderDay(); else renderWeek();
+  watchBookingsForCurrent();        // aralığa göre Firestore sorgusunu güncelle
+}
+
+// View aç/kapa ve seçimleri
+(function bindViewSelect(){
+  const chip = $("#viewChip");
+  const pop  = $("#viewPop");
+  chip?.addEventListener("click", ()=> pop.classList.toggle("open"));
+  document.addEventListener("mousedown",(e)=>{
+    if(pop?.classList.contains("open") && !pop.contains(e.target) && !chip.contains(e.target))
+      pop.classList.remove("open");
+  });
+  $$(".view-item").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      $$(".view-item").forEach(i=>i.classList.remove("selected"));
+      btn.classList.add("selected");
+      const v = btn.dataset.view === "Hafta" ? "week" : "day";
+      setView(v);
+      pop.classList.remove("open");
+    });
+  });
+})();
+
+/* =============== PERSONEL & KAYNAKLAR =============== */
+function buildStaffPopover(){
+  const wrap = $("#staffChkWrap");
+  const btn  = $("#staffBtn");
+  const pop  = $("#staffPop");
+  if(!wrap || !btn || !pop) return;
+
+  wrap.innerHTML = `
+    <label class="chk"><input type="checkbox" id="allChk" checked><span>Tümünü seç</span></label>
+    <div id="staffChkList"></div>
+  `;
+  const list = $("#staffChkList");
+  list.innerHTML = "";
+  STAFF.forEach(n=>{
+    const id = "st_"+n.replace(/\s+/g,"_");
+    const row=document.createElement("label");
+    row.className="chk";
+    row.innerHTML = `<input type="checkbox" id="${id}" class="staffChk" data-name="${n}" ${selectedStaff.includes(n)?"checked":""}>
+                     <span>${n}</span><span class="dot"></span>`;
+    list.appendChild(row);
+  });
+
+  // all toggle
+  const all = $("#allChk");
+  const boxes = ()=> $$(".staffChk");
+  const syncAll = ()=>{ all.checked = boxes().every(b=>b.checked); };
+  syncAll();
+
+  all.addEventListener("change",()=>{
+    boxes().forEach(b=> b.checked = all.checked);
+  });
+
+  // aç/kapa
+  if(!btn.dataset.bound){
+    btn.dataset.bound="1";
+    btn.addEventListener("click",()=> pop.classList.toggle("open"));
+    document.addEventListener("mousedown",(e)=>{
+      if(pop.classList.contains("open") && !pop.contains(e.target) && !btn.contains(e.target))
+        pop.classList.remove("open");
+    });
+  }
+
+  // Uygula
+  $("#applyStaff")?.addEventListener("click",()=>{
+    const sel = boxes().filter(b=>b.checked).map(b=>b.dataset.name);
+    selectedStaff = sel.length ? sel : [...STAFF];
+    pop.classList.remove("open");
+    (view==="day") ? renderDay() : renderWeek();
+    watchBookingsForCurrent();
+  });
+
+  list.addEventListener("change", syncAll);
+}
+
+/* =============== DATE NAV =============== */
+$("#prevDay")?.addEventListener("click",()=>{
+  current.setDate(current.getDate() + (view==="week" ? -7 : -1));
+  (view==="day") ? renderDay() : renderWeek();
+  watchBookingsForCurrent();
+});
+$("#nextDay")?.addEventListener("click",()=>{
+  current.setDate(current.getDate() + (view==="week" ? 7 : 1));
+  (view==="day") ? renderDay() : renderWeek();
+  watchBookingsForCurrent();
+});
+
+/* =============== TODAY =============== */
+$("#todayBtn")?.addEventListener("click", ()=>{
+  const now = new Date();
+  current = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  (view==="day") ? renderDay() : renderWeek();
+  watchBookingsForCurrent();
+});
+
+/* =============== MINI CAL =============== */
+const pop = $("#calendarPopover");
+const dateWrap = $("#dateLabelWrap");
+let calCursor = new Date(current.getFullYear(), current.getMonth(), 1);
+dateWrap?.addEventListener("click",()=>{
+  const open = pop.classList.toggle("open");
+  dateWrap.setAttribute("aria-expanded", open);
+  if(open){ calCursor = new Date(current.getFullYear(), current.getMonth(), 1); drawMini(calCursor); }
+});
+document.addEventListener("mousedown",(e)=>{ if(pop?.classList.contains("open") && !pop.contains(e.target) && !dateWrap.contains(e.target)){ pop.classList.remove("open"); dateWrap.setAttribute("aria-expanded","false"); }});
+$("#calPrev")?.addEventListener("click",(e)=>{ e.stopPropagation(); calCursor.setMonth(calCursor.getMonth()-1); drawMini(calCursor); });
+$("#calNext")?.addEventListener("click",(e)=>{ e.stopPropagation(); calCursor.setMonth(calCursor.getMonth()+1); drawMini(calCursor); });
+
+function drawMini(ref){
+  const mini=$("#miniCal"); if(!mini) return;
+  mini.innerHTML = "";
+  $("#calMonthLabel").textContent = monthTR(ref);
+  const y=ref.getFullYear(), m=ref.getMonth();
+  const start=new Date(y,m,1), end=new Date(y,m+1,0);
+  const lead=start.getDay(), total=lead+end.getDate(), cells=Math.ceil(total/7)*7;
+  const today=new Date(); today.setHours(0,0,0,0);
+
+  for(let i=0;i<cells;i++){
+    const day=i-lead+1; const cell=document.createElement("div"); cell.className="cell";
+    if(day>0 && day<=end.getDate()){
+      const d=new Date(y,m,day); const eq = d.toDateString()===current.toDateString();
+      cell.textContent = day;
+      if(today.toDateString()===d.toDateString()) cell.classList.add("today");
+      if(eq) cell.classList.add("selected");
+      cell.addEventListener("click",()=>{
+        current=new Date(y,m,day);
+        (view==="day") ? renderDay() : renderWeek();
+        pop.classList.remove("open"); dateWrap.setAttribute("aria-expanded","false");
+        watchBookingsForCurrent();
+      });
+    }else cell.style.visibility="hidden";
+    mini.appendChild(cell);
+  }
+}
+
+/* =============== NOTIFY & LOGOUT =============== */
+const notify=$("#notify"), backdrop=$("#backdrop");
+$("#bellBtn")?.addEventListener("click",()=>{ notify.classList.add("open"); backdrop.classList.add("show"); });
+$("#notifyClose")?.addEventListener("click",()=>{ notify.classList.remove("open"); backdrop.classList.remove("show"); });
+
+$("#bmLogout")?.addEventListener("click", async ()=>{
+  try { await signOut(auth); } catch {}
+  location.href="index.html";
+});
+
+/* =============== BOOT =============== */
+function boot(){
+  current = new Date();
+  setView("day");                // varsayılan: Gün
+  drawMini(new Date(current.getFullYear(), current.getMonth(), 1));
+}
+
+/* Hücre yüksekliği değiştiğinde (ör. breakpoint) yeniden çiz */
+["resize","orientationchange"].forEach(ev=>{
+  window.addEventListener(ev, ()=>{
+    (view==="day") ? renderDay() : renderWeek();
+  }, {passive:true});
+});

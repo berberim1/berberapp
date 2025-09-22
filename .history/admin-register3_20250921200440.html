@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+  <title>Yönetici Kaydı – Mobil Hizmet</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --border:#e5e7eb; --primary:#191919; --accent:#22c55e; --current:#2563eb;
+      --radius:14px; --shadow:0 8px 30px rgba(0,0,0,0.08);
+      --input:#f9fafb;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0b0b; --card:#111214; --text:#f3f4f6; --muted:#a3a3a3;
+        --border:#1f2937; --primary:#e5e7eb; --accent:#10b981; --current:#60a5fa;
+        --input:#0f0f10; --shadow:0 10px 30px rgba(0,0,0,.6);
+      }
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text); display:flex; flex-direction:column; align-items:center;
+      padding:clamp(18px,3vw,28px) clamp(14px,3vw,18px) calc(env(safe-area-inset-bottom,0) + 28px);
+      padding-top:calc(env(safe-area-inset-top,0) + 18px);
+    }
+
+    /* Stepper */
+    .stepper{
+      width:min(960px,100%); margin:4px auto 18px;
+      display:flex; gap:10px; padding:0 4px; align-items:center;
+      overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    }
+    .stepper::-webkit-scrollbar{display:none}
+    .step{ display:flex; align-items:center; gap:10px; flex:0 0 auto; min-width:54px; }
+    .dot{ width:34px; height:34px; border-radius:999px; display:grid; place-items:center; font-weight:800; border:2px solid var(--border); background:var(--card); color:var(--muted); }
+    .step.done .dot{ border-color:var(--accent); color:#fff; background:var(--accent); }
+    .step.current .dot{ border-color:var(--current); color:var(--current); background:var(--card); }
+    .bar{ height:6px; border-radius:999px; width:52px; background:#e9ecef; }
+    .bar.done{ background:var(--accent); }
+    @media (prefers-color-scheme: dark){ .bar{ background:#151a21; } }
+
+    /* Card */
+    .card{ width:min(560px,100%); background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 20px 24px; }
+    .top{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+    .back-btn{
+      width:40px; height:40px; border-radius:10px; border:1px solid var(--border);
+      display:flex; align-items:center; justify-content:center; background:var(--card); color:var(--text); cursor:pointer;
+    }
+    .back-btn:active{ transform:scale(.98); }
+    h1{ font-size:26px; font-weight:800; margin:10px 0 8px; text-align:center; }
+    .subtitle{ text-align:center; color:var(--muted); margin-bottom:16px; }
+
+    /* Choices */
+    .choices{ display:grid; gap:12px; margin:14px 0 18px; }
+    .choice{
+      display:flex; gap:12px; align-items:flex-start;
+      border:1px solid var(--border); border-radius:12px; padding:14px; background:var(--card);
+      cursor:pointer; transition:border-color .15s ease, box-shadow .15s ease;
+      outline:none;
+    }
+    .choice:hover{ border-color:var(--current); }
+    .choice:focus-visible{ outline:2px solid var(--current); outline-offset:2px; }
+    .choice.selected{ border-color:var(--current); box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+    @media (prefers-color-scheme: dark){
+      .choice.selected{ box-shadow:0 0 0 3px rgba(96,165,250,.18); }
+    }
+    .choice input{
+      accent-color:var(--primary); margin-top:3px; width:18px; height:18px; flex:0 0 auto;
+    }
+    .choice strong{ display:block; margin-bottom:2px; }
+    .choice span{ font-size:13px; color:var(--muted); }
+
+    .btn{
+      width:100%; min-height:46px; border-radius:10px; border:none;
+      background:var(--primary); color:#fff; font-weight:800; cursor:pointer;
+    }
+    .btn:active{ transform:scale(.995); }
+    .btn[disabled]{ opacity:.6; cursor:not-allowed; }
+
+    /* toast */
+    .toast{
+      position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+      background:#111827; color:#fff; padding:10px 14px; border-radius:10px;
+      font-size:14px; display:none; z-index:1000
+    }
+    .toast.show{ display:block; animation:fade 2.2s ease both }
+    .toast.err{ background:#dc2626; }
+    @keyframes fade{ 0%{opacity:0;transform:translate(-50%,8px)} 10%{opacity:1;transform:translate(-50%,0)} 90%{opacity:1} 100%{opacity:0;transform:translate(-50%,8px)} }
+
+    @media (max-width:560px){
+      .card{ padding:18px 14px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Stepper: 1 ve 2 tamam, 3 aktif -->
+  <nav class="stepper" aria-label="Kayıt adımları">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot">3</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">4</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">5</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">6</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">7</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">8</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">9</div></div>
+  </nav>
+
+  <main class="card" role="main">
+    <div class="top">
+      <button class="back-btn" id="btnBack" aria-label="Geri"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <h1>Mobil hizmetiniz var mı?</h1>
+    <p class="subtitle" id="mobileDesc">
+      <b>Mobil hizmet</b>, müşterilerin bulunduğu adrese gidip hizmet vermenizdir (ev, ofis vb.).
+      Sadece iş yerinizde hizmet veriyorsanız “Hayır” seçin.
+    </p>
+
+    <form id="mobileForm" autocomplete="off" novalidate aria-describedby="mobileDesc">
+      <div class="choices">
+        <label class="choice" tabindex="0" data-value="yes">
+          <input type="radio" name="mobile" value="yes" aria-label="Evet, mobil hizmet veriyorum">
+          <div>
+            <strong>Evet, mobil hizmet veriyorum</strong>
+            <span>Müşterinin konumuna gidip hizmet verebilirim.</span>
+          </div>
+        </label>
+        <label class="choice" tabindex="0" data-value="no">
+          <input type="radio" name="mobile" value="no" aria-label="Hayır, yalnızca iş yerimde hizmet veriyorum">
+          <div>
+            <strong>Hayır, yalnızca iş yerimde hizmet veriyorum</strong>
+            <span>Müşteriler randevu saatinde salonuma gelir.</span>
+          </div>
+        </label>
+      </div>
+      <button id="continueBtn" class="btn" type="submit" disabled>DEVAM ET</button>
+    </form>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    const $=(s,r=document)=>r.querySelector(s);
+    const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+
+    // ---- Akış doğrulama (önceki adımlar tamam mı?) ----
+    const K_EMAIL  = "pending_admin_email";
+    const K_FLOW   = "admin_onboarding_flow";
+    const email = (localStorage.getItem(K_EMAIL)||"").trim().toLowerCase();
+    const flow  = (localStorage.getItem(K_FLOW)||"").trim().toLowerCase();
+    if(!email || flow!=="admin"){
+      alert("Geçersiz akış. Lütfen yönetici kaydına baştan başlayın.");
+      location.replace("admin-register-login.html");
+    }
+
+    // ---- Anahtarlar ----
+    const K_STEP3 = "step3";                        // { hasMobileService: boolean }
+    const K_LAST  = "admin_onboarding_last_step";   // "3"
+
+    // ---- Toast helper ----
+    const toast=$("#toast");
+    function showToast(t){
+      toast.textContent=t;
+      toast.className="toast show err";
+      setTimeout(()=>toast.classList.remove("show","err"),2200);
+    }
+
+    // ---- Çıkış uyarısı: yalnızca değişiklik varsa uyar ----
+    let allowLeave=false, DIRTY=false;
+    window.addEventListener("beforeunload",e=>{ if(!allowLeave && DIRTY){ e.preventDefault(); e.returnValue=""; }});
+
+    // ---- Geri: 2. adıma dön ----
+    $("#btnBack").addEventListener("click",e=>{
+      e.preventDefault();
+      allowLeave=true;
+      location.replace("admin-register2.html");
+    });
+
+    const form = $("#mobileForm");
+    const btn  = $("#continueBtn");
+    const cards = $$(".choice");
+
+    // Aynı anda UI seçimi/görsel vurgusu
+    function setSelected(val){
+      cards.forEach(c=>{
+        const is = c.dataset.value === val;
+        c.classList.toggle("selected", is);
+        const input = c.querySelector('input[type="radio"]');
+        if(input) input.checked = is;
+      });
+      btn.disabled = !val;
+    }
+
+    // Önceki seçim varsa doldur
+    let initialVal = "";
+    try{
+      const prev = JSON.parse(localStorage.getItem(K_STEP3) || "null");
+      if(prev && typeof prev.hasMobileService === "boolean"){
+        initialVal = prev.hasMobileService ? "yes" : "no";
+        setSelected(initialVal);
+      }
+    }catch{/* yoksay */}
+
+    // Değişiklik takibi
+    function markDirtyIfChanged(){
+      const picked = form.mobile?.value || "";
+      DIRTY = (picked !== initialVal);
+    }
+
+    // Kart etkileşimi (tık + klavye)
+    cards.forEach(card=>{
+      card.addEventListener("click",()=>{
+        setSelected(card.dataset.value);
+        markDirtyIfChanged();
+      });
+      card.addEventListener("keydown",(e)=>{
+        if(e.key===" "||e.key==="Enter"){
+          e.preventDefault();
+          setSelected(card.dataset.value);
+          markDirtyIfChanged();
+        }
+      });
+    });
+
+    // Form içi change (radio)
+    form.addEventListener("change",()=>{
+      btn.disabled = !form.mobile?.value;
+      markDirtyIfChanged();
+    });
+
+    // Kaydet ve yönlendir
+    form.addEventListener("submit",e=>{
+      e.preventDefault();
+      const picked=form.mobile?.value;
+      if(!picked){ showToast("Lütfen bir seçenek seçin."); return; }
+
+      const hasMobile = (picked === "yes");
+      localStorage.setItem(K_STEP3, JSON.stringify({ hasMobileService: hasMobile }));
+      localStorage.setItem(K_LAST, "3");
+
+      allowLeave=true;
+      DIRTY=false;
+      location.replace(hasMobile ? "admin-register4.html" : "admin-register5.html");
+    });
+
+    // İlk odak: seçilmemişse ilk karta
+    setTimeout(()=>{
+      const any = form.mobile?.value;
+      if(!any) cards[0]?.focus();
+    }, 80);
+  </script>
+</body>
+</html>

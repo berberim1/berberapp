@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+<title>Yönetici Kaydı – Çalışma Saatleriniz</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+<style>
+  :root{
+    --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --primary:#191919; --accent:#22c55e; --current:#2563eb;
+    --radius:18px; --shadow:0 14px 40px rgba(0,0,0,.10);
+    --toggleOff:#e5e7eb; --toggleKnob:#fff; --on:#00b268;
+    --ring: rgba(59,130,246,.18);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0b0b0b; --card:#111214; --text:#eceff4; --muted:#a3a3a3;
+      --border:#1f2937; --primary:#e5e7eb; --accent:#10b981; --current:#60a5fa;
+      --shadow:0 20px 60px rgba(0,0,0,.55);
+      --toggleOff:#1f2937; --toggleKnob:#0b0b0b; --ring: rgba(96,165,250,.25);
+    }
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;
+    padding:24px 16px calc(env(safe-area-inset-bottom,0) + 40px);
+    padding-top:calc(env(safe-area-inset-top,0) + 12px);
+  }
+
+  /* Stepper */
+  .stepper{
+    width:min(960px,100%);margin:4px auto 18px;display:flex;gap:10px;padding:0 4px;align-items:center;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;
+    mask-image:linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  }
+  .stepper::-webkit-scrollbar{display:none}
+  .step{display:flex;align-items:center;gap:10px;flex:0 0 auto;min-width:56px;}
+  .dot{width:34px;height:34px;border-radius:999px;display:grid;place-items:center;font-weight:800;border:2px solid var(--border);background:var(--card);color:var(--muted);}
+  .step.done .dot{border-color:var(--accent);color:#fff;background:var(--accent);}
+  .step.current .dot{border-color:var(--current);color:var(--current);background:var(--card);}
+  .bar{height:6px;border-radius:999px;width:54px;background:#e9ecef;}
+  .bar.done{background:var(--accent);}
+  @media (prefers-color-scheme: dark){ .bar{background:#151a21;} }
+
+  .card{width:100%;max-width:620px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+  .top{display:flex;align-items:center;gap:16px;padding:18px 22px 10px;}
+  .back-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--text);cursor:pointer;}
+  .header{text-align:center;padding:6px 26px 12px;border-bottom:1px solid var(--border);}
+  .header h1{margin:10px 0 6px;font-size:24px;font-weight:800;}
+  .header p{margin:0;color:var(--muted);}
+
+  .list{padding:10px 12px 0;}
+  .row{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);border-radius:12px;margin:8px 0;background:var(--card);}
+  .row .day{width:110px;font-weight:700;}
+  .row .hours{color:var(--text);}
+  .row .closed{color:var(--muted);}
+  .spacer{flex:1;}
+  .chev{color:#9aa0a6;cursor:pointer;}
+  @media (prefers-color-scheme: dark){ .chev{color:#7a8491;} }
+
+  .toggle{position:relative;width:50px;height:28px;border-radius:999px;background:var(--toggleOff);transition:.2s;flex:0 0 50px;border:1px solid var(--border);cursor:pointer;}
+  .knob{position:absolute;top:2px;left:2px;width:24px;height:24px;border-radius:50%;background:var(--toggleKnob);box-shadow:0 1px 2px rgba(0,0,0,.18);transition:.2s;}
+  .row.on .toggle{background:var(--on);border-color:transparent;}
+  .row.on .knob{left:24px;}
+
+  .footer{
+    padding:12px 22px calc(22px + env(safe-area-inset-bottom,0));
+    position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--border);
+    backdrop-filter:saturate(180%) blur(6px);
+  }
+  .btn{width:100%;height:48px;border-radius:12px;border:none;background:var(--primary);color:#fff;font-weight:800;cursor:pointer;letter-spacing:.2px;transition:transform .12s ease, opacity .15s ease;}
+  .btn:active{transform:scale(.996);}
+  .btn:disabled{opacity:.7;cursor:not-allowed;}
+  .btn-secondary{background:#f3f4f6;color:#111;border:1px solid var(--border);}
+  @media (prefers-color-scheme: dark){ .btn-secondary{background:#0f1115;color:#e5e7eb;} }
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:24px;z-index:50;}
+  .modal{width:100%;max-width:620px;background:var(--card);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);border:1px solid var(--border);}
+  .m-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--border);}
+  .m-back{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:var(--card);color:var(--text);cursor:pointer;}
+  .m-title{font-size:22px;font-weight:800;}
+  .m-body{padding:18px 22px;}
+  .m-foot{padding:0 22px 18px;display:flex;gap:12px;justify-content:flex-end;}
+
+  .time-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .select-wrap{position:relative;}
+  .select-wrap .sel-label{position:absolute;top:8px;left:12px;font-size:11px;font-weight:700;color:#9aa0a6;pointer-events:none;}
+  .select-wrap i{position:absolute;right:12px;top:50%;transform:translateY(-2px);pointer-events:none;color:#9aa0a6;}
+  select{width:100%;height:56px;border-radius:14px;border:1px solid var(--border);background:#fbfbfb;padding:22px 36px 6px 12px;font-size:15px;font-weight:600;color:#111;appearance:none;outline:none;}
+  @media (prefers-color-scheme: dark){ select{background:#0f1115;color:#e5e7eb;} }
+  select:focus{border-color:#c7d2fe;box-shadow:0 0 0 5px var(--ring);}
+
+  .muted{color:var(--muted);font-size:14px;margin:0 0 10px;}
+  .chipbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;}
+  .chipbar button{height:34px;padding:0 12px;border-radius:999px;border:1px solid var(--border);background:#f8fafc;color:#111;cursor:pointer;}
+  @media (prefers-color-scheme: dark){ .chipbar button{background:#0f1115;color:#e5e7eb;} }
+
+  .days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+  @media (max-width:520px){.days-grid{grid-template-columns:repeat(2,1fr);} }
+  .dayItem{cursor:pointer;}
+  .dayItem input{display:none;}
+  .dayItem span{display:block;text-align:center;border:1px solid var(--border);border-radius:12px;padding:10px;font-weight:800;}
+  .dayItem input:checked + span{border-color:#00b268;background:#ecfdf5;color:#065f46;}
+  @media (prefers-color-scheme: dark){
+    .dayItem span{background:#0f1115;color:#e5e7eb;}
+    .dayItem input:checked + span{background:#052e23;color:#b6f3d6;border-color:#10b981;}
+  }
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 14px;border-radius:10px;font-size:14px;display:none;z-index:1000}
+  .toast.show{display:block;animation:fade 2.2s ease both}
+  .toast.err{background:#dc2626;}
+  @keyframes fade{0%{opacity:0;transform:translate(-50%,8px)}10%{opacity:1;transform:translate(-50%,0)}90%{opacity:1}100%{opacity:0;transform:translate(-50%,8px)}}
+</style>
+</head>
+<body>
+  <nav class="stepper" aria-label="Kayıt adımları">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot" aria-current="step">6</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">7</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">8</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">9</div></div>
+  </nav>
+
+  <main class="card" role="main">
+    <div class="top">
+      <button class="back-btn" id="btnBack" aria-label="Geri"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <div class="header">
+      <h1>Çalışma saatleriniz</h1>
+      <p>Müşteriler ne zaman randevu alabilir?</p>
+    </div>
+
+    <section class="list" id="hoursList" aria-live="polite">
+      <div class="row on" data-day="Pazartesi"  data-from="10:00" data-to="19:00">
+        <div class="toggle" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Pazartesi</div><div class="hours">10:00 - 19:00</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Pazartesi düzenle"></i>
+      </div>
+      <div class="row on" data-day="Salı" data-from="10:00" data-to="19:00">
+        <div class="toggle" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Salı</div><div class="hours">10:00 - 19:00</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Salı düzenle"></i>
+      </div>
+      <div class="row on" data-day="Çarşamba" data-from="10:00" data-to="19:00">
+        <div class="toggle" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Çarşamba</div><div class="hours">10:00 - 19:00</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Çarşamba düzenle"></i>
+      </div>
+      <div class="row on" data-day="Perşembe" data-from="10:00" data-to="19:00">
+        <div class="toggle" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Perşembe</div><div class="hours">10:00 - 19:00</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Perşembe düzenle"></i>
+      </div>
+      <div class="row on" data-day="Cuma" data-from="10:00" data-to="19:00">
+        <div class="toggle" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Cuma</div><div class="hours">10:00 - 19:00</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Cuma düzenle"></i>
+      </div>
+      <div class="row" data-day="Cumartesi">
+        <div class="toggle" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Cumartesi</div><div class="hours closed">Kapalı</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Cumartesi düzenle"></i>
+      </div>
+      <div class="row" data-day="Pazar">
+        <div class="toggle" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div>
+        <div class="day">Pazar</div><div class="hours closed">Kapalı</div><div class="spacer"></div>
+        <i class="fa-solid fa-chevron-right chev" role="button" tabindex="0" aria-label="Pazar düzenle"></i>
+      </div>
+    </section>
+
+    <div class="footer">
+      <button id="saveBtn" class="btn">DEVAM ET</button>
+    </div>
+  </main>
+
+  <!-- Edit modal -->
+  <div class="overlay" id="editOverlay" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="modal">
+      <div class="m-head">
+        <button id="editBackBtn" class="m-back" aria-label="Kapat"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="m-title" id="editTitle">Gün</div>
+      </div>
+      <div class="m-body">
+        <div class="field">
+          <span class="label">Açılış – kapanış</span>
+          <div class="time-row">
+            <div class="select-wrap">
+              <span class="sel-label">Açılış</span>
+              <select id="openSel"></select>
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </div>
+            <div class="select-wrap">
+              <span class="sel-label">Kapanış</span>
+              <select id="closeSel"></select>
+              <i class="fa-solid fa-chevron-down" aria-hidden="true"></i>
+            </div>
+          </div>
+          <p class="muted" id="minInfo" style="margin-top:8px">Kapanış, açılıştan en az 30 dakika sonra olmalı.</p>
+        </div>
+      </div>
+      <div class="m-foot">
+        <button id="editCancelBtn" class="btn btn-secondary">İPTAL</button>
+        <button id="editSaveBtn" class="btn">KAYDET</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copy modal -->
+  <div class="overlay" id="copyOverlay" style="z-index:60;" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="modal">
+      <div class="m-head">
+        <button id="copyBackBtn" class="m-back" aria-label="Kapat"><i class="fa-solid fa-arrow-left"></i></button>
+        <div class="m-title">Saatleri kopyala</div>
+      </div>
+      <div class="m-body">
+        <p class="muted" id="copyInfo">Bu saatleri diğer günlere kopyalamak ister misiniz?</p>
+        <div class="chipbar">
+          <button type="button" data-preset="all">Tümü</button>
+          <button type="button" data-preset="weekday">Hafta içi</button>
+          <button type="button" data-preset="weekend">Hafta sonu</button>
+          <button type="button" data-preset="clear">Temizle</button>
+        </div>
+        <div id="daysGrid" class="days-grid"></div>
+      </div>
+      <div class="m-foot">
+        <button id="copySkipBtn" class="btn btn-secondary">KOPYALAMA</button>
+        <button id="copyApplyBtn" class="btn">KOPYALA</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+  const $=(s,r=document)=>r.querySelector(s);
+  const DAYS=["Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi","Pazar"];
+  const STORAGE_KEY="step6";
+
+  /* flow guard */
+  (function(){
+    const flow=(localStorage.getItem("admin_onboarding_flow")||"").toLowerCase();
+    const email=(localStorage.getItem("pending_admin_email")||"").trim();
+    if(flow!=="admin"||!email){
+      alert("Akış geçersiz. Lütfen kayıt sürecine baştan başlayın.");
+      location.replace("admin-register-login.html");
+    }
+    if(!localStorage.getItem("step5")){
+      location.replace("admin-register5.html");
+    }
+  })();
+
+  /* leave guard & back */
+  let allowLeave=false;
+  window.addEventListener("beforeunload",e=>{ if(!allowLeave){ e.preventDefault(); e.returnValue=""; }});
+  $("#btnBack").addEventListener("click",e=>{
+    e.preventDefault();
+    allowLeave=true;
+    location.replace("admin-register5.html");
+  });
+
+  /* toast */
+  const toast=$("#toast");
+  const showToast=(msg,err=false)=>{ toast.textContent=msg; toast.className="toast"+(err?" err":"")+" show"; setTimeout(()=>toast.className="toast",2200); };
+
+  /* time selects */
+  const openSel=$("#openSel"), closeSel=$("#closeSel");
+
+  // 06:00 — 23:30 arası, 30 dk adımlı
+  function buildTimeOptions(sel){
+    sel.innerHTML="";
+    const start=6*60, end=23*60+30;
+    for(let m=start; m<=end; m+=30){
+      const h=Math.floor(m/60), mm=m%60;
+      const t=`${String(h).padStart(2,"0")}:${mm===0?"00":"30"}`;
+      const opt=document.createElement("option"); opt.value=t; opt.textContent=t; sel.appendChild(opt);
+    }
+  }
+  buildTimeOptions(openSel); buildTimeOptions(closeSel);
+
+  const toMinutes=(hhmm)=>{const [h,m]=hhmm.split(":").map(Number); return h*60+m;};
+
+  function enforceMin(){
+    const min=toMinutes(openSel.value)+30;
+    [...closeSel.options].forEach(o=>{
+      const ok=toMinutes(o.value)>=min;
+      o.disabled=!ok; o.hidden=!ok;
+    });
+    if(toMinutes(closeSel.value)<min){
+      const firstValid=[...closeSel.options].find(o=>!o.disabled);
+      if(firstValid) closeSel.value=firstValid.value;
+    }
+  }
+  openSel.addEventListener("change", enforceMin);
+
+  /* helpers for rows */
+  function getRow(day){ return [...document.querySelectorAll(".row")].find(r=>r.dataset.day===day); }
+  function applyHours(row, from, to, {silent=false}={}){
+    row.dataset.from=from; row.dataset.to=to;
+    row.classList.add("on");
+    row.querySelector(".toggle").setAttribute("aria-checked","true");
+    const h=row.querySelector(".hours"); h.textContent=`${from} - ${to}`; h.classList.remove("closed");
+    if(!silent) autoSave();
+  }
+  function markClosed(row, {silent=false}={}){
+    row.classList.remove("on");
+    row.querySelector(".toggle").setAttribute("aria-checked","false");
+    const h=row.querySelector(".hours"); h.textContent="Kapalı"; h.classList.add("closed");
+    delete row.dataset.from; delete row.dataset.to;
+    if(!silent) autoSave();
+  }
+
+  /* collect & save */
+  function collect(){
+    const map={};
+    document.querySelectorAll(".row").forEach(r=>{
+      const day=r.dataset.day;
+      const isOpen=r.classList.contains("on");
+      map[day]=isOpen ? {open:true, from:r.dataset.from||"10:00", to:r.dataset.to||"19:00"} : {open:false};
+    });
+    return map;
+  }
+  function autoSave(){
+    const payload={ workingHours: collect() };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    localStorage.setItem("admin_onboarding_last_step","6");
+  }
+
+  /* hydrate (silent) */
+  (function hydrate(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+      const hours = saved?.workingHours;
+      if(!hours) return;
+      DAYS.forEach(d=>{
+        const row=getRow(d); if(!row) return;
+        const v=hours[d];
+        if(v && v.open){
+          applyHours(row, v.from||"10:00", v.to||"19:00", {silent:true});
+        }else{
+          markClosed(row, {silent:true});
+        }
+      });
+    }catch{/* ignore */}
+  })();
+
+  /* toggles + row click */
+  document.querySelectorAll(".row").forEach(row=>{
+    const toggle=row.querySelector(".toggle");
+
+    const flip=(e)=>{
+      if(e) e.stopPropagation();
+      const willOpen=!row.classList.contains("on");
+      if(willOpen){
+        const from=row.dataset.from||"10:00";
+        const to=row.dataset.to||"19:00";
+        applyHours(row, from, to);
+      }else{
+        markClosed(row);
+      }
+    };
+
+    toggle.addEventListener("click", flip);
+    toggle.addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); flip(e); }});
+
+    // Toggle harici tıklar düzenlemeyi açsın
+    row.addEventListener("click", (e)=>{
+      if(e.target.closest(".toggle")) return;
+      if(e.target.classList.contains("chev")) return;
+      openEdit(row);
+    });
+  });
+
+  /* edit modal */
+  const editOverlay=$("#editOverlay");
+  let editingDay=null, lastFrom=null, lastTo=null;
+  function bodyLock(lock){ document.documentElement.style.overflow = lock ? "hidden" : ""; }
+
+  function openEdit(row){
+    editingDay=row.dataset.day;
+    $("#editTitle").textContent=editingDay;
+    openSel.value=row.dataset.from||"10:00";
+    closeSel.value=row.dataset.to||"19:00";
+    enforceMin();
+    editOverlay.style.display="flex";
+    editOverlay.setAttribute("aria-hidden","false");
+    bodyLock(true);
+    openSel.focus({preventScroll:true});
+  }
+  function closeEdit(){
+    editOverlay.style.display="none";
+    editOverlay.setAttribute("aria-hidden","true");
+    bodyLock(false);
+  }
+  $("#editCancelBtn").addEventListener("click", closeEdit);
+  $("#editBackBtn").addEventListener("click", closeEdit);
+
+  // Overlay tıklaması ile kapat
+  editOverlay.addEventListener("mousedown",(e)=>{ if(e.target===editOverlay) closeEdit(); });
+
+  document.addEventListener("keydown", (e)=>{
+    if(e.key==="Escape"){
+      if(editOverlay.style.display==="flex") closeEdit();
+      if(copyOverlay.style.display==="flex") { closeCopy(); }
+    }
+  });
+
+  document.querySelectorAll(".chev").forEach(icon=>{
+    const open=()=> openEdit(icon.closest(".row"));
+    icon.addEventListener("click", open);
+    icon.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); open(); }});
+  });
+
+  $("#editSaveBtn").addEventListener("click",()=>{
+    const row=getRow(editingDay);
+    lastFrom=openSel.value; lastTo=closeSel.value;
+    applyHours(row, lastFrom, lastTo);
+    closeEdit();
+    // copy prompt
+    renderCopyDays(editingDay);
+    $("#copyInfo").textContent=`${editingDay} için ${lastFrom} - ${lastTo} saatlerini diğer günlere kopyalamak ister misiniz?`;
+    setPreset("clear");
+    openCopy();
+  });
+
+  /* copy modal */
+  const copyOverlay=$("#copyOverlay"), daysGrid=$("#daysGrid");
+  function renderCopyDays(except){
+    daysGrid.innerHTML="";
+    DAYS.filter(d=>d!==except).forEach(d=>{
+      const lbl=document.createElement("label");
+      lbl.className="dayItem";
+      lbl.innerHTML=`<input type="checkbox" value="${d}"><span>${d}</span>`;
+      daysGrid.appendChild(lbl);
+    });
+  }
+  function setPreset(p){
+    const checks=[...daysGrid.querySelectorAll('input[type="checkbox"]')];
+    if(p==="clear"){ checks.forEach(c=>c.checked=false); return; }
+    const target = p==="all" ? checks
+      : p==="weekday" ? checks.filter(c=>!["Cumartesi","Pazar"].includes(c.value))
+      : checks.filter(c=>["Cumartesi","Pazar"].includes(c.value));
+    checks.forEach(c=>c.checked=false); target.forEach(c=>c.checked=true);
+  }
+  document.querySelectorAll('.chipbar button').forEach(b=> b.addEventListener('click',()=> setPreset(b.dataset.preset)));
+
+  function openCopy(){
+    copyOverlay.style.display="flex";
+    copyOverlay.setAttribute("aria-hidden","false");
+    bodyLock(true);
+  }
+  function closeCopy(){
+    copyOverlay.style.display="none";
+    copyOverlay.setAttribute("aria-hidden","true");
+    bodyLock(false);
+  }
+  $("#copyBackBtn").addEventListener("click", closeCopy);
+  $("#copySkipBtn").addEventListener("click", closeCopy);
+  copyOverlay.addEventListener("mousedown",(e)=>{ if(e.target===copyOverlay) closeCopy(); });
+
+  $("#copyApplyBtn").addEventListener("click",()=>{
+    const targets=[...daysGrid.querySelectorAll('input[type="checkbox"]:checked')].map(i=>i.value);
+    targets.forEach(d=>{
+      const row=getRow(d);
+      applyHours(row, lastFrom, lastTo);
+    });
+    closeCopy();
+    showToast("Saatler kopyalandı");
+  });
+
+  /* continue */
+  $("#saveBtn").addEventListener("click",()=>{
+    autoSave();
+    allowLeave=true;
+    location.replace("admin-register7.html");
+  });
+</script>
+</body>
+</html>

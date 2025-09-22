@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>İşletmeni Listele | Arat</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root {
+      --bg-1: #0f0f12;
+      --bg-2: #14161a;
+      --card: #171a20;
+      --muted: #9aa3b2;
+      --text: #e9eef7;
+      --brand-1: #8cf7e2;
+      --brand-2: #ffb6c1;
+      --brand-3: #7c8fff;
+      --radius: 22px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      display: block
+    }
+
+    .container {
+      width: min(1120px, 92%);
+      margin-inline: auto
+    }
+
+    /* ============ NAVBAR (üst kısım) ============ */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 70;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 4vw;
+      background: rgba(16, 18, 22, .55);
+      backdrop-filter: saturate(140%) blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, .06);
+      box-shadow: 0 6px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .05);
+    }
+
+    .sticky-nav::after {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--brand-1), var(--brand-3), var(--brand-2));
+      opacity: .35;
+    }
+
+    @supports(padding:max(0px)) {
+      .sticky-nav {
+        padding-top: max(14px, env(safe-area-inset-top));
+      }
+    }
+
+    .sticky-nav.scrolled {
+      box-shadow: 0 6px 30px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .05)
+    }
+
+    .logo {
+      font-weight: 900;
+      letter-spacing: .02em;
+      color: #e6f7ff;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    /* masaüstü menü alanı */
+    .nav-drawer {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 18px;
+      align-items: center
+    }
+
+    .nav-center a,
+    .nav-right a {
+      color: #dbe6ff;
+      text-decoration: none;
+      opacity: .9
+    }
+
+    .nav-center a:hover,
+    .nav-right a:hover {
+      opacity: 1
+    }
+
+    .list-btn {
+      display: inline-flex;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--brand-3), var(--brand-2));
+      color: #0a0d12;
+      font-weight: 700
+    }
+
+    .nav-btn {
+      background: transparent;
+      color: #dbe6ff;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 999px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+
+    .nav-btn:hover {
+      border-color: rgba(255, 255, 255, .25)
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    /* hamburger */
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .02);
+      color: #dbe6ff;
+      cursor: pointer;
+    }
+
+    .menu-toggle:active {
+      transform: scale(.98)
+    }
+
+    /* ============ HERO ============ */
+    .gradient-bg {
+      position: relative;
+      background:
+        radial-gradient(1200px 600px at 20% -10%, rgba(140, 247, 226, .18), transparent),
+        radial-gradient(1200px 700px at 90% 10%, rgba(124, 143, 255, .16), transparent),
+        linear-gradient(180deg, #101216 0%, #0f1115 100%);
+      overflow: hidden
+    }
+
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.05"/></svg>');
+      pointer-events: none
+    }
+
+    .biz-hero {
+      padding: 96px 0 64px
+    }
+
+    .biz-hero .inner {
+      position: relative;
+      z-index: 1;
+      text-align: center
+    }
+
+    /* floating cam kart */
+    .hero-card {
+      position: relative;
+      /* çerçeve için gerekli */
+      width: min(780px, 95%);
+      margin: 0 auto;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .03));
+      backdrop-filter: blur(8px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 24px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .06);
+      padding: 28px 22px;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, rgba(140, 247, 226, .25), rgba(124, 143, 255, .25), rgba(255, 182, 193, .25));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+      pointer-events: none;
+    }
+
+    .biz-hero h1 {
+      font-size: clamp(32px, 6vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 12px
+    }
+
+    .chip {
+      display: inline-block;
+      font-size: .55em;
+      font-weight: 700;
+      letter-spacing: .05em;
+      padding: 6px 10px;
+      border-radius: 999px;
+      margin-right: 8px;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      color: #0b0e12
+    }
+
+    .biz-hero p {
+      color: var(--muted);
+      font-size: clamp(16px, 2.5vw, 20px);
+      margin: 0 auto 22px;
+      max-width: 720px
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    .cta,
+    .ghost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 14px 22px;
+      border-radius: 999px;
+      transition: .25s ease;
+      border: 1px solid transparent
+    }
+
+    .cta {
+      background: linear-gradient(135deg, var(--brand-3), var(--brand-2));
+      color: #0a0d12;
+      box-shadow: 0 10px 24px rgba(124, 143, 255, .25)
+    }
+
+    .cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 34px rgba(124, 143, 255, .35)
+    }
+
+    .ghost {
+      color: var(--text);
+      border-color: rgba(255, 255, 255, .12);
+      background: rgba(255, 255, 255, .02)
+    }
+
+    .ghost:hover {
+      border-color: rgba(255, 255, 255, .25);
+      background: rgba(255, 255, 255, .06)
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 16px
+    }
+
+    .badges span {
+      backdrop-filter: saturate(120%) blur(8px);
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .10);
+      color: #dbe6ff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 14px
+    }
+
+    .section-divider {
+      display: block;
+      width: 100%;
+      height: 90px;
+      fill: #0f1216
+    }
+
+    /* Markalar */
+    .brands {
+      padding: 26px 0;
+      background: #0f1216;
+      border-top: 1px solid rgba(255, 255, 255, .05);
+      border-bottom: 1px solid rgba(255, 255, 255, .05);
+      overflow: hidden;
+    }
+
+    .brands .track {
+      display: flex;
+      gap: 46px;
+      white-space: nowrap;
+      animation: marquee 22s linear infinite;
+      opacity: .8;
+      will-change: transform;
+    }
+
+    .brands span {
+      font-weight: 700;
+      letter-spacing: .18em;
+      color: #c9d3ea
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    /* Özellik / KPI / Steps */
+    .feature {
+      padding: 96px 0
+    }
+
+    .feature .content {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 48px;
+      align-items: center
+    }
+
+    .feature.alt .content {
+      grid-template-columns: .9fr 1.1fr
+    }
+
+    .feature h2 {
+      font-size: clamp(26px, 3.8vw, 40px);
+      margin: 0 0 12px
+    }
+
+    .feature p {
+      color: var(--muted);
+      margin: 0 0 18px
+    }
+
+    .media img {
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px
+    }
+
+    .checklist li {
+      position: relative;
+      padding-left: 28px
+    }
+
+    .checklist li:before {
+      content: "\f00c";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: var(--brand-1)
+    }
+
+    .metrics {
+      padding: 52px 0 8px
+    }
+
+    .metrics .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow)
+    }
+
+    .kpi {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 18px
+    }
+
+    .kpi strong {
+      font-size: clamp(26px, 4.2vw, 44px);
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent
+    }
+
+    .kpi span {
+      color: #c7d0e6;
+      margin-top: 6px
+    }
+
+    /* Başlamak çok kolay */
+    .gs-easy {
+      padding: 84px 0
+    }
+
+    .gs-easy h2 {
+      text-align: center;
+      margin: 0 0 34px;
+      font-size: clamp(26px, 4.2vw, 40px)
+    }
+
+    .gs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px
+    }
+
+    .gs-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center
+    }
+
+    .gs-art {
+      width: 100%;
+      height: 190px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 182, 193, .25), transparent);
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, .06);
+      box-shadow: var(--shadow);
+    }
+
+    .gs-art.alt {
+      background: linear-gradient(180deg, rgba(124, 143, 255, .25), transparent)
+    }
+
+    .gs-art.third {
+      background: linear-gradient(180deg, rgba(140, 247, 226, .25), transparent)
+    }
+
+    .gs-card h3 {
+      margin: 14px 0 8px
+    }
+
+    .gs-card p {
+      color: var(--muted)
+    }
+
+    /* FAQ */
+    .faq {
+      padding: 80px 0
+    }
+
+    .faq h2 {
+      text-align: center;
+      margin-bottom: 18px
+    }
+
+    .faq .item {
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .06);
+      border-radius: 16px;
+      margin: 10px 0;
+      overflow: hidden
+    }
+
+    .faq .q {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      font-size: 18px;
+      background: transparent;
+      color: var(--text);
+      border: 0;
+      cursor: pointer
+    }
+
+    .faq .q i {
+      transition: transform .25s ease
+    }
+
+    .faq .a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease, opacity .35s ease;
+      opacity: .5;
+      color: var(--muted);
+      padding: 0 20px 0
+    }
+
+    .faq .item.open .a {
+      max-height: 320px;
+      padding: 0 20px 18px;
+      opacity: 1
+    }
+
+    .faq .item.open .q i {
+      transform: rotate(180deg)
+    }
+
+    /* CTA */
+    .gradient-card {
+      padding: 74px 0 92px
+    }
+
+    .gradient-card .container {
+      background: linear-gradient(135deg, rgba(140, 247, 226, .12), rgba(124, 143, 255, .10));
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 24px;
+      text-align: center;
+      padding: 40px 22px
+    }
+
+    .gradient-card .list-btn {
+      margin-top: 10px
+    }
+
+    /* Modals */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .5);
+      padding: 20px;
+    }
+
+    .modal.open {
+      display: flex
+    }
+
+    .modal-card {
+      width: min(960px, 95vw);
+      max-height: 90vh;
+      background: #121418;
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #161920;
+      border-bottom: 1px solid rgba(255, 255, 255, .06)
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px
+    }
+
+    .modal-close {
+      background: transparent;
+      border: 0;
+      color: #cfd8ff;
+      font-size: 20px;
+      cursor: pointer
+    }
+
+    .modal-body {
+      padding: 18px
+    }
+
+    .login-frame {
+      width: 100%;
+      height: 70vh;
+      border: 0;
+      border-radius: 8px;
+      background: #0b0e12
+    }
+
+    .biz-types {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px
+    }
+
+    .biz-types a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: #0b0e12;
+      font-weight: 800;
+      padding: 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--brand-1), var(--brand-2));
+    }
+
+    .biz-types a:hover {
+      filter: brightness(1.05)
+    }
+
+    .biz-types a.alt {
+      background: linear-gradient(135deg, var(--brand-3), var(--brand-2))
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 12px 16px;
+      border-top: 1px solid rgba(255, 255, 255, .06);
+      background: #161920
+    }
+
+    /* Animations */
+    [data-animate] {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .6s ease, transform .6s ease
+    }
+
+    [data-animate].in {
+      opacity: 1;
+      transform: none
+    }
+
+    /* Responsive (genel) */
+    @media (max-width: 1000px) {
+
+      .feature .content,
+      .feature.alt .content {
+        grid-template-columns: 1fr;
+        text-align: center
+      }
+
+      .metrics .grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .gs-grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Tablet & küçük telefon: menü çekmece */
+    @media (max-width: 640px) {
+      .menu-toggle {
+        display: inline-flex
+      }
+
+      .nav-drawer {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 100%;
+        background: rgba(18, 20, 24, .88);
+        backdrop-filter: saturate(140%) blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, .06);
+        box-shadow: 0 18px 28px rgba(0, 0, 0, .35);
+        display: block;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: max-height .35s ease, opacity .3s ease, transform .3s ease;
+      }
+
+      .nav-drawer.open {
+        max-height: 420px;
+        opacity: 1;
+        transform: none
+      }
+
+      .nav-center,
+      .nav-right {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 12px 4vw;
+      }
+
+      .nav-right a,
+      .nav-center a,
+      .nav-btn,
+      .list-btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .biz-hero {
+        padding: 90px 0 56px
+      }
+
+      .hero-card {
+        padding: 24px 18px
+      }
+
+      .badges {
+        flex-direction: column
+      }
+
+      .metrics .grid {
+        grid-template-columns: 1fr
+      }
+
+      .gs-grid {
+        grid-template-columns: 1fr
+      }
+
+      .biz-types {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* === Hamburger içindeki tüm öğeleri eşitle (butonlar aynı boy) === */
+    @media (max-width: 640px) {
+
+      .nav-drawer .nav-center a,
+      .nav-drawer .nav-right a,
+      .nav-drawer .nav-btn,
+      .nav-drawer .list-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 48px;
+        /* hepsi aynı yükseklik */
+        padding: 0 16px;
+        /* sabit iç boşluk */
+        border-radius: 999px;
+        /* aynı yuvarlaklık */
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1;
+        box-sizing: border-box;
+        /* border eklenince yükseklik bozulmasın */
+      }
+
+      /* Düz linkleri butona çevir */
+      .nav-drawer .nav-center a:not(.list-btn),
+      .nav-drawer .nav-right a:not(.list-btn) {
+        background: rgba(255, 255, 255, .03);
+        border: 1px solid rgba(255, 255, 255, .12);
+        color: #dbe6ff;
+        text-decoration: none;
+      }
+
+      /* Gradient butonun kenarlığı görünmesin ama ölçüler aynı kalsın */
+      .nav-drawer .list-btn {
+        border: 1px solid transparent;
+      }
+    }
+
+    /* Küçük telefonlar */
+    @media (max-width: 480px) {
+      .biz-hero h1 {
+        font-size: 28px;
+        line-height: 1.2
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        gap: 10px
+      }
+
+      .kpi {
+        padding: 20px 12px
+      }
+
+      .faq .q {
+        font-size: 16px;
+        padding: 14px
+      }
+
+      .faq .a {
+        font-size: 14px
+      }
+
+      .gradient-card .container {
+        padding: 24px 16px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <div class="sticky-nav">
+    <a class="logo" href="index.html">~arat</a>
+
+    <!-- hamburger (mobil) -->
+    <button class="menu-toggle" id="navToggle" aria-label="Menü">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- menü çekmece: masaüstünde satır, mobilde açılır -->
+    <div class="nav-drawer" id="navDrawer">
+      <div class="nav-center">
+        <a href="#hero">Ana Sayfa</a>
+        <button class="nav-btn" id="btnTypes">İşletme Türleri</button>
+        <a href="fiyat.html" class="nav-btn" style="display:inline-flex;align-items:center;">Fiyatlandırma</a>
+      </div>
+      <div class="nav-right">
+        <a href="admin-register-login.html" class="list-btn">Ücretsiz Dene</a>
+        <a href="admin-register-login.html" class="nav-btn">Giriş Yap</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section id="hero" class="biz-hero gradient-bg">
+    <div class="hero-noise"></div>
+    <div class="container inner" data-animate="fade-up">
+      <div class="hero-card">
+        <h1><span class="chip">Yeni</span> İşletmeni Arat'ta listele</h1>
+        <p>Randevularını 7/24 al, gelirini artır, müşterilerinle bağ kur. Arat ile tüm işleri tek yerden yönet.</p>
+        <div class="hero-ctas">
+          <a class="cta" href="admin-register-login.html">Hemen başla</a>
+          <a class="ghost" href="#ozellikler">Tüm özellikler</a>
+        </div>
+        <div class="badges">
+          <span><i class="fa-solid fa-star"></i> 4.9 / 5 memnuniyet</span>
+        </div>
+      </div>
+    </div>
+    <svg class="section-divider" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0,64 C240,128 480,0 720,48 C960,96 1200,64 1440,16 L1440,90 L0,90 Z" fill="#0f1216"></path>
+    </svg>
+  </section>
+
+  <!-- Markalar -->
+  <section class="brands" aria-label="Basında biz">
+    <div class="container">
+      <div class="track" data-marquee>
+        <span>Saç Kesimi</span>
+        <span>Sakal Tıraşı</span>
+        <span>Saç Boyama</span>
+        <span>Fön & Şekillendirme</span>
+        <span>Manikür</span>
+        <span>Pedikür</span>
+        <span>Cilt Bakımı</span>
+        <span>Masaj</span>
+        <span>Kaş & Kirpik</span>
+        <span>Gelincik Tırnak</span>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Özellikler -->
+  <section id="ozellikler" class="feature">
+    <div class="container content" data-animate="fade-in">
+      <div class="text">
+        <h2>Takvim ve randevu – kontrol sende</h2>
+        <p>Çakışmaları önleyen akıllı takvim, tatil günleri, hizmet ve süre tanımları. Müşterilerin kendi randevusunu
+          online alırken sen işine odaklan.</p>
+        <ul class="checklist">
+          <li>İki tıkla randevu oluştur</li>
+          <li>No-show azaltan otomatik hatırlatmalar</li>
+          <li>Google’da rezervasyon butonu</li>
+        </ul>
+      </div>
+      <div class="media">
+        <img src="img/promo3.png" alt="Takvim ve randevu" />
+      </div>
+    </div>
+  </section>
+
+  <section class="feature alt">
+    <div class="container content" data-animate="fade-in">
+      <div class="media">
+        <img src="img/promo4.png" alt="Ödemeler ve satış" />
+      </div>
+      <div class="text">
+        <h2>Ödemeler ve iptal politikası – gelirini koru</h2>
+        <p>Depozito, ön ödeme, iptal ücretleri ve esnek kurallar. Ödemeleri güvenle al, son dakika iptallerini en aza
+          indir.</p>
+        <ul class="checklist">
+          <li>Kartla ödeme ve POS entegrasyonu</li>
+          <li>Depozito / ön ödeme seçenekleri</li>
+          <li>İade ve iptal akışları</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI -->
+  <section class="metrics">
+    <div class="container grid" data-animate="zoom">
+      <div class="kpi card"><strong>%20</strong><span>daha fazla rezervasyon</span></div>
+      <div class="kpi card"><strong>%25</strong><span>no-show düşüşü</span></div>
+    </div>
+  </section>
+
+  <!-- Başlamak çok kolay -->
+  <section class="gs-easy">
+    <div class="container" data-animate="fade-up">
+      <h2>Başlamak çok kolay</h2>
+      <div class="gs-grid">
+        <div class="gs-card">
+          <div class="gs-art"><i class="fa-solid fa-id-card fa-2x"></i></div>
+          <h3>1. Profilini kur</h3>
+          <p>Ücretsiz başla, kredi kartı veya taahhüt gerekmez. <br>5 dakikadan kısa sürede hazır ol.</p>
+        </div>
+        <div class="gs-card">
+          <div class="gs-art alt"><i class="fa-solid fa-link fa-2x"></i></div>
+          <h3>2. Rezervasyon linkini paylaş</h3>
+          <p>Müşterilerine yeni bağlantını mesajla gönder, QR kod oluştur ve Google/sosyal medyada butonları ayarla.</p>
+        </div>
+        <div class="gs-card">
+          <div class="gs-art third"><i class="fa-solid fa-calendar-check fa-2x"></i></div>
+          <h3>3. Rezervasyonları almaya başla</h3>
+          <p>Müşteriler aynı gün içinde kendi randevularını alabilir — telefonla yazışma derdi biter.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SSS -->
+  <section class="faq">
+    <div class="container" data-animate="fade-in">
+      <h2>Sıkça sorulan sorular</h2>
+
+      <div class="item">
+        <button class="q">Arat nedir? <i class="fas fa-chevron-down"></i></button>
+        <div class="a">
+          Özetle, Arat bir <strong>rezervasyon ve planlama uygulamasıdır</strong>—ama bundan çok daha fazlası.
+          İşinizi kendi yönteminizle yürütmenize yardımcı olan bir platformuz. Kayıt olduğunuzda; randevu planlama,
+          müşteri yönetimi, işletmeni tanıtma, ödemeleri alma ve detaylı raporlara erişim gibi gelişmiş özellikler elde
+          edersiniz.
+        </div>
+      </div>
+
+      <div class="item">
+        <button class="q">Pazaryeri (Marketplace) nedir ve bana nasıl fayda sağlar? <i
+            class="fas fa-chevron-down"></i></button>
+        <div class="a">
+          Arat Pazaryeri, hizmet arayan yerel müşterilerin profilini ve rezervasyon sayfanı bulabildiği bir platformdur.
+          İşletmeni Pazaryeri’nde listelediğinde müşteriler <strong>24/7 seni bulur ve randevu alır</strong>—sana mesaj
+          atmalarına gerek kalmaz.
+        </div>
+
+        <div class="item">
+          <button class="q">Online rezervasyon nedir? <i class="fas fa-chevron-down"></i></button>
+          <div class="a">
+            <strong>Çevrimiçi randevu</strong>, müşterilerin 7/24 hizmetlerini görüp uygunluklarını inceleyerek kendi
+            randevularını almalarını sağlar.
+            Böylece arama/mesaj trafiği azalır, sen ve müşterilerin için süreç hızlanır.
+          </div>
+        </div>
+
+        <div class="item">
+          <button class="q">Arat kimler için? <i class="fas fa-chevron-down"></i></button>
+          <div class="a">
+            Arat; randevu ile çalışan her ölçekteki işletme için <strong>iş yönetimi, pazarlama ve planlama
+              yazılımıdır</strong>.
+            Kuaför, güzellik salonu ve daha fazlası Arat üzerinde işlerini yönetebilir.
+          </div>
+        </div>
+
+      </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="gradient-card">
+    <div class="container" data-animate>
+      <h2>Bugün başla</h2>
+      <p style="color:var(--muted);max-width:700px;margin:6px auto 16px">30 gün ücretsiz dene. Kart bilgisi gerekmez.</p>
+      <a href="admin-register-login.html" class="list-btn">Ücretsiz Başla</a>
+    </div>
+  </section>
+
+  <!-- Modals -->
+  <div class="modal" id="typesModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="typesTitle">
+      <div class="modal-header">
+        <h3 id="typesTitle">İşletme Türünü Seç</h3>
+        <button class="modal-close" data-close="typesModal" aria-label="Kapat">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="biz-types">
+          <a href="kuafor.html">Kuaför</a>
+          <a href="guzellik-salonu.html" class="alt">Güzellik Salonu</a>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="nav-btn" data-close="typesModal">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Scroll reveal
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } })
+    }, { threshold: 0.15 });
+    document.querySelectorAll('[data-animate]').forEach(el => io.observe(el));
+
+    // FAQ accordion
+    document.querySelectorAll('.faq .item').forEach((item) => {
+      item.querySelector('.q')?.addEventListener('click', () => item.classList.toggle('open'))
+    });
+
+    // Marquee duplicate
+    const track = document.querySelector('[data-marquee]');
+    if (track) { track.innerHTML = track.innerHTML + track.innerHTML; }
+
+    // Navbar shadow
+    const nav = document.querySelector('.sticky-nav');
+    window.addEventListener('scroll', () => nav?.classList.toggle('scrolled', window.scrollY > 6));
+
+    // Modals helpers
+    const openModal = id => document.getElementById(id)?.classList.add('open');
+    const closeModal = id => document.getElementById(id)?.classList.remove('open');
+    document.getElementById('btnTypes')?.addEventListener('click', () => openModal('typesModal'));
+    document.querySelectorAll('[data-close]').forEach(btn => {
+      btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close')));
+    });
+
+    // Hamburger menu
+    const navToggle = document.getElementById('navToggle');
+    const navDrawer = document.getElementById('navDrawer');
+    navToggle?.addEventListener('click', () => navDrawer.classList.toggle('open'));
+    window.addEventListener('click', (e) => {
+      const insideNav = e.target.closest('.sticky-nav');
+      if (!insideNav && navDrawer?.classList.contains('open')) navDrawer.classList.remove('open');
+    });
+    window.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.modal.open').forEach(m => m.classList.remove('open'));
+        navDrawer?.classList.remove('open');
+      }
+    });
+  </script>
+</body>
+
+</html>

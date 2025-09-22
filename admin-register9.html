@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0b0c0f" media="(prefers-color-scheme: dark)">
+  <meta name="robots" content="noindex,nofollow"/>
+  <title>Hoş Geldiniz – Kayıt Tamamlandı</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --border:#e5e7eb; --primary:#191919; --accent:#22c55e; --current:#2563eb;
+      --radius:18px; --shadow:0 14px 40px rgba(0,0,0,.10);
+      --pill:#f3f4f6;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0c0f; --card:#0f1115; --text:#e5e7eb; --muted:#9aa3af;
+        --border:#1f2937; --primary:#e5e7eb; --accent:#10b981; --current:#60a5fa;
+        --shadow:0 20px 60px rgba(0,0,0,.55); --pill:#0f1115;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      padding:18px 16px calc(env(safe-area-inset-bottom,0) + 40px);
+      padding-top:calc(env(safe-area-inset-top,0) + 12px);
+    }
+    /* Stepper */
+    .stepper{
+      width:min(960px, 100%); margin:4px auto 16px; display:flex; gap:10px; align-items:center; padding:0 4px;
+      overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    }
+    .stepper::-webkit-scrollbar{display:none}
+    .step{ display:flex; align-items:center; gap:10px; flex:0 0 auto; min-width:56px; }
+    .dot{ width:34px; height:34px; border-radius:999px; display:grid; place-items:center; font-weight:800;
+          border:2px solid var(--border); background:var(--card); color:var(--muted); }
+    .step.done .dot{ border-color:var(--accent); color:#fff; background:var(--accent); }
+    .step.current .dot{ border-color:var(--current); color:var(--current); background:var(--card); }
+    .bar{ height:6px; border-radius:999px; width:54px; background:#e9ecef; }
+    .bar.done{ background:var(--accent); }
+    @media (prefers-color-scheme: dark){ .bar{ background:#151a21; } }
+
+    /* Card */
+    .card{ width:100%; max-width:760px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; position:relative; }
+    .top{ display:flex; align-items:center; gap:16px; padding:16px 22px 8px; }
+    .back-btn{ width:40px; height:40px; border-radius:12px; border:1px solid var(--border);
+               display:flex; align-items:center; justify-content:center; background:var(--card); cursor:pointer; color:inherit; }
+    .hero{
+      position:relative; padding:18px 26px 24px; border-bottom:1px solid var(--border); background:
+      radial-gradient(1200px 300px at 0% -20%, #dbeafe 0, transparent 50%),
+      radial-gradient(1000px 260px at 100% -30%, #dcfce7 0, transparent 50%),
+      var(--card);
+    }
+    @media (prefers-color-scheme: dark){
+      .hero{
+        background:
+        radial-gradient(1200px 300px at 0% -20%, rgba(37,99,235,.12) 0, transparent 50%),
+        radial-gradient(1000px 260px at 100% -30%, rgba(16,185,129,.12) 0, transparent 50%),
+        var(--card);
+      }
+    }
+    .title{ margin:6px 0 0; font-size:26px; font-weight:800; text-align:center; }
+    .subtitle{ margin:8px auto 0; color:var(--muted); text-align:center; max-width:56ch; }
+    .brand{ display:flex; align-items:center; gap:10px; justify-content:center; margin-top:12px; }
+    .brand .avatar{ width:52px; height:52px; border-radius:16px; display:grid; place-items:center; font-weight:800; color:#fff; background:#111827; }
+    .brand .meta{ line-height:1.2 }
+    .brand .name{ font-weight:800; }
+    .brand .sub{ color:var(--muted); font-size:13px; }
+
+    /* Confetti */
+    .confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+    .confetti i{ position:absolute; top:-16px; font-size:14px; opacity:.9; animation:drop 2.6s ease-in forwards; }
+    @keyframes drop { to { transform: translateY(120vh) rotate(230deg); opacity:1; } }
+
+    .content{ padding:18px 26px 10px; }
+    .tips{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:640px){ .tips{ grid-template-columns:1fr; } }
+    .tip{ display:flex; gap:12px; align-items:flex-start; border:1px solid var(--border); border-radius:14px; padding:12px; background:var(--card); }
+    .tip i{ width:28px; height:28px; border-radius:8px; display:grid; place-items:center; background:var(--pill); color:#111; }
+    @media (prefers-color-scheme: dark){ .tip i{ color:#e5e7eb; } }
+    .tip strong{ display:block; margin-bottom:2px; }
+    .tip span{ color:var(--muted); font-size:13px; }
+
+    .cta{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:16px 0 6px; }
+    @media (max-width:560px){ .cta{ grid-template-columns:1fr; } }
+    .btn{ width:100%; height:48px; border-radius:12px; border:none; font-weight:800; cursor:pointer; }
+    .btn-primary{ background:var(--primary); color:#fff; }
+    .btn-ghost{ background:var(--card); border:1px solid var(--border); color:inherit; }
+    .btn:disabled{ opacity:.6; cursor:not-allowed; }
+
+    .foot{ padding:8px 26px 22px; color:var(--muted); font-size:12px; text-align:center; }
+  </style>
+</head>
+<body>
+
+  <!-- Stepper -->
+  <nav class="stepper" aria-label="Kayıt adımları">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check" aria-hidden="true"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot" aria-current="step">9</div></div>
+  </nav>
+
+  <main class="card" role="main">
+    <div class="top">
+      <button class="back-btn" id="btnBack" aria-label="Geri"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <header class="hero">
+      <div class="confetti" aria-hidden="true" id="confetti"></div>
+      <h1 class="title">Hoş geldiniz! 🎉</h1>
+      <p class="subtitle">Kayıt işlemini başarıyla tamamladınız. Artık takviminizi yönetebilir, hizmetlerinizi düzenleyebilir ve randevular almaya başlayabilirsiniz.</p>
+
+      <div class="brand" id="brandBox" aria-live="polite">
+        <div class="avatar" id="brandAvatar" aria-hidden="true">İŞ</div>
+        <div class="meta">
+          <div class="name" id="brandName">İşletme</div>
+          <div class="sub" id="ownerName">Sahip: —</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="tips">
+        <div class="tip">
+          <i class="fa-solid fa-calendar-check" aria-hidden="true"></i>
+          <div>
+            <strong>Takvimi keşfedin</strong>
+            <span>Gün/hafta görünümünde randevuları görüntüleyin, yeni randevu ekleyin.</span>
+          </div>
+        </div>
+        <div class="tip">
+          <i class="fa-solid fa-scissors" aria-hidden="true"></i>
+          <div>
+            <strong>Hizmet & fiyatları düzenleyin</strong>
+            <span>Önerilen hizmetleri fiyat ve sürelerle güncelleyin.</span>
+          </div>
+        </div>
+        <div class="tip">
+          <i class="fa-solid fa-clock" aria-hidden="true"></i>
+          <div>
+            <strong>Çalışma saatlerini kontrol edin</strong>
+            <span>İşletme ve personel saatlerini uygunluklarınıza göre ayarlayın.</span>
+          </div>
+        </div>
+        <div class="tip">
+          <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+          <div>
+            <strong>Ekibinizi yönetin</strong>
+            <span>Yeni personel ekleyin, çalışma saatlerini ve görevlerini düzenleyin.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta">
+        <button id="goBtn" class="btn btn-primary">
+          <i class="fa-solid fa-arrow-right-to-bracket" aria-hidden="true"></i> Takvime Git
+        </button>
+        <button id="tourBtn" class="btn btn-ghost">
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Hızlı turu başlat
+        </button>
+      </div>
+    </section>
+
+    <p class="foot">
+      İpucu: “Ayarlar” bölümünden işletme bilgilerinizi, kapak görsellerini ve randevu tercihlerinizi dilediğiniz zaman güncelleyebilirsiniz.
+    </p>
+  </main>
+
+  <script type="module">
+    import { auth, db } from "./js/firebase.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    const $ = (s,r=document)=>r.querySelector(s);
+
+    /* ---------- Mini confetti ---------- */
+    (function confetti(){
+      const box = $("#confetti");
+      const colors = ["#34d399","#60a5fa","#fbbf24","#f472b6","#a78bfa","#f87171"];
+      const count = 36;
+      for(let i=0;i<count;i++){
+        const el = document.createElement("i");
+        el.textContent = "★";
+        const left = Math.random()*100;
+        const delay = Math.random()*0.6;
+        const dur = 1.6 + Math.random()*1.4;
+        el.style.left = left+"%";
+        el.style.color = colors[i % colors.length];
+        el.style.animationDuration = dur+"s";
+        el.style.animationDelay = delay+"s";
+        box.appendChild(el);
+      }
+      setTimeout(()=> box.innerHTML="", 3600);
+    })();
+
+    /* ---------- Bilgileri doldur ---------- */
+    function initials(n){ return (n||"").split(" ").filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase(); }
+
+    let prof = {};
+    try{ prof = JSON.parse(localStorage.getItem("pending_admin_profile")||"{}") || {}; }catch{}
+    const bizName  = prof.businessName || "İşletmeniz";
+    const ownerStr = prof.adminName    || "—";
+
+    $("#brandName").textContent = bizName;
+    $("#ownerName").textContent = "Sahip: " + ownerStr;
+    $("#brandAvatar").textContent = initials(bizName || "İş");
+
+    /* ---------- “Kayıt tamamlandı” bayrağı ---------- */
+    const emailLS = (localStorage.getItem("pending_admin_email")||"").trim().toLowerCase();
+    localStorage.setItem("__reg_ok","1");
+    if(emailLS) localStorage.setItem("pending_admin_email", emailLS);
+
+    /* ---------- Kayıt sonrası geçici verileri temizle ---------- */
+    function clearOnboardingCache(){
+      // KORUNACAK anahtarlar (giriş ekranı ve tur için)
+      const PRESERVE = new Set(["__reg_ok","pending_admin_email","post_login_tour"]);
+
+      // Silinecekler
+      const EXACT = [
+        "pending_admin_profile","pending_admin_password",
+        "admin_onboarding_flow","admin_onboarding_last_step","admin_onboarding_method",
+        "return_to"
+      ];
+      const PREFIX = ["step"]; // step3..step8
+
+      // localStorage
+      for(let i=localStorage.length-1;i>=0;i--){
+        const k = localStorage.key(i);
+        if(PRESERVE.has(k)) continue;
+        const kl = (k||"").toLowerCase();
+        if (EXACT.includes(k) || PREFIX.some(p=> kl.startsWith(p))) {
+          localStorage.removeItem(k);
+        }
+      }
+      // sessionStorage
+      for(let i=sessionStorage.length-1;i>=0;i--){
+        const k = sessionStorage.key(i);
+        if(PRESERVE.has(k)) continue;
+        const kl = (k||"").toLowerCase();
+        if (EXACT.includes(k) || PREFIX.some(p=> kl.startsWith(p))) {
+          sessionStorage.removeItem(k);
+        }
+      }
+    }
+    // UI render’dan kısa süre sonra temizle
+    setTimeout(clearOnboardingCache, 50);
+
+    /* ---------- Admin rolü mü? CTA metni ---------- */
+    async function isAdmin(uid){
+      try{
+        const s = await getDoc(doc(db,"roles",uid));
+        return s.exists() && s.data()?.role === "admin";
+      }catch{ return false; }
+    }
+
+    const goBtn = $("#goBtn");
+    const tourBtn = $("#tourBtn");
+    let isAdminUser = false;
+
+    onAuthStateChanged(auth, async (user)=>{
+      if(user && await isAdmin(user.uid)){
+        isAdminUser = true;
+        goBtn.innerHTML = '<i class="fa-solid fa-calendar-days" aria-hidden="true"></i> Takvime Git';
+      }else{
+        isAdminUser = false;
+        goBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i> Giriş Yap';
+      }
+    });
+
+    /* ---------- CTA davranışı ---------- */
+    goBtn.addEventListener("click", ()=>{
+      if(isAdminUser){
+        location.replace("calendar.html");
+      }else{
+        location.replace("admin-register-login.html#login");
+      }
+    });
+
+    // Hızlı tur: giriş yoksa, girişten sonra tur başlatılsın
+    tourBtn.addEventListener("click", ()=>{
+      if(isAdminUser){
+        location.replace("calendar.html?tour=1");
+      }else{
+        localStorage.setItem("post_login_tour","1");
+        location.replace("admin-register-login.html#login");
+      }
+    });
+
+    // Geri: akış bitti—takvim ya da girişe
+    $("#btnBack").addEventListener("click",(e)=>{
+      e.preventDefault();
+      if(isAdminUser) location.replace("calendar.html");
+      else location.replace("admin-register-login.html#login");
+    });
+  </script>
+</body>
+</html>

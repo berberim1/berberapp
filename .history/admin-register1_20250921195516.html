@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+  <title>Yönetici Kayıt – Şifre Belirle</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{
+      --bg:#f2f2f2; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --primary:#191919; --primary-contrast:#ffffff;
+      --radius:14px; --shadow:0 4px 20px rgba(0,0,0,0.08);
+      --input:#f9fafb; --input-border:#e5e7eb;
+      --divider:#e5e7eb; --pill:#f3f4f6; --danger:#ef4444;
+      --ok-bg:#ecfdf5; --ok-bd:#a7f3d0; --ok-fg:#065f46;
+      --warn:#d97706; --warn-bg:#fffbeb; --warn-bd:#fcd34d;
+      --focus:#111827;
+      --meter-bg:#e5e7eb; --meter-weak:#ef4444; --meter-mid:#f59e0b; --meter-strong:#10b981; --meter-xstrong:#0ea5e9;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0b0b; --card:#121212; --text:#f3f4f6; --muted:#9ca3af;
+        --primary:#e5e7eb; --primary-contrast:#111827;
+        --input:#0f0f0f; --input-border:#1f2937; --divider:#1f2937; --pill:#111214;
+        --ok-bg:#0b2e26; --ok-bd:#084939; --ok-fg:#a7f3d0;
+        --warn-bg:#452f06; --warn-bd:#a16207;
+        --focus:#e5e7eb;
+        --meter-bg:#222; --meter-weak:#f87171; --meter-mid:#fbbf24; --meter-strong:#34d399; --meter-xstrong:#38bdf8;
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;
+      color:var(--text); background:var(--bg);
+      display:flex; align-items:center; justify-content:center;
+      padding:clamp(16px,3.5vw,32px);
+      padding-top:calc(env(safe-area-inset-top,0) + clamp(16px,3.5vw,32px));
+      padding-bottom:calc(env(safe-area-inset-bottom,0) + clamp(16px,3.5vw,32px));
+    }
+
+    .card{
+      width:100%; max-width:560px;
+      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:28px 22px;
+    }
+
+    .title{ text-align:center; font-size:22px; font-weight:800; margin:6px 0 6px; letter-spacing:.2px; }
+    .sub{ text-align:center; color:var(--muted); font-size:14px; margin:0 0 18px; }
+
+    .email-summary{
+      display:flex; align-items:center; gap:10px;
+      background:var(--input); border:1px solid var(--input-border);
+      border-radius:10px; padding:10px 12px; margin-bottom:16px; font-size:14px;
+    }
+    .email-summary i{ color:#2563eb; }
+    .email-text{ font-weight:700; }
+
+    .form-row{ margin-bottom:12px; }
+    label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+
+    .pw-wrap{ position:relative; }
+    input{
+      width:100%; height:46px; border-radius:10px; border:1px solid var(--input-border);
+      background:var(--input); padding:0 96px 0 14px; font-size:15px; outline:none;
+      color:var(--text);
+    }
+    input::placeholder{ color:#9aa3af; }
+    input:focus{ outline:2px solid transparent; box-shadow:0 0 0 3px color-mix(in oklab, var(--focus) 25%, transparent); }
+    input[aria-invalid="true"]{ border-color:var(--danger); }
+
+    .toggle{
+      position:absolute; right:6px; top:50%; transform:translateY(-50%);
+      border:none; background:transparent; width:36px; height:36px; cursor:pointer;
+      border-radius:8px; color:var(--muted);
+    }
+    .toggle:hover{ background:var(--pill); }
+
+    .pw-suggest{
+      position:absolute; right:42px; top:50%; transform:translateY(-50%);
+      height:36px; border-radius:8px; border:1px solid var(--input-border);
+      background:var(--card); color:var(--text); padding:0 8px; cursor:pointer; font-weight:700; font-size:12px;
+    }
+
+    .rules{ margin:10px 0 6px; padding:0; list-style:none; color:var(--muted); font-size:13px; }
+    .rules li{ display:flex; align-items:center; gap:10px; padding:6px 0; }
+    .dot{ width:8px; height:8px; border-radius:50%; background:#94a3b8; transition:.2s; }
+    .valid .dot{ background:#22c55e; }
+    .valid span{ color:var(--ok-fg); }
+
+    .caps{ display:none; margin:6px 0 10px; font-size:13px;
+      padding:8px 10px; border-radius:10px; background:var(--warn-bg); border:1px solid var(--warn-bd); color:var(--warn); }
+    .caps.show{ display:block; }
+
+    /* strength meter */
+    .meter{ margin:10px 0 4px; }
+    .meter-bars{ display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+    .bar{ height:8px; background:var(--meter-bg); border-radius:999px; }
+    .bar.f1{ background:var(--meter-weak); }
+    .bar.f2{ background:var(--meter-mid); }
+    .bar.f3{ background:var(--meter-strong); }
+    .bar.f4{ background:var(--meter-xstrong); }
+    .meter-label{ font-size:12px; color:var(--muted); font-weight:700; }
+
+    .btn-row{ display:flex; gap:10px; margin-top:14px; }
+    .btn{ flex:1; min-height:46px; border-radius:10px; border:1px solid transparent; font-weight:800; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:10px; transition:transform .04s ease, opacity .15s ease; }
+    .btn:active{ transform:scale(.995); }
+    .btn-primary{ background:var(--primary); color:var(--primary-contrast); }
+    .btn-ghost{ background:var(--card); border:1px solid var(--input-border); color:var(--text); }
+    .btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
+
+    @media (max-width:560px){
+      .card{ padding:22px 16px; }
+      .btn-row{ flex-direction:column; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .btn, .toggle{ transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <h1 id="title" class="title">Şifre Belirle</h1>
+    <p class="sub">Yönetici hesabınız için şifre oluşturun.</p>
+
+    <!-- Devam edilen e-posta bilgisi -->
+    <div class="email-summary" aria-live="polite">
+      <i class="fa-regular fa-envelope"></i>
+      <div>
+        <div style="font-size:12px; color:var(--muted);">Devam edilen e-posta</div>
+        <div id="emailText" class="email-text">—</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="password">Şifre</label>
+      <div class="pw-wrap">
+        <input id="password" type="password" placeholder="••••••••" autocomplete="new-password" inputmode="text" />
+        <button id="pwSuggest" class="pw-suggest" type="button" title="Rastgele güçlü şifre öner">Öner</button>
+        <button id="pwToggle" class="toggle" aria-label="Şifreyi göster/gizle"><i class="fa-regular fa-eye"></i></button>
+      </div>
+    </div>
+
+    <div class="meter" aria-live="polite">
+      <div class="meter-bars" aria-hidden="true">
+        <div id="b1" class="bar"></div>
+        <div id="b2" class="bar"></div>
+        <div id="b3" class="bar"></div>
+        <div id="b4" class="bar"></div>
+      </div>
+      <div id="meterLabel" class="meter-label">Şifre gücü: —</div>
+    </div>
+
+    <ul class="rules" aria-live="polite">
+      <li id="r-letter"><span class="dot"></span><span>En az bir harf</span></li>
+      <li id="r-digit"><span class="dot"></span><span>En az bir rakam</span></li>
+      <li id="r-length"><span class="dot"></span><span>8 karakter veya daha uzun</span></li>
+    </ul>
+
+    <div id="capsWarn" class="caps"><i class="fa-solid fa-arrow-up-a-z" style="margin-right:6px;"></i> Caps Lock açık olabilir.</div>
+
+    <div class="btn-row">
+      <button id="btn-back" class="btn btn-ghost" type="button"><i class="fa-solid fa-arrow-left"></i> Geri</button>
+      <button id="btn-continue" class="btn btn-primary" type="button" disabled>Devam Et</button>
+    </div>
+  </main>
+
+  <script type="module">
+    // Akış anahtarları
+    const K_EMAIL  = "pending_admin_email";
+    const K_METHOD = "admin_onboarding_method";
+    const K_FLOW   = "admin_onboarding_flow";
+
+    // Akış doğrulama
+    const email   = (localStorage.getItem(K_EMAIL)  || "").trim().toLowerCase();
+    const method  = (localStorage.getItem(K_METHOD) || "").trim().toLowerCase();
+    const flow    = (localStorage.getItem(K_FLOW)   || "").trim().toLowerCase();
+
+    if(!email || !method || flow !== "admin"){
+      alert("Geçersiz akış. Lütfen yönetici kaydına baştan başlayın.");
+      location.replace("admin-register-login.html");
+    }
+
+    // E-posta ekranı
+    document.getElementById("emailText").textContent = email || "—";
+
+    // Elemanlar
+    const pwd = document.getElementById("password");
+    const btn = document.getElementById("btn-continue");
+    const pwToggle  = document.getElementById("pwToggle");
+    const pwSuggest = document.getElementById("pwSuggest");
+    const btnBack   = document.getElementById("btn-back");
+
+    const rLetter = document.getElementById("r-letter");
+    const rDigit  = document.getElementById("r-digit");
+    const rLength = document.getElementById("r-length");
+    const caps    = document.getElementById("capsWarn");
+
+    const bars = [document.getElementById("b1"), document.getElementById("b2"), document.getElementById("b3"), document.getElementById("b4")];
+    const meterLabel = document.getElementById("meterLabel");
+
+    // Güç skoru: 0-4
+    function scorePassword(p){
+      if(!p) return 0;
+      let score = 0;
+      const len = p.length;
+
+      const hasLower = /[a-z]/.test(p);
+      const hasUpper = /[A-Z]/.test(p);
+      const hasDigit = /\d/.test(p);
+      const hasSpec  = /[^A-Za-z0-9]/.test(p);
+
+      const variety = [hasLower, hasUpper, hasDigit, hasSpec].filter(Boolean).length;
+
+      if (len >= 8) score++;
+      if (len >= 12) score++;
+      if (variety >= 2) score++;
+      if (variety >= 3 && len >= 12) score++;
+
+      // Bazı çok zayıf kalıplar (emailin içinde, sırf rakam/harf vb.)
+      const onlyDigits = /^\d+$/.test(p);
+      const onlyLetters = /^[A-Za-z]+$/.test(p);
+      if (onlyDigits || onlyLetters) score = Math.min(score, 2);
+
+      return Math.max(0, Math.min(4, score));
+    }
+    function updateMeter(p){
+      const s = scorePassword(p);
+      bars.forEach((b,i)=>{ b.className = "bar" + (i < s ? (" f"+s) : ""); });
+      const labels = ["—","Zayıf","Orta","Güçlü","Çok güçlü"];
+      meterLabel.textContent = "Şifre gücü: " + labels[s];
+    }
+
+    // Kurallar
+    function validate(v){
+      const hasLetter = /[a-zA-Z]/.test(v);
+      const hasDigit  = /\d/.test(v);
+      const hasLen    = v.length >= 8;
+
+      rLetter.classList.toggle("valid",hasLetter);
+      rDigit.classList.toggle("valid",hasDigit);
+      rLength.classList.toggle("valid",hasLen);
+      pwd.setAttribute("aria-invalid", !(hasLetter && hasDigit && hasLen));
+      btn.disabled = !(hasLetter && hasDigit && hasLen);
+
+      updateMeter(v);
+    }
+
+    // Caps Lock uyarısı
+    function handleKeyEvent(e){
+      if(typeof e.getModifierState === "function"){
+        const on = e.getModifierState("CapsLock");
+        caps.classList.toggle("show", !!on);
+      }
+    }
+
+    // Rastgele güçlü şifre
+    function randomStrong(length=14){
+      const lowers="abcdefghijkmnopqrstuvwxyz";
+      const uppers="ABCDEFGHJKLMNPQRSTUVWXYZ";
+      const digits="23456789";
+      const specials="!@#$%^&*()-_=+[]{}";
+      const all = lowers+uppers+digits+specials;
+
+      function pick(src){ return src[Math.floor(Math.random()*src.length)]; }
+
+      // En az birinden birer tane
+      let out = pick(lowers)+pick(uppers)+pick(digits)+pick(specials);
+      for(let i=out.length;i<length;i++){ out += pick(all); }
+
+      // Basit karıştırma
+      out = out.split('').sort(()=>Math.random()-0.5).join('');
+      return out;
+    }
+
+    // Eventler
+    let deb;
+    pwd.addEventListener("input",()=>{
+      clearTimeout(deb);
+      const v=pwd.value;
+      deb=setTimeout(()=>validate(v), 60);
+    });
+    pwd.addEventListener("keydown",(e)=>{ handleKeyEvent(e); if(e.key==="Enter" && !btn.disabled) btn.click(); });
+    pwd.addEventListener("keyup", handleKeyEvent);
+
+    // Göster / gizle
+    pwToggle.addEventListener("click",(e)=>{
+      e.preventDefault();
+      const icon = pwToggle.querySelector("i");
+      const show = pwd.type === "password";
+      pwd.type = show ? "text" : "password";
+      icon.className = show ? "fa-regular fa-eye-slash" : "fa-regular fa-eye";
+      pwd.focus();
+    });
+
+    // Öner
+    pwSuggest.addEventListener("click", ()=>{
+      const suggestion = randomStrong(14);
+      pwd.value = suggestion;
+      validate(suggestion);
+    });
+
+    // Geri
+    btnBack.addEventListener("click", ()=>{
+      location.replace("admin-register-login.html");
+    });
+
+    // Devam
+    btn.addEventListener("click", async ()=>{
+      const pass = (pwd.value || "").trim();
+      const ok = /[a-zA-Z]/.test(pass) && /\d/.test(pass) && pass.length>=8;
+      if(!ok){ validate(pass); return; }
+
+      btn.disabled = true;
+      const old = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Kaydediliyor…';
+      try{
+        // Bu adımda sadece saklıyoruz; kullanıcıyı Auth'ta oluşturma ileri adımda.
+        localStorage.setItem("pending_admin_password", pass);
+        localStorage.setItem("admin_onboarding_last_step", "1");
+        location.replace("admin-register2.html");
+      }catch(err){
+        alert("İşlem başarısız: " + (err?.message || "hata"));
+        btn.disabled=false; btn.innerHTML = old;
+      }
+    });
+
+    // İlk odak + başlangıç durumu
+    setTimeout(()=>{ pwd.focus(); validate(pwd.value||""); }, 50);
+  </script>
+</body>
+</html>

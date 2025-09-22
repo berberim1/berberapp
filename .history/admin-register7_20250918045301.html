@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Yönetici Kaydı – Berber Hizmetleri</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+<style>
+  :root{
+    --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+    --border:#e5e7eb; --primary:#191919; --accent:#22c55e;
+    --radius:18px; --shadow:0 14px 40px rgba(0,0,0,.10);
+    --ok:#10b981; --chip:#1f2937;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;background:var(--bg);font-family:Inter,system-ui;padding:18px 16px 40px;}
+  .card{width:100%;max-width:640px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;text-align:center;}
+  .top{display:flex;align-items:center;gap:16px;padding:18px 22px 10px;}
+  .back-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;}
+  .progress-outer{flex:1;height:8px;border-radius:999px;background:#f1f3f5;overflow:hidden;}
+  .progress-inner{height:100%;width:76%;background:var(--accent);}
+  .banner{width:100%;height:120px;background:linear-gradient(90deg,#111,#444);position:relative;}
+  .avatar{width:120px;height:120px;border-radius:50%;border:6px solid #fff;position:absolute;bottom:-60px;left:50%;transform:translateX(-50%);overflow:hidden;}
+  .avatar img{width:100%;height:100%;object-fit:cover;}
+  .content{padding:80px 24px 24px;}
+  h1{font-size:22px;font-weight:800;margin:12px 0 6px;}
+  p{margin:0 0 16px;color:var(--muted);}
+  p strong{color:#000;}
+  .btn{width:100%;height:48px;border-radius:12px;border:none;font-weight:700;cursor:pointer;margin:8px 0;}
+  .btn-dark{background:var(--primary);color:#fff;position:relative;}
+  .btn-outline{background:#fff;border:1px solid var(--border);color:#111;}
+  .btn[disabled]{opacity:.6;cursor:not-allowed;}
+  .badge{position:absolute;top:-8px;right:-8px;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--accent);color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;}
+
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:24px;z-index:50;}
+  .modal{width:100%;max-width:860px;background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:flex;flex-direction:column;}
+  .m-head{display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid var(--border);justify-content:space-between;}
+  .m-close{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;}
+  .m-title{font-size:22px;font-weight:800;}
+  .m-body{padding:18px 22px;max-height:65vh;overflow:auto;}
+  .m-foot{padding:12px 22px 18px;border-top:1px solid var(--border);}
+
+  .board{background:#f8fafc;border:1px solid #eef2f7;border-radius:14px;padding:12px;margin-bottom:14px;text-align:left;}
+  .board-title{font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+  .selected-wrap{display:flex;flex-wrap:wrap;gap:10px;}
+  .sel-card{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px 10px;}
+  .sel-card .title{font-weight:700;}
+  .sel-card .rm{width:28px;height:28px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 10px;border-radius:10px;background:var(--chip);color:#fff;cursor:pointer;font-weight:700;font-size:12px;}
+  .chip.small{height:28px;}
+  .chip.ok{background:var(--ok);}
+
+  .svc-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid #f1f3f5;}
+  .svc-name{font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+
+  <main class="card">
+    <div class="top">
+      <button class="back-btn" id="btnBack" aria-label="Geri"><i class="fa-solid fa-arrow-left"></i></button>
+      <div class="progress-outer"><div class="progress-inner"></div></div>
+    </div>
+
+    <div class="banner"><div class="avatar"><img src="img/berber1.jpeg" alt="Berber"/></div></div>
+
+    <div class="content">
+      <h1>Berber hizmetleri</h1>
+      <p>Sizin gibi işletmeler genelde <strong>6 veya daha fazla</strong> hizmet ekler.</p>
+      <button id="btnSee" class="btn btn-dark">ÖNERİLERİ GÖR <span id="selBadge" class="badge" style="display:none">0</span></button>
+      <button id="btnContinue" class="btn btn-outline" disabled>DEVAM ET</button>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="overlay" id="selectOverlay" aria-modal="true" role="dialog" aria-hidden="true">
+    <div class="modal">
+      <div class="m-head">
+        <div class="m-title">Hizmetleri seç</div>
+        <button id="selCloseBtn" class="m-close" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-body">
+        <!-- Önerilenler -->
+        <div class="board">
+          <div class="board-title">
+            <span>Önerilenler</span>
+            <span>
+              <button type="button" id="btnSelectAll" class="chip small">Hepsini Seç</button>
+              <button type="button" id="btnClearAll" class="chip small" style="margin-left:6px;background:#6b7280;">Temizle</button>
+            </span>
+          </div>
+          <div id="recoChips" class="selected-wrap"></div>
+        </div>
+
+        <!-- Seçtiklerin -->
+        <div class="board">
+          <div class="board-title">Seçtiklerin</div>
+          <div id="selectedWrap" class="selected-wrap"></div>
+        </div>
+
+        <!-- Liste -->
+        <div id="groupsContainer"></div>
+      </div>
+      <div class="m-foot"><button id="btnAddSelected" class="btn btn-dark" disabled>SEÇİLENLERİ KAYDET</button></div>
+    </div>
+  </div>
+
+<script type="module">
+  /* ---------- Flow guards ---------- */
+  (function guardFlow(){
+    const flow=(localStorage.getItem("admin_onboarding_flow")||"").toLowerCase();
+    const email=(localStorage.getItem("pending_admin_email")||"").trim();
+    if(flow!=="admin" || !email){
+      alert("Akış geçersiz. Lütfen kayıt sürecine baştan başlayın.");
+      location.replace("admin-register-login.html");
+      return;
+    }
+    // 6. adım kontrolü (localStorage)
+    if(!localStorage.getItem("step6")){
+      location.replace("admin-register6.html");
+    }
+  })();
+
+  /* ---------- Data ---------- */
+  const MEN_SERVICES=[ "Saç kesimi","Sakal","Saç & sakal","Çocuk saç kesimi","Yıkama & fön","Uzun saç kesimi","Saç şekillendirme","Saç boyama","Keratin bakım","Ense düzeltme","Kaş alma","Damat tıraşı"];
+  const WOMEN_SERVICES=[ "Kadın saç kesimi","Fön","Maşa / şekillendirme","Balyaj / ombre / sombre","Uçlardan alma","Dip boya","Komple boya","Röfle","Perma","Keratin bakım","Brezilya fönü","Saç botoksu","Manikür","Pedikür","Kalıcı oje / gel","Kaş alım & biçimlendirme","Kaş laminasyonu","Kirpik lifting","İpek kirpik","Cilt bakımı (derin)","Ağda (bölgesel)","Komple ağda","Günlük makyaj","Nişan / gelin makyajı","Gelin saçı"];
+
+  function getRecommended(){
+    try{
+      const prof = JSON.parse(localStorage.getItem("pending_admin_profile") || "null");
+const types = Array.isArray(prof?.businessTypes) ? prof.businessTypes : [];
+
+      const k=types.includes("kuafor"), g=types.includes("guzellik");
+      if(k&&g) return [...new Set([...MEN_SERVICES,...WOMEN_SERVICES])];
+      if(k) return MEN_SERVICES.slice();
+      if(g) return WOMEN_SERVICES.slice();
+      return MEN_SERVICES.slice();
+    }catch{return MEN_SERVICES.slice();}
+  }
+
+  /* ---------- Elements ---------- */
+  const $=s=>document.querySelector(s);
+  const selectOverlay=$("#selectOverlay"),selectedWrap=$("#selectedWrap"),groups=$("#groupsContainer"),recoChips=$("#recoChips");
+  const btnSee=$("#btnSee"),selBadge=$("#selBadge"),btnAdd=$("#btnAddSelected"),btnContinue=$("#btnContinue");
+  const btnSelectAll=$("#btnSelectAll"),btnClearAll=$("#btnClearAll");
+  const btnBack=$("#btnBack"), btnClose=$("#selCloseBtn");
+
+  /* ---------- State ---------- */
+  let selected=new Set();
+  let RECO=getRecommended();
+  let allowLeave=false;
+
+  /* ---------- Storage helpers ---------- */
+  function saveStep(){
+    localStorage.setItem("step7", JSON.stringify({ services:[...selected] }));
+    localStorage.setItem("admin_onboarding_last_step","7");
+  }
+
+  /* ---------- Overlay helpers ---------- */
+  function open(o){o.style.display="flex";o.setAttribute("aria-hidden","false");}
+  function close(o){o.style.display="none";o.setAttribute("aria-hidden","true");}
+  btnClose.onclick=()=>close(selectOverlay);
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape" && selectOverlay.style.display==="flex") close(selectOverlay); });
+
+  /* ---------- Render ---------- */
+  function toggleSelect(name){
+    if(selected.has(name)) selected.delete(name); else selected.add(name);
+    renderSelected(); updateBadge();
+    // aynı isimli tüm butonları güncelle (öneri chip + liste butonu)
+    document.querySelectorAll(`[data-name="${CSS.escape(name)}"]`).forEach(el=>{
+      const inList = !!el.closest(".svc-row"); // listede mi?
+      el.classList.toggle("ok", selected.has(name));
+      el.textContent = inList ? (selected.has(name) ? "SEÇİLDİ" : "SEÇ") : name;
+    });
+    btnAdd.disabled = selected.size===0;
+    btnContinue.disabled = selected.size===0;
+    saveStep(); // oto-kaydet
+  }
+
+  function renderReco(){
+    recoChips.innerHTML="";
+    RECO.forEach(name=>{
+      const b=document.createElement("button");
+      b.type="button"; b.className="chip"+(selected.has(name)?" ok":""); b.dataset.name=name; b.textContent=name;
+      recoChips.appendChild(b);
+    });
+  }
+  function renderGroups(){
+    groups.innerHTML="";
+    RECO.forEach(name=>{
+      const row=document.createElement("div"); row.className="svc-row";
+      const btn=document.createElement("button");
+      btn.className="chip"+(selected.has(name)?" ok":"");
+      btn.dataset.name=name;
+      btn.textContent=selected.has(name)?"SEÇİLDİ":"SEÇ";
+      row.innerHTML=`<span class="svc-name">${name}</span>`;
+      row.appendChild(btn);
+      groups.appendChild(row);
+    });
+  }
+  function renderSelected(){
+    selectedWrap.innerHTML="";
+    selected.forEach(n=>{
+      const c=document.createElement("div"); c.className="sel-card";
+      c.innerHTML=`<div class="title">${n}</div><button class="rm" data-remove="${n}" aria-label="${n} seçimini kaldır">x</button>`;
+      selectedWrap.appendChild(c);
+    });
+  }
+  function updateBadge(){
+    if(selected.size){ selBadge.style.display="flex"; selBadge.textContent=selected.size; }
+    else selBadge.style.display="none";
+  }
+
+  /* ---------- Events ---------- */
+  btnSee.onclick=()=>{ renderReco(); renderGroups(); renderSelected(); updateBadge(); open(selectOverlay); };
+
+  recoChips.addEventListener("click",e=>{
+    const b=e.target.closest("button.chip[data-name]"); if(!b) return;
+    toggleSelect(b.dataset.name);
+  });
+  groups.addEventListener("click",e=>{
+    const b=e.target.closest("button[data-name]"); if(!b) return;
+    toggleSelect(b.dataset.name);
+  });
+  selectedWrap.addEventListener("click",e=>{
+    const rm=e.target.closest("[data-remove]"); if(!rm) return;
+    toggleSelect(rm.dataset.remove);
+  });
+
+  btnSelectAll.onclick=()=>{ RECO.forEach(n=>selected.add(n)); renderReco(); renderGroups(); renderSelected(); updateBadge(); btnAdd.disabled=false; btnContinue.disabled=false; saveStep(); };
+  btnClearAll.onclick =()=>{ selected.clear(); renderReco(); renderGroups(); renderSelected(); updateBadge(); btnAdd.disabled=true; btnContinue.disabled=true; saveStep(); };
+
+  btnAdd.onclick=()=>{ saveStep(); close(selectOverlay); };
+  btnContinue.onclick=()=>{
+    if(selected.size===0){ alert("Lütfen en az bir hizmet seçin."); return; }
+    saveStep();
+    allowLeave=true;
+    location.replace("admin-register8.html");
+  };
+
+  /* ---------- Prefill (geri gelme) ---------- */
+  (function hydrate(){
+    try{
+      const s=JSON.parse(localStorage.getItem("step7")||"{}");
+      const arr=Array.isArray(s.services)?s.services:[];
+      selected=new Set(arr);
+      updateBadge();
+      btnContinue.disabled = selected.size===0;
+    }catch{}
+  })();
+
+  /* ---------- İlk render için önerileri hazırla ---------- */
+  renderReco();
+
+  /* ---------- Leave guard & Back ---------- */
+  window.addEventListener("beforeunload",e=>{ if(!allowLeave){ e.preventDefault(); e.returnValue=""; }});
+  btnBack.onclick=e=>{
+    e.preventDefault();
+    saveStep();
+    allowLeave=true;
+    location.replace("admin-register6.html");
+  };
+</script>
+</body>
+</html>

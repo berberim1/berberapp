@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>İşletme – Arat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  :root{
+    --bg:#f6f6f6; --card:#ffffff; --ink:#0b0b0b; --muted:#6b6b6b;
+    --border:#e9e9e9; --shadow:0 10px 30px rgba(0,0,0,.08); --radius:16px;
+    --btn:#111111; --btn-ink:#ffffff; --btn-muted:#1f1f1f;
+    --ok:#0aa36b; --ok-ink:#f6fff9; --primary:#19a0b6;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Inter",system-ui,-apple-system,Segoe UI,Roboto}
+  a{color:#111;text-decoration:none}
+  img{display:block;max-width:100%}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* === ÜST NAV (birebir) === */
+  .topbar{position:sticky;top:0;z-index:50;background:#0e0e0e;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18);transition:transform .25s ease}
+  .topbar.hide{transform:translateY(-120%)}
+  .topline{display:flex;align-items:center;gap:16px;padding:12px 20px}
+  .logo{font-weight:800;font-size:22px;color:#fff}
+  .searchwrap{display:flex;align-items:center;gap:10px;flex:1}
+  .chip{display:flex;align-items:center;background:#151515;border:1px solid #232323;border-radius:12px;padding:10px 12px;gap:10px;min-width:220px}
+  .chip input{background:transparent;border:0;outline:0;color:#ededed;width:100%}
+  .top-actions{display:flex;align-items:center;gap:14px}
+  .pilllink{color:#e5e5e5;opacity:.9}
+  .pillbtn{background:#151515;border:1px solid #232323;border-radius:12px;color:#fff;padding:8px 12px;font-weight:600}
+  .catbar{display:flex;gap:22px;padding:10px 20px;border-top:1px solid #1d1d1d;border-bottom:1px solid #1d1d1d}
+  .catbar a{color:#eaeaea;white-space:nowrap;font-weight:700;opacity:.95}
+
+  /* Kısa nav (scroll’da görünen) */
+  .top-info-bar{position:fixed;top:0;left:0;right:0;transform:translateY(-120%);background:#fff;border-bottom:1px solid var(--border);box-shadow:0 10px 24px rgba(0,0,0,.07);transition:transform .25s ease;z-index:60}
+  .top-info-bar.show{transform:translateY(0)}
+  .ti-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+  .ti-left{display:flex;align-items:center;gap:12px}
+  .ti-logo{width:40px;height:40px;object-fit:cover;border-radius:10px}
+  .ti-title{font-weight:700}
+  .ti-sub{font-size:13px;color:var(--muted)}
+  .ti-book{background:var(--btn);color:var(--btn-ink);border-radius:10px;padding:10px 14px;font-weight:700}
+  .ti-book:hover{background:var(--btn-muted)}
+
+  /* Layout */
+  .detail-wrap{max-width:1200px;margin:22px auto;display:grid;grid-template-columns:2fr 1fr;gap:20px;padding:0 20px}
+  @media (max-width:980px){.detail-wrap{grid-template-columns:1fr}}
+  .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+  /* Galeri */
+  .gallery-card{overflow:hidden}
+  .gallery{position:relative;border-radius:var(--radius);overflow:hidden}
+  .gallery img{width:100%;height:520px;object-fit:cover}
+  .next{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 8px 18px rgba(0,0,0,.2);cursor:pointer;font-size:18px}
+  .dotbar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+  .dot{width:8px;height:8px;border-radius:50%;background:#c9c9c9;opacity:.9}
+  .dot.active{background:#fff}
+
+  /* Başlık/adres */
+  .biz-header{padding:18px 6px}
+  .biz-header h1{margin:0 0 6px 0;font-size:28px}
+  .small{color:var(--muted);font-size:14px}
+
+  /* Bölümler */
+  .section{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:14px 0}
+  .section h2{margin:0 0 14px 0;font-size:22px}
+
+  /* Hizmet satırı */
+  .service-row{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px}
+  .service-row .name{font-weight:700}
+  .service-row .meta{color:var(--muted);font-size:14px}
+  .price{font-weight:800}
+  .book{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+  .book:hover{background:var(--btn-muted)}
+  .all-btn{display:inline-block;margin-top:8px;font-weight:800;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;cursor:pointer}
+  .all-btn:hover{background:#f4f4f4}
+
+  /* Çalışmalar grid */
+  .grid-works{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .grid-works img{border-radius:10px;height:160px;object-fit:cover}
+  @media (max-width:980px){.grid-works{grid-template-columns:repeat(3,1fr)}}
+
+  /* Sidebar */
+  .sidebar{display:flex;flex-direction:column;gap:16px}
+  .sticky-book{position:sticky;top:84px;padding:12px}
+  .sidebar .card{padding:16px}
+
+  /* Bilgi kartı */
+  .info-card .map{height:180px;border-radius:12px;background:linear-gradient(135deg,#ececec,#dcdcdc);margin-bottom:12px}
+  .info-card .addr{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-top:-46px;box-shadow:0 10px 20px rgba(0,0,0,.08);max-width:90%}
+  .info-card .addr img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+  .info-card h4{margin:12px 0 6px 0}
+  .hr{height:1px;background:var(--border);margin:14px 0}
+  .callline{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin:10px 0}
+  .callline .callbtn{margin-left:auto;background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:8px 14px;font-weight:700}
+  .today{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+  .muted{color:var(--muted)}
+  .toggle-link{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+  .week{display:none;margin-top:6px}
+  .week.show{display:block}
+  .week .row{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-top:1px solid #efefef}
+  .note{margin-top:12px;border-left:3px solid #e5e5e5;padding:12px 12px;color:var(--muted);background:#fafafa;border-radius:8px}
+
+  /* ==== Global modallar ==== */
+  .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:90}
+  .modal-ov.show{display:flex}
+  .modal{background:#fff;border-radius:16px;box-shadow:0 30px 60px rgba(0,0,0,.25);max-width:860px;width:92%}
+  .modal .hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}
+  .modal .hd .ttl{font-weight:800}
+  .modal .hd .x{background:#f1f1f1;border:0;border-radius:10px;padding:8px 10px;cursor:pointer}
+  .modal .ct{padding:18px;max-height:72vh;overflow:auto}
+  .btn-primary{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer}
+  .btn-primary:hover{background:var(--btn-muted)}
+  .footerbar{border-top:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+  .link{color:#111;cursor:pointer;text-decoration:underline}
+
+  .slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px;padding:4px 2px}
+  .slot{position:relative;border:1px solid var(--border);border-radius:14px;padding:12px 10px;background:#fff;text-align:center;font-weight:800;letter-spacing:.2px;cursor:pointer;transition:.15s;user-select:none}
+  .slot:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(0,0,0,.08)}
+  .slot:focus-visible{outline:3px solid #cde6ff;outline-offset:2px}
+  .slot.active{background:#111;color:#fff;border-color:#111;box-shadow:0 12px 22px rgba(0,0,0,.22)}
+  .slot[disabled]{opacity:.45;cursor:not-allowed;background:#fafafa}
+
+  .summary{border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:14px;background:#fafafa}
+  .cart-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #eee}
+  .cart-row:first-child{border-top:0}
+
+  .finput{border:1px solid var(--border);border-radius:12px;padding:12px;width:100%;margin:10px 0}
+  .svc-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--border)}
+  .svc-item .meta{color:var(--muted);font-size:13px}
+  .btn-mini{background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+  .btn-mini:hover{background:var(--btn-muted)}
+
+  /* Auth modal */
+  .modal-overlay{position:fixed; inset:0; display:none; place-items:center;
+    background:rgba(15, 23, 42, .45);backdrop-filter: blur(8px) saturate(1.1);-webkit-backdrop-filter: blur(8px) saturate(1.1);
+    padding:20px; z-index:9999;}
+  .modal-overlay.active{ display:grid; }
+  .auth-box{width:min(520px, 92vw); background:linear-gradient(180deg,#ffffff, #f9fafb); color:#0f172a; border:1px solid rgba(2,6,23,.06);
+    border-radius:20px; box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset; position:relative; overflow:hidden; animation:pop .2s ease-out;}
+  @keyframes pop{ from{ transform:translateY(8px) scale(.985); opacity:0 } to{ transform:none; opacity:1 } }
+  .modal-close{position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:12px; border:1px solid rgba(2,6,23,.08); background:#fff; display:grid; place-items:center; cursor:pointer; color:#0f172a; z-index:2; transition:all .15s ease;}
+  .modal-close:hover{ background:#f3f4f6; transform:translateY(-1px); }
+  .auth-container{ padding:22px 20px 24px; display:grid; gap:16px; }
+  .auth-tabs{ display:flex; gap:8px; justify-content:center; }
+  .auth-tab{padding:8px 14px; border-radius:999px; border:1px solid rgba(2,6,23,.08); background:#f8fafc; cursor:pointer; font-weight:700; color:#0f172a; transition:all .15s ease;}
+  .auth-tab.active{ background:#111827; color:#fff; border-color:#111827; }
+  .auth-form{ display:none; max-width:380px; margin:0 auto; }
+  .auth-form.active{ display:block; }
+  .auth-input{width:100%; padding:13px 14px; border:1px solid #e5e7eb; border-radius:12px; font-size:15px; background:#fff; transition:border .12s, box-shadow .12s; margin-bottom:10px;}
+  .auth-input:focus{ outline:none; border-color:#93c5fd; box-shadow:0 0 0 4px rgba(59,130,246,.15); }
+  .auth-btn{width:100%; padding:13px; border:none; border-radius:12px; font-weight:800; background:#0b6ef4; color:#fff; cursor:pointer; letter-spacing:.2px; transition:transform .06s ease, filter .15s ease;}
+  .auth-btn:active{ transform:translateY(1px); }
+  .auth-btn:disabled{ filter:grayscale(.2) opacity(.7); cursor:not-allowed; }
+  .error{ color:#dc2626; font-size:13px; min-height:18px; margin:8px 0 4px; }
+  .oauth-stack{ display:grid; gap:10px; max-width:380px; margin:0 auto; }
+  .google-btn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:12px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; color:#0f172a; font-weight:700; cursor:pointer; transition:.15s;}
+  .google-btn:hover{ background:#f8fafc; border-color:#d1d5db; }
+  .google-btn img{ width:18px; height:18px }
+
+  .divider{ display:flex; align-items:center; gap:10px; color:#6b7280; font-size:12px; margin:6px auto 2px; }
+  .divider::before, .divider::after{ content:""; flex:1; height:1px; background:#e5e7eb; }
+
+  .toast{position: fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-16px);
+    background:#16a34a; color:#fff; padding:10px 14px; border-radius:999px; font:600 14px/1 'Inter', sans-serif; opacity:0; pointer-events:none;
+    transition:transform .25s, opacity .25s, box-shadow .25s; z-index:3000; box-shadow:0 8px 20px rgba(0,0,0,.18);}
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- === NAVBAR (birebir) === -->
+<header class="topbar" id="mainTopbar">
+  <div class="topline container">
+    <a class="logo" href="index.html">~arat</a>
+    <div class="searchwrap">
+      <div class="chip"><i>🔎</i><input placeholder="Hizmet veya işletme ara" /></div>
+      <div class="chip"><i>📍</i><input placeholder="San Diego, CA" /></div>
+      <div class="chip"><i>🕑</i><input placeholder="Ne zaman?" /></div>
+    </div>
+    <div class="top-actions">
+      <a class="pillbtn" href="isletmeni-listele.html">İşletmeni listele</a>
+      <a class="pilllink open-auth" href="#">Giriş / Kayıt</a>
+      <span class="pilllink">TR</span>
+    </div>
+  </div>
+  <nav class="catbar">
+    <div class="container" style="display:flex;gap:22px">
+      <a href="kuafor.html">Kuaför</a>
+      <a href="guzellik-salonu.html">Güzellik Salonu</a>
+    </div>
+  </nav>
+</header>
+
+<!-- Scroll’da görünen kısa bilgi barı -->
+<div id="topInfoBar" class="top-info-bar" aria-hidden="true">
+  <div class="ti-inner">
+    <div class="ti-left">
+      <img class="ti-logo" id="tiLogo" src="img/berber1.jpeg" alt="Logo">
+      <div class="ti-meta">
+        <div class="ti-title" id="tiTitle">İşletmeniz</div>
+        <div class="ti-sub" id="tiSub">—</div>
+      </div>
+    </div>
+    <a class="ti-book" href="#" id="stickyBook">Randevu al</a>
+  </div>
+</div>
+
+<main class="detail-wrap">
+  <div>
+    <div class="gallery-card card" data-gallery-sentinel>
+      <div class="gallery">
+        <img id="gal1" data-slide src="img/berber2.jpeg" alt="kuaför 1">
+        <img id="gal2" data-slide src="img/berber3.jpeg" alt="kuaför 2" style="display:none">
+        <img id="gal3" data-slide src="img/berber4.jpeg" alt="kuaför 3" style="display:none">
+        <div class="next" id="nextSlide" title="Sonraki">➜</div>
+        <div class="dotbar"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+    </div>
+
+    <div class="biz-header">
+      <h1 id="bizName">İşletmeniz</h1>
+      <div class="small" id="bizAddrTop">—</div>
+    </div>
+
+    <section class="section card" id="servicesSection">
+      <h2>Hizmetler</h2>
+      <div id="svcRows">Yükleniyor...</div>
+      <button class="all-btn" id="openAllServices">Tüm hizmetler</button>
+    </section>
+
+    <section class="section card">
+      <h2>Çalışmalarımız</h2>
+      <div class="grid-works" id="worksGrid">
+        <img src="img/berber5.jpeg" alt=""><img src="img/berber6.jpeg" alt="">
+        <img src="img/berber7.jpeg" alt=""><img src="img/berber8.jpeg" alt=""><img src="img/berber9.jpeg" alt="">
+      </div>
+    </section>
+  </div>
+
+  <aside class="sidebar">
+    <div class="card sticky-book">
+      <button class="book" style="width:100%;padding:12px 16px;border-radius:12px;font-weight:800" id="btnOpenBook">Randevu al</button>
+    </div>
+
+    <div class="card info-card" id="infoCard">
+      <div class="map"></div>
+      <div class="addr">
+        <img id="addrLogo" src="img/berber1.jpeg" alt="logo">
+        <div>
+          <div id="infoName" style="font-weight:700">İşletmeniz</div>
+          <div class="small" id="infoAddr">—</div>
+        </div>
+      </div>
+
+      <h4>HAKKIMIZDA</h4>
+      <p class="small" id="aboutText">—</p>
+      <div class="hr"></div>
+
+      <h4>İLETİŞİM & ÇALIŞMA SAATLERİ</h4>
+      <div class="callline">
+        <span id="phoneText">-</span>
+        <a class="callbtn" id="callBtn" href="#">Ara</a>
+      </div>
+
+      <div class="today">
+        <div><strong>Bugün</strong></div>
+        <div class="muted" id="todayTimes">—</div>
+      </div>
+
+      <a href="#" class="toggle-link" id="toggleWeek"><span id="toggleText">Tüm haftayı göster</span> ▾</a>
+
+      <div class="week" id="weekBlock" aria-hidden="true"></div>
+      <div class="note" id="hoursNote" style="display:none">Çalışma saatleri henüz eklenmedi.</div>
+    </div>
+  </aside>
+</main>
+
+<!-- ====== RANDEVU MODALI ====== -->
+<div class="modal-ov" id="bookOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookTtl">
+    <div class="hd">
+      <div class="ttl">
+        <span id="bookDateLabel" class="link">—</span> •
+        <span id="openTime" class="link" style="font-weight:800">Saat seç</span>
+        <span id="chosenTime" class="small" style="margin-left:8px;color:var(--muted)"></span>
+      </div>
+      <button class="x" onclick="closeOv('bookOv')">✕</button>
+    </div>
+    <div class="ct">
+      <div class="summary" id="cartBox"></div>
+      <div class="link" id="openAdd">+ Hizmet ekle</div>
+    </div>
+    <div class="footerbar">
+      <div style="font-weight:800">Toplam: <span id="cartTotal">₺0</span></div>
+      <button class="btn-primary" id="goReview">Devam et</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SAAT MODALI ====== -->
+<div class="modal-ov" id="timeOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="timeTtl">
+    <div class="hd">
+      <div class="ttl" id="timeTtl"><span id="timeDateLabel">—</span> • Saat seç</div>
+      <button class="x" onclick="closeOv('timeOv')">✕</button>
+    </div>
+    <div class="ct">
+      <div class="slots" id="timeSlotWrap"></div>
+    </div>
+    <div class="footerbar">
+      <div class="small" style="color:var(--muted)">İşletme çalışma saatlerine göre 15 dk adımlar</div>
+      <button class="btn-primary" id="timeDone">Seçimi uygula</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TÜM HİZMETLER MODALI ====== -->
+<div class="modal-ov" id="svcOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="svcTtl">
+    <div class="hd"><div class="ttl" id="svcTtl">Tüm hizmetler</div><button class="x" onclick="closeOv('svcOv')">✕</button></div>
+    <div class="ct">
+      <input id="svcSearch" class="finput" placeholder="Hizmet ara" />
+      <div id="svcList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== GÖZDEN GEÇİR & ONAYLA ====== -->
+<div class="modal-ov" id="reviewOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="revTtl">
+    <div class="hd"><div class="ttl" id="revTtl">Gözden geçir ve onayla</div><button class="x" onclick="closeOv('reviewOv')">✕</button></div>
+    <div class="ct" id="reviewBody"></div>
+    <div class="footerbar">
+      <div class="muted">Ödenecek tutar</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="font-weight:800" id="reviewTotal">₺0</div>
+        <button class="btn-primary" id="confirmBook">Onayla ve randevu al</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== Auth Modal ====== -->
+<div id="authModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginRegisterTitle">
+  <div class="auth-box">
+    <button class="modal-close" aria-label="Kapat"><i class="fas fa-times" aria-hidden="true"></i></button>
+    <div class="auth-container">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+        <button class="auth-tab" data-tab="signup">Kayıt Ol</button>
+      </div>
+      <div class="oauth-stack">
+        <button type="button" class="google-btn" id="googleSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" aria-hidden="true"> Google ile devam et
+        </button>
+        <div class="divider">veya e-posta ile</div>
+      </div>
+      <form id="loginForm" class="auth-form active" data-form="login">
+        <h2>Giriş Yap</h2>
+        <input class="auth-input" type="email" name="email" placeholder="E-posta" required />
+        <input class="auth-input" type="password" name="password" placeholder="Şifre" required />
+        <div id="loginError" class="error"></div>
+        <button type="submit" class="auth-btn">Giriş Yap</button>
+      </form>
+      <form id="signupForm" class="auth-form" data-form="signup">
+        <h2>Kayıt Ol</h2>
+        <input class="auth-input" type="email" name="email" placeholder="E-posta" required />
+        <input class="auth-input" type="password" name="password" placeholder="Şifre" minlength="6" required />
+        <input class="auth-input" type="password" name="confirm" placeholder="Şifre Tekrar" required />
+        <div id="signupError" class="error"></div>
+        <button type="submit" class="auth-btn">Kayıt Ol</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<script>
+  const TL = v => '₺' + Number(v||0).toLocaleString('tr-TR') + (Number(v)>=1?'+':'');
+  const showOv = id => document.getElementById(id).classList.add('show');
+  const closeOv = id => document.getElementById(id).classList.remove('show');
+  const pad=n=>n.toString().padStart(2,'0');
+  const fmtDate = d => `${pad(d.getDate())} ${['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'][d.getMonth()]} ${d.getFullYear()}`;
+  function showToast(msg){ const wrap=document.getElementById('toastWrap'); const t=document.createElement('div'); t.className='toast'; t.innerHTML='<span class="dot"></span>'+msg; wrap.appendChild(t); setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(6px)';},2200); setTimeout(()=>wrap.removeChild(t),2600); }
+
+  /* ------- Modallar: arka plan ve ESC ile kapanma ------- */
+  (function(){
+    document.querySelectorAll('.modal-ov').forEach(ov=>{
+      ov.addEventListener('click',(e)=>{ if(e.target===ov) ov.classList.remove('show'); });
+    });
+    document.addEventListener('keydown',(e)=>{
+      if(e.key!=='Escape') return;
+      const open=[...document.querySelectorAll('.modal-ov.show')].pop();
+      if(open) open.classList.remove('show');
+      const auth=document.getElementById('authModal');
+      if(auth?.classList.contains('active')) auth.classList.remove('active');
+    });
+  })();
+
+  /* Slider */
+  (function(){
+    const slides=[...document.querySelectorAll('[data-slide]')];
+    const dots=[...document.querySelectorAll('.dotbar .dot')];
+    const btn=document.getElementById('nextSlide');
+    if(!slides.length||!btn) return;
+    let i=0; const show=n=>{slides.forEach((im,k)=>im.style.display=(k===n?'block':'none'));dots.forEach((d,k)=>d.classList.toggle('active',k===n));};
+    btn.addEventListener('click',()=>{i=(i+1)%slides.length;show(i);}); show(0);
+  })();
+
+  /* Scroll bar (kısa bilgi şeridi) */
+  (function(){
+    const bar=document.getElementById('topInfoBar');
+    const topbar=document.getElementById('mainTopbar');
+    const sentinel=document.querySelector('[data-gallery-sentinel]');
+    if(!bar||!sentinel||!topbar) return;
+    const io=new IntersectionObserver((entries)=>entries.forEach(e=>{
+      if(e.isIntersecting){bar.classList.remove('show');bar.setAttribute('aria-hidden','true');topbar.classList.remove('hide');}
+      else{bar.classList.add('show');bar.setAttribute('aria-hidden','false');topbar.classList.add('hide');}
+    }),{rootMargin:'-80px 0px 0px 0px',threshold:0.01});
+    io.observe(sentinel);
+  })();
+
+  /* Haftayı gizle/göster */
+  (function(){
+    const toggle=document.getElementById('toggleWeek');
+    const block=document.getElementById('weekBlock');
+    const tText=document.getElementById('toggleText');
+    if(!toggle||!block) return;
+    toggle.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const open=block.classList.toggle('show');
+      block.setAttribute('aria-hidden', String(!open));
+      tText.textContent = open ? 'Gizle' : 'Tüm haftayı göster';
+    });
+  })();
+
+  /* Booking saatleri */
+  let selectedDate=new Date(); let selectedTime='08:00';
+  window.selectedDate = selectedDate; window.selectedTime = selectedTime; // global
+  const isToday=d=>{const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate();};
+  const toTimeStr=m=>`${pad(Math.floor(m/60))}:${pad(m%60)}`;
+
+  function parseSeg(seg){
+    if(!seg) return null;
+    const m = seg.match(/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/);
+    if(!m) return null;
+    const fromM = (+m[1])*60 + (+m[2]);
+    const toM   = (+m[3])*60 + (+m[4]);
+    return {fromM,toM};
+  }
+  function generateTimesFromSegments(segs=[], stepMin=15){
+    const out=[];
+    segs.forEach(seg=>{
+      const p=parseSeg(seg); if(!p) return;
+      for(let m=p.fromM; m<=p.toM-stepMin; m+=stepMin){ out.push(toTimeStr(m)); }
+    });
+    return out;
+  }
+
+  const timeSlotWrap=document.getElementById('timeSlotWrap');
+  function renderTimeSlots(){
+    timeSlotWrap.innerHTML='';
+    const d = window.selectedDate || new Date();
+    const weekday = d.getDay(); // 0 pazar
+    let segs = [];
+    if (window.__NORM_HOURS && Array.isArray(window.__NORM_HOURS[weekday]) && window.__NORM_HOURS[weekday].length){
+      segs = window.__NORM_HOURS[weekday]; // ["09:00 - 13:00", "14:00 - 18:00"]
+    }else{
+      segs = ["08:00 - 23:00"]; // fallback
+    }
+    const allTimes = generateTimesFromSegments(segs, 15);
+    const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
+    allTimes.forEach(t=>{
+      const b=document.createElement('button'); b.type='button'; b.className='slot'+(t===window.selectedTime?' active':''); b.textContent=t;
+      if(isToday(d)){ const [hh,mm]=t.split(':').map(Number); const m=hh*60+mm; if(m<=nowMin) b.disabled=true; }
+      b.onclick=()=>{ if(b.disabled) return; window.selectedTime=t; selectedTime=t; timeSlotWrap.querySelectorAll('.slot').forEach(s=>s.classList.remove('active')); b.classList.add('active'); };
+      timeSlotWrap.appendChild(b);
+    });
+    const first=timeSlotWrap.querySelector('.slot:not([disabled])'); if(first) first.focus();
+  }
+  document.getElementById('openTime').addEventListener('click',()=>{renderTimeSlots(); document.getElementById('timeDateLabel').textContent=fmtDate(selectedDate); showOv('timeOv');});
+  document.getElementById('timeDone').addEventListener('click',()=>{ closeOv('timeOv'); document.getElementById('chosenTime').textContent='• '+(window.selectedTime||selectedTime); });
+
+  /* Sepet */
+  let cart=[]; window.cart = cart;
+  function renderCart(){
+    const box=document.getElementById('cartBox');
+    if(cart.length===0){ box.innerHTML='<div class="muted">Sepet boş. Bir hizmet seçin.</div>'; document.getElementById('cartTotal').textContent='₺0'; window.cart=cart; return; }
+    box.innerHTML=cart.map(it=>`<div class="cart-row"><div><strong>${it.name}</strong><div class="small">${it.duration||it.min||30}dk</div></div><div>${TL(it.price||0)}</div></div>`).join('');
+    document.getElementById('cartTotal').textContent=TL(cart.reduce((s,i)=>s+Number(i.price||0),0));
+    window.cart = cart;
+  }
+  document.getElementById('openAdd').addEventListener('click',()=>showOv('svcOv'));
+  document.getElementById('goReview').addEventListener('click',()=>{
+    const rev=document.getElementById('reviewBody');
+    const total=cart.reduce((s,i)=>s+Number(i.price||0),0);
+    const totalMin=cart.reduce((m,i)=>m+(i.duration||i.min||30),0);
+    document.getElementById('bookDateLabel').textContent=fmtDate(window.selectedDate||selectedDate);
+    rev.innerHTML=`<div style="text-align:center;font-weight:800">${fmtDate(window.selectedDate||selectedDate)}<br><span class="muted" style="font-weight:700">${window.selectedTime||selectedTime} • ${totalMin}dk toplam</span><br><span class="small" id="revBizName"></span></div>
+      <div class="sumbox" style="margin-top:16px">
+        ${cart.map(i=>`<div style="display:flex;justify-content:space-between;font-weight:700;padding:8px 0"><span>${i.name}<br><span class="small">${i.duration||i.min||30}dk</span></span><span>${TL(i.price||0)}</span></div>`).join('')}
+        <div class="sumrow"><span style="font-weight:700">Toplam:</span><span style="font-weight:800">${TL(total)}</span></div>
+      </div>
+      <input class="noteinp" placeholder="Not bırak (opsiyonel)" />`;
+    document.getElementById('reviewTotal').textContent=TL(total);
+    document.getElementById('revBizName').textContent=document.getElementById('bizName').textContent||'';
+    showOv('reviewOv');
+  });
+
+  /* Onay → Firestore’a yaz & calendar’a yönlendir */
+  function persistBookingAndGo(){
+    try{
+      const ownerUid = window.__BUSINESS_UID || "";
+      if(!ownerUid){ showToast("Hata: İşletme UID bulunamadı."); return; }
+
+      const name=(document.getElementById('bizName')?.textContent||'İşletme').trim();
+      const total = (window.cart||[]).reduce((s,i)=>s+Number(i.price||0),0);
+      const totalMin = (window.cart||[]).reduce((m,i)=>m+(Number(i.duration||i.min||30)),0);
+      const [hh,mm] = (window.selectedTime||'08:00').split(':').map(Number);
+      const d = window.selectedDate || new Date();
+      const start = new Date(d.getFullYear(), d.getMonth(), d.getDate(), hh||8, mm||0, 0, 0);
+      const end   = new Date(start.getTime()+totalMin*60000);
+      const booking = {
+        id: 'bk_' + Date.now(),
+        businessName: name,
+        services: (window.cart||[]).slice(),
+        total,
+        startISO: start.toISOString(),
+        endISO: end.toISOString(),
+        createdAtMs: Date.now()
+      };
+
+      if (typeof window.saveBookingToFirestore !== "function"){
+        showToast("Kayıt servisi hazır değil. Lütfen yineleyin.");
+        return;
+      }
+
+      window.saveBookingToFirestore(ownerUid, booking)
+        .then(()=>{
+          ['bookOv','svcOv','reviewOv','timeOv'].forEach(id=>{const el=document.getElementById(id); if(el) el.classList.remove('show');});
+          location.href = `calendar.html#my?uid=${encodeURIComponent(ownerUid)}`;
+        })
+        .catch(err=>{
+          console.error("[booking] yazılamadı:", err);
+          showToast("Randevu kaydı başarısız. Lütfen tekrar deneyin.");
+        });
+
+    }catch(e){
+      console.error("[booking] hata:", e);
+      showToast("Bir şeyler ters gitti.");
+    }
+  }
+  document.getElementById('confirmBook').addEventListener('click', persistBookingAndGo);
+
+  /* Auth modal aç/kapat + sekme */
+  (function(){
+    const overlay=document.getElementById("authModal"); if(!overlay) return;
+    document.querySelectorAll(".open-auth").forEach(el=> el.addEventListener("click",(e)=>{e.preventDefault(); overlay.classList.add("active");}));
+    overlay.querySelector(".modal-close").addEventListener("click", ()=> overlay.classList.remove("active"));
+    overlay.addEventListener("click",(e)=>{ if(e.target===overlay) overlay.classList.remove("active"); });
+    document.querySelectorAll(".auth-tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const tab=btn.dataset.tab;
+        document.querySelectorAll(".auth-tab").forEach(b=>b.classList.toggle("active", b===btn));
+        document.querySelectorAll(".auth-form").forEach(f=>f.classList.toggle("active", f.dataset.form===tab));
+      });
+    });
+  })();
+
+  /* Book butonlarını bağla */
+  function bindOpenBookButtons(){
+    document.querySelectorAll('.open-book').forEach(b=>{
+      b.addEventListener('click',()=>{
+        const svc={name:b.dataset.name,price:Number(b.dataset.price||0),duration:Number(b.dataset.duration||b.dataset.min||0)};
+        cart=[svc]; window.cart=cart; renderCart(); document.getElementById('chosenTime').textContent=(window.selectedTime||selectedTime)?'• '+(window.selectedTime||selectedTime):''; showOv('bookOv');
+      });
+    });
+  }
+</script>
+
+<!-- === Firestore’dan veri doldurma + booking köprüsü === -->
+<script type="module">
+  import { db } from "./js/firebase.js";
+  import {
+    doc, getDoc, addDoc, collection, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+  const $ = s => document.querySelector(s);
+  const escapeHTML = (s="") => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const fmtPhoneTR = (p="") => { const d=(p||"").replace(/\D/g,""); const nat=d.startsWith("90")?d.slice(2):d.slice(-10); return nat.length===10?`(${nat.slice(0,3)}) ${nat.slice(3,6)}-${nat.slice(6,8)}-${nat.slice(8)}`:"-"; };
+  const TR_DAYS = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+  const params = new URLSearchParams(location.search);
+  const UID = params.get("uid") || "";
+  const slugName = params.get("n") || "";
+
+  // Booking için herkese açık köprü (non-module script çağıracak)
+  window.saveBookingToFirestore = async function(ownerUid, booking) {
+    if (!ownerUid) throw new Error("ownerUid yok");
+    const payload = {
+      ownerUid,
+      status: "pending",
+      ...booking,
+      createdAt: serverTimestamp()
+    };
+    const ref = await addDoc(collection(db, "bookings"), payload);
+    // Opsiyonel: adminOnboarding/{uid}/bookings altına da yazmak istersen:
+    // await addDoc(collection(db, "adminOnboarding", ownerUid, "bookings"), { ...payload, bookingId: ref.id });
+    return ref.id;
+  };
+
+  function normalizeWorkingHours(src){
+    if(!src || typeof src!=="object") return null;
+    const out={};
+    TR_DAYS.forEach((day, idx)=>{
+      const h = src[day] ?? src[day.toLowerCase()] ?? src[idx] ?? null;
+      if(!h){ out[idx]=[]; return; }
+      if(Array.isArray(h)){ out[idx]=h; return; }
+      if(typeof h==="string"){ out[idx]=[h]; return; }
+      if(h.open===false){ out[idx]=[]; return; }
+      const segs=[]; const mk=(a,b)=> a&&b ? `${a} - ${b}` : null;
+      const s1 = mk(h.from||h.start||h.openFrom, h.to||h.end||h.openTo);
+      const s2 = mk(h.from2||h.breakFrom||h.afternoonFrom||h.openFrom2, h.to2||h.breakTo||h.afternoonTo||h.openTo2);
+      if(s1) segs.push(s1); if(s2) segs.push(s2); out[idx]=segs;
+    });
+    return out;
+  }
+
+  function renderHours(hours){
+    const weekEl = $("#weekBlock"), todayEl = $("#todayTimes"), note=$("#hoursNote");
+    let norm = hours ? normalizeWorkingHours(hours) : null;
+
+    // Booking slotları için global sakla
+    window.__NORM_HOURS = norm;
+
+    if(!norm){ note.style.display="block"; todayEl.textContent="—"; weekEl.innerHTML=""; return; }
+    note.style.display="none";
+    const t=new Date().getDay(); todayEl.textContent = norm[t]?.length ? norm[t].join(" • ") : "Kapalı";
+    weekEl.innerHTML="";
+    for(let i=0;i<7;i++){
+      const row=document.createElement("div"); row.className="row";
+      const left=document.createElement("span"); left.textContent=TR_DAYS[i];
+      const right=document.createElement("span"); right.className="muted";
+      right.textContent = norm[i]?.length ? norm[i].join("  •  ") : "Kapalı";
+      if(i===t){ left.style.fontWeight="800"; right.style.fontWeight="800"; right.style.color="#111"; }
+      row.append(left,right); weekEl.appendChild(row);
+    }
+  }
+
+  function renderAddress(loc={}){
+    const subTop = [loc.district, loc.province].filter(Boolean).join(" • ") || "—";
+    $("#bizAddrTop").textContent = subTop;
+    $("#tiSub").textContent = subTop;
+    const line1 = [loc.street && (loc.building? `${loc.street} ${loc.building}` : loc.street), loc.neighborhood].filter(Boolean).join(", ");
+    const line2 = [loc.district, loc.province].filter(Boolean).join(", ");
+    $("#infoAddr").textContent = [line1, line2].filter(Boolean).join(" • ") || "—";
+  }
+
+  function setImages(imgs={}){
+    const cover = imgs.cover || "";
+    const salon = imgs.salon || "";
+    const model = imgs.model || "";
+    if(cover) $("#gal1").src = cover;
+    if(salon){ $("#gal2").src = salon; $("#gal2").style.display="none"; }
+    if(model){ $("#gal3").src = model; $("#gal3").style.display="none"; }
+    const logo = salon || cover || "img/berber1.jpeg";
+    $("#tiLogo").src = logo; $("#addrLogo").src = logo;
+  }
+
+  function renderServices(list=[]){
+    const box=$("#svcRows"); if(!list.length){ box.innerHTML='<div class="muted">Henüz hizmet eklenmemiş.</div>'; return; }
+    const first=list.slice(0,3);
+    box.innerHTML = first.map(s=>`
+      <div class="service-row">
+        <div><div class="name">${escapeHTML(s.name||"Hizmet")}</div><div class="meta">${escapeHTML(String(s.min ?? s.duration ?? 30))}dk</div></div>
+        <div class="price">${TL(s.price ?? 0)}</div>
+        <button class="book open-book" data-name="${escapeHTML(s.name||'Hizmet')}" data-price="${Number(s.price||0)}" data-duration="${Number(s.min ?? s.duration ?? 30)}">Randevu al</button>
+      </div>`).join("");
+    $("#openAllServices").onclick=()=>{
+      box.innerHTML = list.map(s=>`
+        <div class="service-row">
+          <div><div class="name">${escapeHTML(s.name||"Hizmet")}</div><div class="meta">${escapeHTML(String(s.min ?? s.duration ?? 30))}dk</div></div>
+          <div class="price">${TL(s.price ?? 0)}</div>
+          <button class="book open-book" data-name="${escapeHTML(s.name||'Hizmet')}" data-price="${Number(s.price||0)}" data-duration="${Number(s.min ?? s.duration ?? 30)}">Randevu al</button>
+        </div>`).join("");
+      bindOpenBookButtons();
+    };
+    bindOpenBookButtons();
+  }
+
+  // Tüm hizmetler modalı
+  function renderServicePicker(list=[]){
+    const container=$("#svcList");
+    const render=(q="")=>{
+      const f=list.filter(s=>s.name?.toLowerCase().includes(q.toLowerCase()));
+      container.innerHTML=f.map(s=>`<div class="svc-item"><div><div>${escapeHTML(s.name||"Hizmet")}</div><div class="meta">${escapeHTML(String(s.min ?? s.duration ?? 30))}dk</div></div><div style="font-weight:800">${TL(s.price ?? 0)}</div><button class="btn-mini" data-add="${escapeHTML(s.name||'Hizmet')}">Ekle</button></div>`).join("");
+      container.querySelectorAll('[data-add]').forEach(btn=>{
+        btn.onclick=()=>{ const nm=btn.getAttribute('data-add'); const svc=list.find(x=>x.name===nm); window.cart = (window.cart||[]); window.cart.push({...svc}); closeOv('svcOv'); showOv('bookOv'); const rc = window.cart; const box=document.getElementById('cartBox'); box.innerHTML=rc.map(it=>`<div class="cart-row"><div><strong>${it.name}</strong><div class="small">${it.duration||it.min||30}dk</div></div><div>${TL(it.price||0)}</div></div>`).join(''); document.getElementById('cartTotal').textContent=TL(rc.reduce((s,i)=>s+Number(i.price||0),0)); showToast(`‘${nm}’ sepete eklendi`); };
+      });
+    };
+    $("#svcSearch").addEventListener('input', e=>render(e.target.value));
+    render();
+  }
+
+  async function load(){
+    if(!UID){ showToast("Geçersiz bağlantı: uid yok"); return; }
+    try{
+      // global olarak admin UID’yi non-module scriptin de erişmesi için yaz
+      window.__BUSINESS_UID = UID;
+
+      const snap = await getDoc(doc(db,"adminOnboarding", UID));
+      if(!snap.exists()){
+        const nm = slugName || "İşletmeniz";
+        $("#bizName").textContent = nm; $("#tiTitle").textContent = nm; $("#infoName").textContent = nm; document.title = `${nm} – Arat`;
+        renderHours(null); renderServices([]); $("#phoneText").textContent="-"; $("#callBtn").href="#"; return;
+      }
+      const d = snap.data() || {};
+      const name = d?.business?.name || d?.step2?.businessName || d?.name || slugName || "İşletmeniz";
+      $("#bizName").textContent = name; $("#tiTitle").textContent = name; $("#infoName").textContent = name; document.title = `${name} – Arat`;
+
+      const phoneRaw = d?.phoneE164 || d?.business?.phone || d?.phone || "";
+      $("#phoneText").textContent = phoneRaw ? fmtPhoneTR(phoneRaw) : "-";
+      $("#callBtn").setAttribute("href", phoneRaw ? `tel:${phoneRaw}` : "#");
+
+      const about = (d?.business?.about || d?.about || "").trim();
+      $("#aboutText").textContent = about || "—";
+
+      const loc = {
+        province: d?.step5?.businessLocation?.province || "",
+        district: d?.step5?.businessLocation?.district || "",
+        neighborhood: d?.step5?.businessLocation?.neighborhood || "",
+        street: d?.step5?.businessLocation?.street || "",
+        building: d?.step5?.businessLocation?.building || ""
+      };
+      renderAddress(loc);
+
+      setImages(d?.images || {});
+
+      const services = Array.isArray(d?.services) ? d.services
+        : (d?.step7?.services||[]).map(n=>({ name:n, min:30, price:0 }));
+      renderServices(services);
+      renderServicePicker(services);
+
+      const hours = d?.step6?.workingHours ?? d?.workingHours ?? d?.business?.hours ?? null;
+      renderHours(hours);
+
+      const pics=[d?.images?.cover, d?.images?.salon, d?.images?.model].filter(Boolean);
+      if(pics.length){ $("#worksGrid").innerHTML=pics.map(u=>`<img src="${u}" alt="">`).join(""); }
+    }catch(e){
+      console.error("[profile] read error:", e);
+      showToast("Profil yüklenemedi");
+    }
+  }
+  load();
+
+  // Sticky butonlar
+  document.getElementById('btnOpenBook').addEventListener('click', ()=> showOv('bookOv'));
+  document.getElementById('stickyBook').addEventListener('click', (e)=>{e.preventDefault(); showOv('bookOv');});
+</script>
+
+<!-- Firebase auth akışı + UI güncelle -->
+<script type="module" src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yönetici Kaydı – Adresi Doğrulayın</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280; --border:#e5e7eb;
+      --primary:#191919; --accent:#22c55e; --current:#2563eb; --radius:18px;
+      --shadow:0 14px 40px rgba(0,0,0,.10); --input:#f9fafb; --danger:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:flex; flex-direction:column; align-items:center;
+      background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      padding:18px 16px 40px;
+    }
+    /* Stepper */
+    .stepper{ width:min(960px, 100%); margin:4px auto 16px; display:flex; gap:10px; }
+    .step{ display:flex; align-items:center; gap:10px; flex:1 1 auto; }
+    .dot{ width:34px; height:34px; border-radius:999px; display:grid; place-items:center; font-weight:800; border:2px solid var(--border); background:#fff; color:var(--muted); }
+    .step.done .dot{ border-color:var(--accent); color:#fff; background:var(--accent); }
+    .step.current .dot{ border-color:var(--current); color:var(--current); background:#fff; }
+    .bar{ height:6px; border-radius:999px; flex:1; background:#e9ecef; }
+    .bar.done{ background:var(--accent); }
+
+    /* Card */
+    .card{ width:100%; max-width:620px; background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .top{ display:flex; align-items:center; gap:16px; padding:16px 22px 8px; }
+    .back-btn{ width:40px; height:40px; border-radius:12px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; background:#fff; cursor:pointer; }
+
+    .header{ text-align:center; padding:6px 26px 12px; border-bottom:1px solid var(--border); }
+    .header h1{ margin:10px 0 6px; font-size:24px; font-weight:800; }
+    .header p{ margin:0; color:var(--muted); }
+
+    /* Form */
+    form{ padding:18px 26px 120px; }
+    .field{ margin-bottom:16px; }
+    .label{ font-size:12px; color:var(--muted); font-weight:700; margin-bottom:8px; display:block; }
+
+    .control{ position:relative; }
+    .control .icon{ position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none; color:#9ca3af; font-size:14px; }
+    .input, select{
+      width:100%; height:48px; border-radius:12px; border:1px solid var(--border);
+      background:var(--input); padding:0 14px 0 36px; font-size:14px; outline:none;
+      transition:box-shadow .2s,border-color .2s, background .2s;
+    }
+    select{ padding-left:36px; appearance:none; background-image:
+      linear-gradient(45deg, transparent 50%, #9ca3af 50%),
+      linear-gradient(135deg, #9ca3af 50%, transparent 50%),
+      linear-gradient(to right, transparent, transparent);
+      background-position:
+        calc(100% - 22px) 20px,
+        calc(100% - 16px) 20px,
+        calc(100% - 2.5rem) 0.5rem;
+      background-size:6px 6px, 6px 6px, 1px 1.8rem;
+      background-repeat:no-repeat;
+    }
+    .input:focus, select:focus{
+      border-color:#c7d2fe; box-shadow:0 0 0 4px rgba(59,130,246,.15);
+      background:#fff;
+    }
+
+    .two-cols{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    @media (max-width:560px){ .two-cols{ grid-template-columns:1fr; } }
+
+    .form-footer{ position:sticky; bottom:0; margin:0 -26px -6px; padding:14px 26px 20px; background:#fff; border-top:1px solid var(--border); }
+    .btn{ width:100%; height:48px; border-radius:12px; border:none; font-weight:800; cursor:pointer; background:var(--primary); color:#fff; }
+    .btn:disabled{ background:#d1d5db; color:#888; cursor:not-allowed; }
+
+    .helper{ font-size:12px; color:var(--muted); margin-top:6px; }
+
+    /* Toast */
+    .toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#111827; color:#fff; padding:10px 14px; border-radius:10px; font-size:14px; display:none; }
+    .toast.show{ display:block; animation:fade 2.2s ease both }
+    .toast.err{ background:#dc2626; }
+    @keyframes fade{ 0%{opacity:0;transform:translate(-50%,8px)} 10%{opacity:1;transform:translate(-50%,0)} 90%{opacity:1} 100%{opacity:0;transform:translate(-50%,8px)} }
+  </style>
+</head>
+<body>
+
+  <!-- Stepper -->
+  <nav class="stepper">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot">5</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">6</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">7</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">8</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">9</div></div>
+  </nav>
+
+  <!-- Card -->
+  <main class="card">
+    <div class="top">
+      <button class="back-btn" id="btnBack" aria-label="Geri"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <div class="header">
+      <h1>Adresinizi doğrulayın</h1>
+      <p>Dükkan konumunu kaydedin. (İstanbul → Üsküdar / Ümraniye)</p>
+    </div>
+
+    <form id="confirmForm" novalidate>
+      <div class="field">
+        <label class="label">İL</label>
+        <div class="control">
+          <i class="fa-solid fa-location-dot icon"></i>
+          <select id="province" required>
+            <option value="İstanbul" selected>İstanbul</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="two-cols">
+        <div class="field">
+          <label class="label">İLÇE</label>
+          <div class="control">
+            <i class="fa-solid fa-city icon"></i>
+            <select id="district" required>
+              <option value="">İlçe seçin</option>
+              <option value="Üsküdar">Üsküdar</option>
+              <option value="Ümraniye">Ümraniye</option>
+            </select>
+          </div>
+          <div class="helper">Önce ilçeyi seçin, mahalle listesi otomatik gelir.</div>
+        </div>
+
+        <div class="field">
+          <label class="label">MAHALLE</label>
+          <div class="control">
+            <i class="fa-solid fa-map icon"></i>
+            <select id="neighborhood" required disabled>
+              <option value="">Mahalle seçin</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-cols">
+        <div class="field">
+          <label class="label">CADDE / SOKAK</label>
+          <div class="control">
+            <i class="fa-solid fa-road icon"></i>
+            <input id="street" class="input" type="text" placeholder="Örn: Selvi Sokak" required />
+          </div>
+        </div>
+        <div class="field">
+          <label class="label">BİNA NO</label>
+          <div class="control">
+            <i class="fa-solid fa-hashtag icon"></i>
+            <input id="building" class="input" type="text" placeholder="Örn: 12" required />
+          </div>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button id="continueBtn" class="btn" type="submit" disabled>DEVAM ET</button>
+      </div>
+    </form>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module">
+    const $=(s,r=document)=>r.querySelector(s);
+
+    // ---- Akış doğrulama ----
+    const K_EMAIL="pending_admin_email";
+    const K_FLOW="admin_onboarding_flow";
+    const email=(localStorage.getItem(K_EMAIL)||"").trim().toLowerCase();
+    const flow=(localStorage.getItem(K_FLOW)||"").trim().toLowerCase();
+    if(!email || flow!=="admin"){
+      alert("Geçersiz akış. Lütfen yönetici kaydına baştan başlayın.");
+      location.replace("admin-register-login.html");
+    }
+
+    // step3 zorunlu; (mobil = evet ise step4 de zorunlu)
+    let step3=null, step4=null;
+    try{ step3 = JSON.parse(localStorage.getItem("step3")||"null"); }catch{}
+    try{ step4 = JSON.parse(localStorage.getItem("step4")||"null"); }catch{}
+    if(!step3){
+      alert("Önceki adım eksik. Lütfen 3. adıma dönün.");
+      location.replace("admin-register3.html");
+    } else if(step3.hasMobileService===true && !step4){
+      alert("Yol ücreti adımını tamamlayın.");
+      location.replace("admin-register4.html");
+    }
+
+    // Elemanlar
+    const province = $("#province");
+    const district = $("#district");
+    const neighborhood = $("#neighborhood");
+    const street   = $("#street");
+    const building = $("#building");
+    const btn      = $("#continueBtn");
+    const form     = $("#confirmForm");
+
+    // İlçelere göre mahalleler
+    const MAHALLELER = {
+      "Üsküdar": [
+  "Ahmediye","Altunizade","Aziz Mahmut Hüdayi","Bahçelievler","Barbaros",
+  "Beylerbeyi","Bulgurlu","Burhaniye","Cumhuriyet","Çengelköy",
+  "Ferah","Güzeltepe","İcadiye","Kandilli","Kirazlıtepe",
+  "Kısıklı","Küplüce","Kuzguncuk","Mehmet Akif Ersoy","Mimar Sinan",
+  "Murat Reis","Salacak","Selami Ali","Sultantepe","Ünalan",
+  "Valide-i Atik","Yavuztürk","Zeynep Kamil"
+],
+
+"Ümraniye": [
+  "Aşağıdudullu","Armağanevler","Atakent","Atatürk","Çakmak",
+  "Dumlupınar","Elmalıkent","Esenevler","Esenkent","Esenşehir",
+  "Fatih Sultan Mehmet","Hekimbaşı","Ihlamurkuyu","İnkılap","Kazım Karabekir",
+  "Mehmet Akif","Namık Kemal","Necip Fazıl","Parseller","Saray",
+  "Site","Tantavi","Tatlısu","Tepeüstü","Topağacı",
+  "Yamanevler","Yukarıdudullu"
+]
+
+    };
+
+    // Toast
+    const toast=$("#toast");
+    const showToast=(msg,err=false)=>{
+      toast.textContent=msg; toast.className="toast"+(err?" err":"")+" show";
+      setTimeout(()=> toast.className="toast", 2200);
+    };
+
+    // Mahalleleri doldur
+    function fillNeighborhoods(d, preselect=""){
+      neighborhood.innerHTML = '<option value="">Mahalle seçin</option>';
+      (MAHALLELER[d]||[]).forEach(m=>{
+        const o=document.createElement("option"); o.value=m; o.textContent=m; neighborhood.appendChild(o);
+      });
+      neighborhood.disabled = !(MAHALLELER[d] && MAHALLELER[d].length);
+      if(preselect && !neighborhood.disabled){
+        const opt = Array.from(neighborhood.options).find(o=>o.value===preselect);
+        if(opt){ neighborhood.value=preselect; }
+      }
+    }
+
+    // Dolu mu?
+    function isFilled(){
+      return province.value && district.value && neighborhood.value &&
+             street.value.trim().length>1 && building.value.trim().length>0;
+    }
+    function syncButton(){ btn.disabled=!isFilled(); }
+
+    // Prefill
+    try{
+      const prev = JSON.parse(localStorage.getItem("step5")||"null");
+      if(prev && prev.businessLocation){
+        const b = prev.businessLocation;
+        if(b.province) province.value = b.province;
+        if(b.district) district.value = b.district;
+        fillNeighborhoods(district.value, prev.neighborhood || "");
+        if(b.street)   street.value   = b.street;
+        if(b.building) building.value = b.building;
+      } else {
+        fillNeighborhoods(""); // boş
+      }
+    }catch{
+      fillNeighborhoods("");
+    }
+
+    // İlçe seçilince mahalleler gelsin
+    district.addEventListener("change", ()=>{
+      fillNeighborhoods(district.value);
+      neighborhood.focus();
+      syncButton();
+      autoSave();
+    });
+    [province,neighborhood,street,building].forEach(el=> el.addEventListener("input",()=>{ syncButton(); autoSave(); }));
+
+    // Anlık taslak kaydı
+    function saveDraft(){
+  const businessLocation = {
+    province: province.value,
+    district: district.value,
+    neighborhood: neighborhood.value,   // artık burada
+    street:   street.value.trim(),
+    building: building.value.trim(),
+    country:  "TR"
+  };
+  localStorage.setItem("step5", JSON.stringify({ businessLocation }));
+}
+
+    let t=null; function autoSave(){ clearTimeout(t); t=setTimeout(saveDraft,250); }
+
+    // Geri (önce kaydet, sonra 4. adıma)
+    let allowLeave=false;
+    window.addEventListener("beforeunload",e=>{ if(!allowLeave){ e.preventDefault(); e.returnValue=""; }});
+    $("#btnBack").addEventListener("click",e=>{
+      e.preventDefault();
+      saveDraft();
+      localStorage.setItem("admin_onboarding_last_step","4");
+      allowLeave=true;
+      location.replace("admin-register4.html");
+    });
+
+    // Submit
+    form.addEventListener("submit",e=>{
+  e.preventDefault();
+  if(!isFilled()){ showToast("Lütfen tüm alanları doldurun", true); return; }
+
+  const businessLocation = {
+    province: province.value,
+    district: district.value,
+    neighborhood: neighborhood.value,   // artık burada
+    street:   street.value.trim(),
+    building: building.value.trim(),
+    country:  "TR"
+  };
+  localStorage.setItem("step5", JSON.stringify({ businessLocation }));
+  localStorage.setItem("admin_onboarding_last_step","5");
+
+  allowLeave=true;
+  location.replace("admin-register6.html");
+});
+
+
+
+    // İlk buton durumu
+    syncButton();
+  </script>
+</body>
+</html>

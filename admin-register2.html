@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="robots" content="noindex,nofollow"/>
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+  <title>Yönetici Kaydı – Hakkınızda</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --border:#e5e7eb; --primary:#191919; --accent:#22c55e;
+      --current:#2563eb; --radius:14px; --shadow:0 8px 30px rgba(0,0,0,0.08);
+      --input:#f9fafb; --danger:#ef4444;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0b0b; --card:#111214; --text:#f3f4f6; --muted:#a3a3a3;
+        --border:#1f2937; --primary:#e5e7eb; --accent:#10b981; --current:#60a5fa;
+        --input:#0f0f10; --shadow:0 10px 30px rgba(0,0,0,.6);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text);
+      display:flex; flex-direction:column; align-items:center;
+      padding:clamp(18px,3vw,28px) clamp(14px,3vw,18px) calc(env(safe-area-inset-bottom,0) + 28px);
+      padding-top:calc(env(safe-area-inset-top,0) + 18px);
+    }
+
+    /* Stepper */
+    .stepper{
+      width:min(960px, 100%); margin:0 auto 16px;
+      display:flex; align-items:center; gap:10px; padding:0 2px;
+      overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+      mask-image: linear-gradient(90deg, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+    }
+    .stepper::-webkit-scrollbar{display:none}
+    .step{ display:flex; align-items:center; gap:10px; flex:0 0 auto; min-width:54px; }
+    .dot{ width:34px; height:34px; border-radius:999px; display:grid; place-items:center; font-weight:800; border:2px solid var(--border); background:var(--card); color:var(--muted); }
+    .step.done .dot{ border-color:var(--accent); color:#fff; background:var(--accent); }
+    .step.current .dot{ border-color:var(--current); color:var(--current); background:var(--card); }
+    .bar{ height:6px; border-radius:999px; width:52px; background:#e9ecef; }
+    .bar.done{ background:var(--accent); }
+    @media (prefers-color-scheme: dark){ .bar{ background:#151a21; } }
+
+    /* Card */
+    .card{ width:min(560px, 100%); background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 20px 24px; }
+    .top{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+    .back-btn{ width:40px; height:40px; border-radius:10px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; background:var(--card); color:var(--text); cursor:pointer; }
+    .back-btn:active{ transform:scale(.98); }
+    h1{ font-size:26px; font-weight:800; margin:10px 0 6px; text-align:center; letter-spacing:.2px; }
+    .subtitle{ text-align:center; color:var(--muted); margin-bottom:16px; }
+
+    /* Form */
+    .form{ margin-top:6px; }
+    .row{ margin-bottom:14px; }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; letter-spacing:.2px; }
+    input[type="text"], input[type="tel"]{
+      width:100%; height:46px; border-radius:10px; border:1px solid var(--border); background:var(--input); padding:0 14px; font-size:15px;
+      color:var(--text);
+    }
+    input::placeholder{ color:#9aa3af; }
+    input[aria-invalid="true"]{ border-color:var(--danger); }
+
+    .segmented{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg-btn{
+      height:46px; border-radius:10px; border:1px solid var(--border); background:var(--input);
+      display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; cursor:pointer;
+    }
+    .seg-btn[aria-pressed="true"]{ background:var(--primary); color:#fff; border-color:var(--primary); }
+    .seg-btn:focus-visible{ outline:2px solid var(--current); outline-offset:2px; }
+
+    .grid-2{ display:grid; grid-template-columns:160px 1fr; gap:10px; }
+    .prefix{
+      display:flex; align-items:center; gap:10px; height:46px; border-radius:10px; border:1px solid var(--border); background:var(--card); padding:0 12px;
+    }
+    .prefix img{ width:22px; height:16px; border-radius:2px; object-fit:cover; }
+    .prefix span{ font-weight:800; letter-spacing:.3px; }
+
+    .btn{ margin-top:10px; width:100%; min-height:46px; border-radius:10px; border:none; background:var(--primary); color:#fff; font-weight:800; cursor:pointer; }
+    .btn:active{ transform:scale(.995); }
+
+    .help{ font-size:12px; color:var(--muted); margin-top:6px; }
+
+    .toast{
+      position:fixed; left:50%; bottom:22px; transform:translateX(-50%);
+      background:#111827; color:#fff; padding:10px 14px; border-radius:10px; font-size:14px; display:none; z-index:1000
+    }
+    .toast.show{ display:block; animation:fade 2.2s ease both }
+    .toast.err{ background:#dc2626; }
+    @keyframes fade{ 0%{opacity:0;transform:translate(-50%,8px)} 10%{opacity:1;transform:translate(-50%,0)} 90%{opacity:1} 100%{opacity:0;transform:translate(-50%,8px)} }
+
+    @media (max-width:560px){
+      .card{ padding:18px 14px 22px; }
+      .grid-2{ grid-template-columns:1fr; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .btn,.back-btn{ transition:none!important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Adım çubuğu -->
+  <nav class="stepper" aria-label="Kayıt adımları">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot">2</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">3</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">4</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">5</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">6</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">7</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">8</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">9</div></div>
+  </nav>
+
+  <main class="card" role="main">
+    <div class="top">
+      <button class="back-btn" aria-label="Geri" id="btnBack"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <h1>Hakkınızda</h1>
+    <p class="subtitle">Kendiniz ve işletmeniz hakkında bize biraz daha bilgi verin.</p>
+
+    <form id="aboutForm" class="form" autocomplete="off" novalidate>
+      <div class="row">
+        <label>İŞLETME TÜRÜ <span style="font-weight:400">(en az birini seçin)</span></label>
+        <div class="segmented" role="group" aria-label="İşletme türü">
+          <button type="button" id="btnKuafor"   class="seg-btn" aria-pressed="false"><i class="fa-solid fa-scissors"></i> Kuaför</button>
+          <button type="button" id="btnGuzellik" class="seg-btn" aria-pressed="false"><i class="fa-solid fa-spa"></i> Güzellik Salonu</button>
+        </div>
+        <div class="help" id="typeHelp" aria-live="polite">Seçili: —</div>
+      </div>
+
+      <div class="row">
+        <label for="business">İŞLETME ADI</label>
+        <input id="business" type="text" placeholder="Örn: X Kuaför" required
+               inputmode="text" autocapitalize="words" autocomplete="organization"/>
+      </div>
+
+      <div class="row">
+        <label for="yourname">SALON SAHİBİ (Admin Adı)</label>
+        <input id="yourname" type="text" placeholder="Ad Soyad" required
+               inputmode="text" autocapitalize="words" autocomplete="name"/>
+      </div>
+
+      <div class="row">
+        <div class="grid-2">
+          <div>
+            <label>ÜLKE KODU</label>
+            <div class="prefix"><img src="https://flagcdn.com/tr.svg" alt="TR"/><span>+90</span></div>
+          </div>
+          <div>
+            <label for="phone">TELEFON NUMARANIZ</label>
+            <input id="phone" type="tel" placeholder="5xx xxx xx xx" required
+                   inputmode="tel" autocomplete="tel-national"/>
+            <div class="help">Biçim: 5xx xxx xx xx</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" type="submit" id="submitBtn">DEVAM ET</button>
+    </form>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    /* ---------- Akış guard: e-posta + akış bayrağı ---------- */
+    (function guardFlow(){
+      const flow=(localStorage.getItem("admin_onboarding_flow")||"").toLowerCase();
+      const email=(localStorage.getItem("pending_admin_email")||"").trim();
+      const method=(localStorage.getItem("admin_onboarding_method")||"").toLowerCase();
+      if(flow!=="admin" || !email || !method){
+        alert("Akış geçersiz. Lütfen yönetici kaydına baştan başlayın.");
+        location.replace("admin-register-login.html");
+      }
+    })();
+
+    // İsteğe bağlı: önceki adım kontrolü
+    // const lastStep = localStorage.getItem("admin_onboarding_last_step") || "";
+    // if (lastStep !== "1") location.replace("admin-register1.html");
+
+    /* ---------- Keys ---------- */
+    const K_PROFILE = "pending_admin_profile";        // { businessTypes, businessName, adminName, adminPhone }
+    const K_LAST    = "admin_onboarding_last_step";   // "2" vb.
+
+    /* ---------- Helpers ---------- */
+    const $ = (s,r=document)=>r.querySelector(s);
+    const toast=$("#toast");
+    const t=(v)=>String(v||"").trim().replace(/\s+/g," "); // normalize whitespace
+    function showToast(msg,err=true){
+      toast.textContent=msg;
+      toast.className="toast show"+(err?" err":"");
+      setTimeout(()=>toast.classList.remove("show","err"),2200);
+    }
+
+    /* ---------- Elements ---------- */
+    const btnKuafor   = $("#btnKuafor");
+    const btnGuzellik = $("#btnGuzellik");
+    const typeHelp    = $("#typeHelp");
+    const business    = $("#business");
+    const yourname    = $("#yourname");
+    const phone       = $("#phone");
+    const btnBack     = $("#btnBack");
+    const form        = $("#aboutForm");
+
+    /* ---------- Phone mask ---------- */
+    function maskPhone(v){
+      const d=(v||"").replace(/\D/g,"").slice(0,10);
+      let o=""; if(d.length>0)o+=d.substring(0,3); if(d.length>3)o+=" "+d.substring(3,6);
+      if(d.length>6)o+=" "+d.substring(6,8); if(d.length>8)o+=" "+d.substring(8,10);
+      return o;
+    }
+    phone.addEventListener("input",e=> e.target.value=maskPhone(e.target.value));
+    phone.addEventListener("paste",(e)=>{
+      e.preventDefault();
+      const text=(e.clipboardData||window.clipboardData).getData("text");
+      const clean=(text||"").replace(/\D/g,"").slice(0,10);
+      document.execCommand("insertText",false,maskPhone(clean));
+    });
+
+    /* ---------- Type selection ---------- */
+    function refreshHelp(){
+      const arr=[];
+      if(btnKuafor.getAttribute("aria-pressed")==="true")   arr.push("Kuaför");
+      if(btnGuzellik.getAttribute("aria-pressed")==="true") arr.push("Güzellik Salonu");
+      typeHelp.textContent="Seçili: "+(arr.length?arr.join(" + "):"—");
+    }
+    function toggleBtn(btn){
+      const state=btn.getAttribute("aria-pressed")==="true";
+      btn.setAttribute("aria-pressed", String(!state));
+      refreshHelp();
+    }
+    [btnKuafor, btnGuzellik].forEach(b=>{
+      b.addEventListener("click",()=>toggleBtn(b));
+      b.addEventListener("keydown",(e)=>{ if(e.key===" "||e.key==="Enter"){ e.preventDefault(); toggleBtn(b); }});
+    });
+
+    /* ---------- Load profile (berber -> kuafor migration) ---------- */
+    function loadProfile(){
+      try{
+        const raw=localStorage.getItem(K_PROFILE);
+        if(!raw) return;
+        const p=JSON.parse(raw);
+
+        if(Array.isArray(p.businessTypes)){
+          let types=p.businessTypes.filter(Boolean).map(String);
+          // migration: 'berber' tamamen kaldır → kuaför'e taşı
+          if(types.includes("berber") && !types.includes("kuafor")){
+            types=types.filter(x=>x!=="berber").concat("kuafor");
+          }else{
+            types=types.filter(x=>x!=="berber");
+          }
+          // sadece kuafor/guzellik’e izin ver
+          types=types.filter(x=>x==="kuafor"||x==="guzellik");
+          p.businessTypes=[...new Set(types)];
+          localStorage.setItem(K_PROFILE, JSON.stringify(p));
+
+          btnKuafor.setAttribute("aria-pressed",   String(p.businessTypes.includes("kuafor")));
+          btnGuzellik.setAttribute("aria-pressed", String(p.businessTypes.includes("guzellik")));
+        }
+
+        business.value=p.businessName||"";
+        yourname.value=p.adminName||"";
+        if(p.adminPhone) phone.value=maskPhone(String(p.adminPhone));
+        refreshHelp();
+      }catch{}
+    }
+    loadProfile();
+
+    /* ---------- Dirty/leave guard ---------- */
+    let DIRTY=false; function markDirty(){ DIRTY=true; }
+    ["input","change"].forEach(ev=>{ form.addEventListener(ev,markDirty,{capture:true}); });
+    let allowLeave=false;
+    window.addEventListener("beforeunload",e=>{ if(!allowLeave && DIRTY){ e.preventDefault(); e.returnValue=""; }});
+
+    /* ---------- Back ---------- */
+    btnBack.addEventListener("click",e=>{
+      e.preventDefault(); allowLeave=true; location.replace("admin-register1.html");
+    });
+
+    /* ---------- Validation ---------- */
+    function validateFields(){
+      let ok=true;
+      const types=[];
+      if(btnKuafor.getAttribute("aria-pressed")==="true")   types.push("kuafor");
+      if(btnGuzellik.getAttribute("aria-pressed")==="true") types.push("guzellik");
+      if(types.length===0){ ok=false; showToast("Lütfen işletme türü seçin."); }
+
+      const nameBusiness=t(business.value).slice(0,80);
+      const nameAdmin   =t(yourname.value).slice(0,80);
+      const national    =phone.value.replace(/\D/g,"");
+
+      business.value=nameBusiness;
+      yourname.value=nameAdmin;
+
+      business.setAttribute("aria-invalid", String(!nameBusiness));
+      yourname.setAttribute("aria-invalid", String(!nameAdmin));
+      phone.setAttribute("aria-invalid", String(!/^\d{10}$/.test(national)));
+
+      if(!nameBusiness || !nameAdmin){ ok=false; showToast("Lütfen eksik alanları doldurun."); }
+      if(!/^\d{10}$/.test(national)){ ok=false; showToast("Telefon numarası geçersiz."); }
+
+      return { ok, types:[...new Set(types)], nameBusiness, nameAdmin, national };
+    }
+
+    /* ---------- Submit ---------- */
+    form.addEventListener("submit",e=>{
+      e.preventDefault();
+      const { ok, types, nameBusiness, nameAdmin, national }=validateFields();
+      if(!ok) return;
+
+      const profile={
+        businessTypes: types,     // ["kuafor","guzellik"]
+        businessName : nameBusiness,
+        adminName    : nameAdmin,
+        adminPhone   : national   // 10 hane
+      };
+      localStorage.setItem(K_PROFILE, JSON.stringify(profile));
+      localStorage.setItem(K_LAST, "2");
+
+      allowLeave=true; DIRTY=false;
+      location.replace("admin-register3.html");
+    });
+
+    // İlk odak
+    setTimeout(()=> business.focus(), 60);
+  </script>
+</body>
+</html>

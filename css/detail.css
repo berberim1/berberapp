@@ -1,0 +1,50 @@
+
+/* detail.css - örnek işletme sayfası */
+.detail-wrap { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; grid-template-columns: 1fr 360px; gap: 24px; }
+@media (max-width: 1024px){ .detail-wrap{ grid-template-columns: 1fr; } }
+.gallery-card { background:#fff; border-radius: 14px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,.06); position:relative; }
+.gallery { position: relative; aspect-ratio: 16/9; background:#000; }
+.gallery img, .gallery video { width: 100%; height: 100%; object-fit: cover; display:block; }
+.gallery .dotbar { position: absolute; bottom: 10px; left: 0; right: 0; display:flex; gap:6px; justify-content: center; }
+.gallery .dot { width:8px; height:8px; border-radius:50%; background:#fff; opacity:.5; }
+.gallery .dot.active { opacity: 1; }
+.gallery .next { position:absolute; right: 12px; top: 50%; transform: translateY(-50%); width:44px; height:44px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 10px rgba(0,0,0,.2); cursor:pointer; }
+.rating-badge { position:absolute; top:12px; right:12px; background:#111; color:#fff; padding:8px 10px; border-radius:10px; font-weight:600; }
+.biz-header { padding: 16px 0 8px; }
+.biz-header h1{ margin:0; font-size:28px; }
+
+.section { background:#fff; border-radius:14px; box-shadow: 0 8px 24px rgba(0,0,0,.06); padding:16px; margin-top:16px; }
+.section h2 { font-size:20px; margin:0 0 12px; }
+.service-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee; }
+.service-row:last-child{ border-bottom:0; }
+.service-row .name { font-weight:600; }
+.service-row .meta { opacity:.7; font-size:13px; }
+.service-row .price { font-weight:700; margin: 0 12px; white-space:nowrap; }
+.service-row .book { background:#0e7c86; color:#fff; border:0; border-radius:10px; padding:8px 12px; cursor:pointer; }
+
+.sidebar .card { background:#fff; border-radius:14px; box-shadow: 0 8px 24px rgba(0,0,0,.06); padding:16px; margin-bottom:16px; }
+.sidebar .map { height: 180px; background:#e5e7eb; border-radius:10px; }
+.sticky-book { position: sticky; top: 10px; }
+.small { opacity:.7; font-size:13px; }
+.grid-works { display:grid; grid-template-columns: repeat(5, minmax(100px,1fr)); gap:10px; }
+.grid-works img { width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:10px; }
+.footer-spacer { height:24px; }
+
+/* Üstte sabit görünen küçük bilgi çubuğu */
+.top-info-bar {
+  position: sticky; top: 0; z-index: 900; background: rgba(255,255,255,.96);
+  backdrop-filter: saturate(150%) blur(6px);
+  border-bottom: 1px solid #eee;
+  display: none; /* JS ile .show olunca block */
+}
+.top-info-bar .inner { max-width: 1200px; margin: 0 auto; padding: 10px 16px; display:flex; align-items:center; gap: 12px; }
+.top-info-bar h1 { font-size: 18px; margin: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.top-info-bar .book-now { background:#0e7c86; color:#fff; border:0; border-radius:10px; padding:10px 14px; font-weight:700; cursor:pointer; }
+.top-info-bar.show{ display:block; }
+
+@media (prefers-color-scheme: dark){
+  .gallery-card, .section, .sidebar .card { background:#0f1621; color:#fff; }
+  .service-row{ border-color:#223045; }
+  .gallery .next{ background:#0f1621; color:#fff; }
+  .top-info-bar { background: rgba(15,22,33,.9); border-color:#223045; color:#fff; }
+}

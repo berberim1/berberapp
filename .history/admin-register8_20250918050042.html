@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daha Fazla Personel Ekle</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <style>
+    :root{
+      --bg:#eef2f5; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --border:#e5e7eb;
+      --primary:#111111; --accent:#00c48c; --radius:16px; --shadow:0 18px 50px rgba(15,23,42,.12);
+      --ok:#0f766e; --input:#f9fafb; --ring:rgba(37,99,235,.18);
+    }
+    *{ box-sizing:border-box }
+    body{ margin:0;font-family:Inter,system-ui;background:var(--bg); display:flex;align-items:center;justify-content:center;padding:24px;color:var(--text); }
+    .container{width:min(720px,100%);background:var(--card);border-radius:22px;box-shadow:var(--shadow);overflow:hidden;}
+    .top{display:flex;align-items:center;gap:12px;padding:16px 18px 10px;border-bottom:1px solid var(--border);}
+    .back-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;}
+    .progress-outer{flex:1;height:8px;border-radius:999px;background:#f2f4f7;overflow:hidden;}
+    .progress-inner{height:100%;width:88%;background:var(--accent);}
+    .header{text-align:center;padding:12px 26px;}
+    .header h1{margin:0;font-size:24px;font-weight:800;}
+    .header p{margin:6px 0 0;color:var(--muted);}
+
+    .section{padding:18px 22px;}
+    .staff-list{display:flex;flex-wrap:wrap;gap:10px;}
+    .chip{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+    .avatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:#fff;background:#64748b;}
+    .role{color:var(--muted);font-size:12px;}
+    .add-row{margin-top:16px;}
+    .add-staff{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;border:1px dashed var(--border);border-radius:12px;background:#fff;cursor:pointer;font-weight:700;}
+
+    .footer{padding:16px 22px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+    .btn{width:100%;height:48px;border-radius:12px;border:none;background:var(--primary);color:#fff;font-weight:800;cursor:pointer;}
+    .btn[disabled]{opacity:.6;cursor:not-allowed;}
+    .btn-ok{background:var(--ok);}
+
+    .overlay{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.42);backdrop-filter:blur(2px);}
+    .overlay.show{display:flex;}
+    .modal{width:min(520px,94%); background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 28px 80px rgba(0,0,0,.28);}
+    .m-head{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid var(--border);}
+    .m-head-title{font-size:18px;font-weight:800;}
+    .m-close{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+    .m-body{padding:16px 18px;}
+    .m-foot{padding:12px 18px;display:flex;gap:10px;justify-content:flex-end;border-top:1px solid var(--border);}
+
+    .inp{margin-bottom:12px;position:relative;}
+    .inp input, .inp select{width:100%; height:50px; border-radius:12px; border:1px solid var(--border); background:var(--input); padding:0 14px 0 44px; font-size:14px; outline:none; transition:border-color .18s, box-shadow .18s, background .18s;}
+    .inp input:focus, .inp select:focus{border-color:#c7d2fe; background:#fff; box-shadow:0 0 0 4px var(--ring);}
+    .inp i{position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#9aa0a6; font-size:14px; pointer-events:none;}
+
+    .phone-wrap{position:relative;}
+    .phone-wrap .prefix{position:absolute; left:44px; top:50%; transform:translateY(-50%); font-weight:800; color:#111;}
+    .phone-wrap input{ padding-left: 80px; }
+
+    .btn-secondary{background:#f3f4f6;border:1px solid var(--border);}
+    .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;border-radius:10px;font-size:14px;opacity:0;transition:.2s;}
+    .toast.show{opacity:1;}
+  </style>
+</head>
+<body>
+  <main class="container">
+    <div class="top">
+      <button class="back-btn" id="btnBack"><i class="fa-solid fa-arrow-left"></i></button>
+      <div class="progress-outer"><div class="progress-inner"></div></div>
+    </div>
+
+    <div class="header">
+      <h1>Daha Fazla Personel Eklemek İster misiniz?</h1>
+      <p>Ekibinizin bilgilerini ekleyebilirsiniz.</p>
+    </div>
+
+    <section class="section">
+      <div class="staff-list" id="staffList">
+        <div class="chip" id="ownerChip" style="display:none">
+          <div class="avatar" id="ownerAvatar">ME</div>
+          <div><div id="ownerName">Ben</div><div class="role">Sahip</div></div>
+        </div>
+      </div>
+      <div class="add-row"><div class="add-staff" id="btnOpenModal"><i class="fa-solid fa-user-plus"></i> Personel ekle</div></div>
+    </section>
+
+    <div class="footer">
+      <button class="btn btn-ok" id="btnFinish">KAYDI TAMAMLA</button>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="overlay" id="staffOverlay">
+    <div class="modal">
+      <div class="m-head">
+        <div class="m-head-title">Personel Ekle</div>
+        <button class="m-close" id="btnModalClose" aria-label="Kapat"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="m-body">
+        <div class="inp"><i class="fa-solid fa-id-card"></i><input type="text" id="name" placeholder="Ad Soyad" autocomplete="off"/></div>
+        <div class="inp">
+          <i class="fa-solid fa-phone"></i>
+          <div class="phone-wrap">
+            <span class="prefix">+90</span>
+            <input type="tel" id="phone" placeholder="5xx xxx xx xx" inputmode="numeric" autocomplete="off" />
+          </div>
+        </div>
+        <div class="inp"><i class="fa-solid fa-briefcase"></i>
+          <select id="position">
+            <option value="" disabled selected>Pozisyon seçin</option>
+            <option>Berber</option><option>Kuaför</option><option>Resepsiyonist</option>
+          </select>
+        </div>
+      </div>
+      <div class="m-foot">
+        <button class="btn-secondary" id="btnCancel">İptal</button>
+        <button class="btn" id="addBtn">Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Eklendi</div>
+
+<script type="module">
+  import { auth, db } from "./js/firebase.js";
+  import {
+    createUserWithEmailAndPassword as createUser,
+    fetchSignInMethodsForEmail as fetchMethods,
+    signInWithEmailAndPassword as signIn,
+    linkWithCredential as linkCred,
+    EmailAuthProvider,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+  import { doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+  const $=s=>document.querySelector(s);
+  const staffList=$("#staffList"), ownerChip=$("#ownerChip"), ownerAvatar=$("#ownerAvatar"), ownerNameEl=$("#ownerName");
+  const overlay=$("#staffOverlay"), toast=$("#toast");
+  const btnFinish=$("#btnFinish");
+
+  const initials = n => n.split(" ").filter(Boolean).map(w=>w[0]).slice(0,2).join("").toUpperCase();
+  const colors=['#111827','#2563eb','#0ea5e9','#059669','#f59e0b','#dc2626','#7c3aed'];
+  const colorFor = n => colors[(n.codePointAt(0)||0)%colors.length];
+  const showToast = m => { toast.textContent=m; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1500); };
+
+  // storage helpers
+  const readStore = (k) => localStorage.getItem(k) ?? sessionStorage.getItem(k);
+  const writeStore = (k,v) => { localStorage.setItem(k,v); };
+  const removeStore = (k) => { localStorage.removeItem(k); sessionStorage.removeItem(k); };
+
+  /* Flow guard */
+  (function guard(){
+    const flow=(readStore("admin_onboarding_flow")||"").toLowerCase();
+    const email=(readStore("pending_admin_email")||"").trim();
+    if(flow!=="admin" || !email){ alert("Akış geçersiz. Lütfen kayıt sürecine baştan başlayın."); location.replace("admin-register-login.html"); }
+    if(!readStore("step7")) location.replace("admin-register7.html");
+  })();
+
+  /* Leave / Back */
+  let allowLeave=false;
+  $("#btnBack").addEventListener("click",(e)=>{ e.preventDefault(); persistStep8(); allowLeave=true; location.replace("admin-register7.html"); });
+  window.addEventListener("beforeunload",(e)=>{ if(!allowLeave){ e.preventDefault(); e.returnValue=""; }});
+
+  /* Owner chip — PROFİLDEN OKU (karışmayı önler) */
+  function renderOwner(){
+    const prof = JSON.parse(readStore("pending_admin_profile")||"{}");
+    const name = prof?.adminName || "Ben";
+    ownerNameEl.textContent = name + " (Ben)";
+    ownerAvatar.textContent = initials(name);
+    ownerAvatar.style.background = colorFor(name);
+    ownerChip.style.display="flex";
+  }
+
+  /* Dükkân çalışma saatleri (step6) → default */
+  function getDefaultWorkingHours(){
+    try{
+      const raw = readStore("step6");
+      const obj = raw ? JSON.parse(raw) : null;
+      if(obj && obj.workingHours) return JSON.parse(JSON.stringify(obj.workingHours)); // deep copy
+    }catch{}
+    const base = (from="10:00",to="19:00") => ({open:true,from,to});
+    return {
+      "Pazartesi":base(),"Salı":base(),"Çarşamba":base(),"Perşembe":base(),"Cuma":base(),
+      "Cumartesi":{open:false},"Pazar":{open:false}
+    };
+  }
+  let SHOP_WORKING_HOURS = getDefaultWorkingHours();
+
+  /* Staff state */
+  let members=[];
+  function ensureWorkingHoursForAll(){
+    members = (members||[]).map(m => {
+      if(!m.workingHours) m.workingHours = JSON.parse(JSON.stringify(SHOP_WORKING_HOURS));
+      return m;
+    });
+  }
+  function persistStep8(){
+    ensureWorkingHoursForAll();
+    writeStore("step8", JSON.stringify({ staff: members })); // sadece staff
+    writeStore("admin_onboarding_last_step","8");
+  }
+  function hydrateStep8(){
+    try{
+      const prev=JSON.parse(readStore("step8")||"null");
+      if(prev?.staff) members=prev.staff;
+      ensureWorkingHoursForAll();
+    }catch{}
+  }
+  function renderMembers(){
+    staffList.querySelectorAll(".chip:not(#ownerChip)").forEach(e=>e.remove());
+    members.forEach((m,idx)=>{
+      const el=document.createElement("div");
+      el.className="chip";
+      el.innerHTML=`<div class="avatar" style="background:${m.color}">${m.initials}</div>
+                    <div><div>${m.name}</div><div class="role">${m.position||'Personel'} • ${m.phoneE164||('+90'+m.phone)}</div></div>`;
+      el.title="Kaldırmak için çift tıkla";
+      el.ondblclick=()=>{ members.splice(idx,1); renderMembers(); persistStep8(); showToast("Kaldırıldı"); };
+      staffList.appendChild(el);
+    });
+  }
+
+  /* Modal */
+  const phoneEl = $("#phone");
+  const maskTR = v => {
+    const d=(v||"").replace(/\D/g,"").slice(0,10);
+    let o=""; if(d.length>0) o+=d.slice(0,3);
+    if(d.length>3) o+=" "+d.slice(3,6);
+    if(d.length>6) o+=" "+d.slice(6,8);
+    if(d.length>8) o+=" "+d.slice(8,10);
+    return o;
+  };
+  phoneEl.addEventListener("input",e=> e.target.value = maskTR(e.target.value));
+
+  $("#btnOpenModal").onclick=()=>{ overlay.classList.add("show"); $("#name").focus(); };
+  $("#btnModalClose").onclick=$("#btnCancel").onclick=()=>overlay.classList.remove("show");
+
+  $("#addBtn").onclick=()=>{
+    const name=$("#name").value.trim();
+    const pos=$("#position").value;
+    const national = phoneEl.value.replace(/\D/g,"");
+    if(!name){ showToast("Ad gerekli"); return; }
+    if(!/^\d{10}$/.test(national)){ showToast("Telefon 10 haneli olmalı"); return; }
+
+    const workingHoursCopy = JSON.parse(JSON.stringify(SHOP_WORKING_HOURS));
+    const m={
+      name,
+      phone: national,                 // 10 hane
+      phoneE164: `+90${national}`,     // +90 ile
+      position: pos||"Personel",
+      initials: initials(name),
+      color: colorFor(name),
+      workingHours: workingHoursCopy
+    };
+    members.push(m); renderMembers(); overlay.classList.remove("show");
+    $("#name").value=""; phoneEl.value=""; $("#position").selectedIndex=0;
+    showToast("Personel eklendi");
+    persistStep8();
+  };
+
+  /* Auth helpers + finalize */
+  async function ensureSignedIn(email, password) {
+    if (!auth.currentUser) {
+      const cred = await signIn(auth, email, password);
+      await cred.user.getIdToken(true);
+      return cred.user;
+    }
+    await auth.currentUser.getIdToken(true);
+    return auth.currentUser;
+  }
+
+  // Adımların hepsini tek yerde toplamak yerine profile ve adım verilerini ayrı alanlara yazacağız
+  function buildPayload(){
+    const prof = JSON.parse(readStore("pending_admin_profile")||"{}"); // {businessTypes,businessName,adminName,adminPhone}
+    const step3 = JSON.parse(readStore("step3")||"null");              // {hasMobileService}
+    const step4 = JSON.parse(readStore("step4")||"null");              // {travel:{priceType,fee,feeText,currency,maxDistanceKm}}
+    const step5 = JSON.parse(readStore("step5")||"null");              // {businessLocation:{province,district,neighborhood,street,building,country}}
+    const step6 = JSON.parse(readStore("step6")||"null");              // {workingHours:{...}}
+    const step7 = JSON.parse(readStore("step7")||"null");              // {services:[...]}
+
+    const ownerEmail = (readStore("pending_admin_email")||"").trim().toLowerCase();
+    const ownerPhoneNational = prof?.adminPhone ? String(prof.adminPhone) : ""; // 10 hane bekliyoruz
+    const ownerPhoneE164 = ownerPhoneNational ? `+90${ownerPhoneNational}` : "";
+
+    const business = {
+      name: prof?.businessName || "",
+      types: Array.isArray(prof?.businessTypes) ? prof.businessTypes : []
+    };
+
+    const owner = {
+      name: prof?.adminName || "",
+      email: ownerEmail,
+      phoneNational: ownerPhoneNational || null,
+      phoneE164: ownerPhoneE164 || null
+    };
+
+    const travel = step4?.travel || null;
+    const businessLocation = step5?.businessLocation || null;
+    const workingHours = step6?.workingHours || getDefaultWorkingHours();
+    const services = Array.isArray(step7?.services) ? step7.services : [];
+
+    // staff zaten ayrı dizide (members)
+    return {
+      owner,                    // <-- admin KESİN ayrı
+      business,
+      hasMobileService: !!(step3?.hasMobileService),
+      travel,                   // {priceType, fee, currency, maxDistanceKm}
+      businessLocation,         // {province,district,neighborhood,street,building,country}
+      workingHours,             // salonun default saatleri
+      services,                 // seçilen hizmetler
+      staff: members || [],     // personeller (telefonları burada)
+      onboardingCompleted:true,
+      updatedAt:serverTimestamp()
+    };
+  }
+
+  btnFinish.onclick = async () => {
+    try{
+      persistStep8();
+      const email=(readStore("pending_admin_email")||"").trim().toLowerCase();
+      const password=(readStore("pending_admin_password")||"");
+      if(!email||!password){ alert("E-posta/şifre eksik."); return; }
+
+      btnFinish.disabled=true; const old=btnFinish.textContent; btnFinish.textContent="Kaydediliyor…";
+
+      const methods=await fetchMethods(auth,email);
+      let uid=null;
+      if(methods.length===0){ uid=(await createUser(auth,email,password)).user.uid; }
+      else if(methods.includes("password")){ uid=(await signIn(auth,email,password)).user.uid; }
+      else if(auth.currentUser && auth.currentUser.isAnonymous){ uid=(await linkCred(auth.currentUser, EmailAuthProvider.credential(email,password))).user.uid; }
+      else{ alert("Bu e-posta farklı yöntemle kayıtlı (ör. Google)."); btnFinish.disabled=false; btnFinish.textContent=old; return; }
+
+      await ensureSignedIn(email,password);
+
+      const payload = buildPayload();
+
+      // Eski geriye dönük alanlar (opsiyonel): email, step/progress
+      const retro = {
+        email, // geriye dönük
+        step:8,
+        progress:{completed:[1,2,3,4,5,6,7,8],current:8,total:9}
+      };
+
+      await setDoc(doc(db,"adminOnboarding",uid),{...payload, ...retro, role:"owner", ownerId:uid},{merge:true});
+      await setDoc(doc(db,"roles",uid),{role:"admin",createdAt:serverTimestamp()},{merge:true});
+      await setDoc(doc(db,"email_index",encodeURIComponent(email)),{roleHint:"admin",updatedAt:serverTimestamp()},{merge:true});
+
+      writeStore("__reg_ok","1");
+      writeStore("admin_onboarding_last_step","8");
+      removeStore("pending_admin_password");
+
+      try{ await signOut(auth);}catch{}
+      alert("Kayıt tamamlandı! Şimdi giriş yapabilirsiniz.");
+      allowLeave=true; location.replace("admin-register-login.html#login");
+    }catch(err){
+      console.error(err);
+      alert("İşlem başarısız: "+(err?.message||String(err)));
+      btnFinish.disabled=false; btnFinish.textContent="KAYDI TAMAMLA";
+    }
+  };
+
+  /* Init */
+  (function init(){
+    renderOwner();
+    hydrateStep8();
+    renderMembers();
+  })();
+</script>
+</body>
+</html>
+    

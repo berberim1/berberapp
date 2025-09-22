@@ -1,0 +1,241 @@
+/* ===========================================================
+   MOBİL STİLLER — genişlik <= 900px
+   =========================================================== */
+@media (max-width: 900px) {
+  :root{
+    /* Takvim ölçüleri */
+    --timeW: 64px;                                  /* saat sütunu */
+    --colW: calc((100vw - var(--timeW) - 24px) / 2);/* görünürde 2 personel */
+    --cellH: 64px;
+    --wkRowH: 300px;
+    --miniPad: 12px; 
+    --miniGap: 6px;  /* 8 -> 6: sığmayı kolaylaştır */
+    --miniCell: 52px;
+  }
+
+  /* Masaüstü kilitlerini söndür + genel yatay scroll KAPALI */
+  html, body, .container { width: auto !important; min-width: 0 !important; }
+  html, body, .app { height: 100%; }
+  html, body, .app, .main { overflow-x: hidden !important; } /* yalnız takvim yatay kayar */
+  body { margin: 0 !important; }
+
+  /* Ana iskelet */
+  .main{
+    padding-left: 0 !important;          /* sol rail boşluğu yok */
+    padding-bottom: 80px;                 /* bottom bar alanı */
+    min-width: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ======================= TOPBAR (kompakt & taşma yok) ======================= */
+  .topbar-inner{
+    display:flex; align-items:center;
+    gap: 6px; padding: 8px 10px;
+    flex-wrap: wrap;                      /* dar ekranda alt satıra iner */
+  }
+
+  /* Gruplar (taşma ve üst üste binmeyi engelle) */
+  .view-select, .date-nav, .staff-wrap, .actions{
+    display:flex; align-items:center; gap:6px;
+    flex: 0 1 auto;                      /* küçülüp büyüyebilir */
+  }
+
+  /* Ortak küçük ikon-buton (oklar, bugün, çan vs.) */
+  .icon-btn{
+    width: 28px; height: 28px; min-width:28px;
+    display:grid; place-items:center;    /* tam merkez */
+    border-radius: 10px;
+    background:#fff; border:1px solid #e6e7eb;
+    padding:0; line-height:0;            /* baseline kaymasını sil */
+  }
+  .icon-btn svg{ width:14px; height:14px; display:block; }
+
+  /* Görünüm seçici (#viewChip) → ikon-buton (metin gizle) */
+  #viewChip{
+    width: 28px; height: 28px; padding:0; min-width:28px;
+    border-radius:10px; border:1px solid #e6e7eb; background:#fff;
+    display:grid; place-items:center; line-height:0;
+  }
+  #viewChip .chev, #viewChip span{ display:none; }
+  #viewChip::before{
+    content:""; width:14px; height:14px; background:#111;
+    -webkit-mask: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='4' width='8' height='16' rx='2'/><rect x='13' y='4' width='8' height='16' rx='2'/></svg>") center/contain no-repeat;
+            mask: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='4' width='8' height='16' rx='2'/><rect x='13' y='4' width='8' height='16' rx='2'/></svg>") center/contain no-repeat;
+  }
+
+  /* Tarih butonu (#dateLabelWrap): yazılı, daha küçük & taşma yok */
+  .date-chip{
+    height: 30px;
+    min-width: 150px;
+    max-width: 55vw;                      /* taşmayı engelle */
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius:10px; border:1px solid #e6e7eb; background:#fff;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .date-chip .date-main strong{ font-weight: 600; }
+  .date-chip .date-range{ display:none; } /* ikinci satırı gizle */
+  .date-chip .chev{ width:12px; height:12px; }
+
+  /* Personel butonu (#staffBtn) → ikon-buton (metin gizle) */
+  .pill#staffBtn{
+    width:28px; height:28px; padding:0; min-width:28px;
+    border-radius:10px; border:1px solid #e6e7eb; background:#fff;
+    display:grid; place-items:center; font-size:0; line-height:0;
+  }
+  #staffBtn .chev{ display:none; }
+  #staffBtn::before{
+    content:""; width:14px; height:14px; background:#111;
+    -webkit-mask: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='9' cy='8' r='3'/><path d='M3 18c0-3 3-5 6-5' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/><circle cx='17' cy='9' r='2.5'/><path d='M13 18c.5-2.2 2.8-3.7 5-3.7' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/></svg>") center/contain no-repeat;
+            mask: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='9' cy='8' r='3'/><path d='M3 18c0-3 3-5 6-5' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/><circle cx='17' cy='9' r='2.5'/><path d='M13 18c.5-2.2 2.8-3.7 5-3.7' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/></svg>") center/contain no-repeat;
+  }
+
+  /* Arama: mobilde gizle (istersen ikonla açılır yapılabilir) */
+  .topbar .search{ display:none !important; }
+
+  /* ======================= TARİH (mini takvim) ======================= */
+  /* popover: kayma/scroll olmasın */
+  #calendarPopover.center-pop{
+    position: fixed;                      /* sayfayı oynatmaz */
+    inset: 8px auto auto 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 420px);
+    max-height: calc(100vh - 16px);
+    overflow: hidden;                     /* yatay/dikey scroll kapalı */
+    border-radius: 14px;
+    padding: 10px var(--miniPad) 12px;
+    z-index: 1100;
+    -webkit-overflow-scrolling: touch;
+  }
+  .calendar-head strong{ font-size: 14px; }
+
+  /* 7 sütun her zaman sığsın */
+  .calendar-grid{
+    display:grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--miniGap);
+    padding-inline: var(--miniPad);
+  }
+
+  /* Hücreler responsive kare; içerik tam merkez */
+  .calendar-grid .cell{
+    width: auto; height: auto;            /* sabit değerleri sil */
+    aspect-ratio: 1 / 1;                  /* kare; istersen 1/0.9 yapabilirsin */
+    box-sizing: border-box;
+    display:grid; place-items:center;
+  }
+  .calendar-grid .cell > *{ line-height: 1; }
+
+  /* ======================= PERSONEL POPOVER ======================= */
+  .staff-pop{
+    position: fixed;                      /* sayfayı oynatmaz */
+    left: 50%; transform: translateX(-50%);
+    top: 56px;
+    width: min(92vw, 420px);
+    max-height: calc(100vh - 72px);
+    overflow: auto;
+    padding: 10px;
+    border-radius: 12px;
+    z-index: 1100;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ======================= BİLDİRİM (panel %75 genişlik) ======================= */
+  .notify{
+    width: 75vw; max-width: 520px;
+    right: -75vw;
+  }
+  .notify.open{ right: 0; }
+
+  /* ======================= GÜN GÖRÜNÜMÜ ======================= */
+  .calendar{
+    margin: 12px;
+    height: calc(100vh - 56px - 60px - 24px); /* topbar ~56, bottom bar 60 */
+    min-height: 520px;
+    border-radius: 14px;
+  }
+
+  /* yalnız takvim bölümü yatay kayar */
+  #dayView { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* başlık şeridi (2 kişi görünür, fazlası sağa) */
+  .staff-row{
+    grid-template-columns: var(--timeW) repeat(2, var(--colW));
+    grid-auto-columns: var(--colW);
+    min-width: calc(var(--timeW) + (2 * var(--colW)));
+    height: 46px;
+  }
+  .staff-head{ padding: 0 8px; gap: 6px; }
+  .avatar{ width: 22px; height: 22px; font-size: 10px; }
+  .name{ font-size: 12px; }
+  .sub{ font-size: 10px; }
+
+  /* grid kolonları (2 görünür) */
+  .grid{
+    grid-template-columns: var(--timeW) repeat(2, var(--colW));
+    grid-auto-columns: var(--colW);
+    min-width: calc(var(--timeW) + (2 * var(--colW)));
+  }
+  .time-cell{ font-size: 10px; padding: 2px 6px; }
+  .booking{ border-radius: 9px; padding: 4px 6px; font-size: 11px; }
+
+  /* ======================= HAFTA GÖRÜNÜMÜ ======================= */
+  .week{ margin: 10px 12px 12px; border-radius: 14px; }
+  #weekView { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .wk-head{ grid-template-columns: 124px repeat(7, minmax(112px, 1fr)); }
+  .wk-grid{ grid-template-columns: 124px repeat(7, minmax(112px, 1fr)); }
+  .wk-staff{ padding: 8px 10px; }
+  .wk-day-btn{ padding: 6px 8px; }
+  .wk-day .date{ font-size: 13px; }
+  .wk-col-inner{ height: var(--wkRowH); }
+  .wk-chip{ font-size: 11px; padding: 4px 8px; }
+
+  /* ======================= BOTTOM BAR (rail) ======================= */
+  .rail{
+    position: fixed !important;
+    inset: auto 0 0 0 !important;         /* altta tam genişlik */
+    width: 100% !important;
+    height: 60px !important;
+    padding: 6px 8px !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    border-right: none !important;
+    border-top: 1px solid var(--rail-divider) !important;
+    z-index: 1000 !important;
+    backdrop-filter: saturate(1.2) blur(4px);
+  }
+  .rail__list{
+    width: 100% !important;
+    height: 100% !important;
+    flex-direction: row !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .rail__item{ width: auto !important; }
+  .rail__btn{
+    width: 40px !important; height: 40px !important;
+    border-radius: 12px !important;
+    display:grid; place-items:center;
+  }
+  .rail__btn[aria-current="page"]::before{ display:none !important; }
+
+  /* PROFİL butonu: baş harfiyle yuvarlak rozet */
+  .rail .avatar-btn .avatar-circle{
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    display:grid; place-items:center;
+    font: 600 12px/1 "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    color:#fff; background:#7c6cff;
+    box-shadow: 0 2px 8px rgba(124,108,255,.35), inset 0 0 0 1px rgba(255,255,255,.25);
+  }
+
+  /* FAB alt bara çarpmasın */
+  .fab{ bottom: 86px; }
+}

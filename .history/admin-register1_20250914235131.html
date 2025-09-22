@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yönetici Kayıt – Şifre Belirle</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    :root{
+      --bg:#f2f2f2; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --primary:#191919; --primary-contrast:#ffffff;
+      --radius:14px; --shadow:0 4px 20px rgba(0,0,0,0.08);
+      --input:#f9fafb; --input-border:#e5e7eb;
+      --divider:#e5e7eb; --pill:#f3f4f6; --danger:#ef4444;
+      --ok-bg:#ecfdf5; --ok-bd:#a7f3d0; --ok-fg:#065f46;
+      --warn:#d97706; --warn-bg:#fffbeb; --warn-bd:#fcd34d;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;
+      color:var(--text); background:var(--bg);
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .card{
+      width:100%; max-width:560px;
+      background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow);
+      padding:28px;
+    }
+
+    .title{ text-align:center; font-size:22px; font-weight:700; margin:8px 0 6px; }
+    .sub{ text-align:center; color:var(--muted); font-size:14px; margin:0 0 18px; }
+
+    .email-summary{
+      display:flex; align-items:center; gap:10px;
+      background:#f8fafc; border:1px solid var(--input-border);
+      border-radius:10px; padding:10px 12px; margin-bottom:16px; font-size:14px;
+    }
+    .email-summary i{ color:#2563eb; }
+    .email-text{ font-weight:600; }
+
+    .form-row{ margin-bottom:12px; }
+    label{ display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:600; }
+
+    .pw-wrap{ position:relative; }
+    input{
+      width:100%; height:44px; border-radius:10px; border:1px solid var(--input-border);
+      background:var(--input); padding:0 44px 0 14px; font-size:14px; outline:none;
+      color:var(--text);
+    }
+    input::placeholder{ color:#9aa3af; }
+    input:focus{ border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.15); }
+    input[aria-invalid="true"]{ border-color:var(--danger); }
+
+    .toggle{
+      position:absolute; right:6px; top:50%; transform:translateY(-50%);
+      border:none; background:transparent; width:36px; height:36px; cursor:pointer;
+      border-radius:8px; color:var(--muted);
+    }
+    .toggle:hover{ background:var(--pill); }
+
+    .rules{ margin:10px 0 6px; padding:0; list-style:none; color:var(--muted); font-size:13px; }
+    .rules li{ display:flex; align-items:center; gap:10px; padding:6px 0; }
+    .dot{ width:8px; height:8px; border-radius:50%; background:#94a3b8; transition:.2s; }
+    .valid .dot{ background:#22c55e; }
+    .valid span{ color:var(--ok-fg); }
+
+    .caps{ display:none; margin:6px 0 12px; font-size:13px;
+      padding:8px 10px; border-radius:10px; background:var(--warn-bg); border:1px solid var(--warn-bd); color:var(--warn); }
+    .caps.show{ display:block; }
+
+    .btn-row{ display:flex; gap:10px; margin-top:14px; }
+    .btn{ flex:1; height:44px; border-radius:10px; border:none; font-weight:700; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:10px; }
+    .btn-primary{ background:var(--primary); color:var(--primary-contrast); }
+    .btn-ghost{ background:#fff; border:1px solid var(--input-border); color:#111; }
+    .btn-primary:disabled{ opacity:.55; cursor:not-allowed; }
+
+    @media (max-width:560px){
+      .card{ padding:22px 18px; }
+      .btn-row{ flex-direction:column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="title">
+    <h1 id="title" class="title">Şifre Belirle</h1>
+    <p class="sub">Yönetici hesabınız için şifre oluşturun.</p>
+
+    <!-- Devam edilen e-posta bilgisi -->
+    <div class="email-summary" aria-live="polite">
+      <i class="fa-regular fa-envelope"></i>
+      <div>
+        <div style="font-size:12px; color:var(--muted);">Devam edilen e-posta</div>
+        <div id="emailText" class="email-text">—</div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label for="password">Şifre</label>
+      <div class="pw-wrap">
+        <input id="password" type="password" placeholder="••••••••" autocomplete="new-password" inputmode="text" />
+        <button id="pwToggle" class="toggle" aria-label="Şifreyi göster/gizle"><i class="fa-regular fa-eye"></i></button>
+      </div>
+    </div>
+
+    <ul class="rules" aria-live="polite">
+      <li id="r-letter"><span class="dot"></span><span>En az bir harf</span></li>
+      <li id="r-digit"><span class="dot"></span><span>En az bir rakam</span></li>
+      <li id="r-length"><span class="dot"></span><span>8 karakter veya daha uzun</span></li>
+    </ul>
+
+    <div id="capsWarn" class="caps"><i class="fa-solid fa-arrow-up-a-z" style="margin-right:6px;"></i> Caps Lock açık olabilir.</div>
+
+    <div class="btn-row">
+      <button id="btn-back" class="btn btn-ghost" type="button"><i class="fa-solid fa-arrow-left"></i> Geri</button>
+      <button id="btn-continue" class="btn btn-primary" type="button" disabled>Devam Et</button>
+    </div>
+  </main>
+
+  <script type="module">
+    // Ana akış anahtarları (1. sayfayla uyumlu)
+    const K_EMAIL  = "pending_admin_email";
+    const K_METHOD = "admin_onboarding_method";
+    const K_FLOW   = "admin_onboarding_flow";
+
+    // Akış doğrulama
+    const email   = (localStorage.getItem(K_EMAIL)  || "").trim().toLowerCase();
+    const method  = (localStorage.getItem(K_METHOD) || "").trim().toLowerCase();
+    const flow    = (localStorage.getItem(K_FLOW)   || "").trim().toLowerCase();
+
+    if(!email || !method || flow !== "admin"){
+      alert("Geçersiz akış. Lütfen yönetici kaydına baştan başlayın.");
+      location.replace("admin-register-login.html");
+    }
+
+    // E-posta bilgisini ekrana yaz
+    document.getElementById("emailText").textContent = email;
+
+    // Elemanlar
+    const pwd = document.getElementById("password");
+    const btn = document.getElementById("btn-continue");
+    const pwToggle = document.getElementById("pwToggle");
+    const btnBack = document.getElementById("btn-back");
+
+    const rLetter = document.getElementById("r-letter");
+    const rDigit  = document.getElementById("r-digit");
+    const rLength = document.getElementById("r-length");
+    const caps    = document.getElementById("capsWarn");
+
+    // Şifre kuralları
+    function validate(v){
+      const hasLetter = /[a-zA-Z]/.test(v);
+      const hasDigit  = /\d/.test(v);
+      const hasLen    = v.length>=8;
+
+      rLetter.classList.toggle("valid",hasLetter);
+      rDigit.classList.toggle("valid",hasDigit);
+      rLength.classList.toggle("valid",hasLen);
+      pwd.setAttribute("aria-invalid", !(hasLetter && hasDigit && hasLen));
+      btn.disabled = !(hasLetter && hasDigit && hasLen);
+    }
+
+    // Caps Lock uyarısı
+    function handleKeyEvent(e){
+      if(typeof e.getModifierState === "function"){
+        const on = e.getModifierState("CapsLock");
+        caps.classList.toggle("show", !!on);
+      }
+    }
+
+    pwd.addEventListener("input",()=>validate(pwd.value));
+    pwd.addEventListener("keydown",(e)=>{ handleKeyEvent(e); if(e.key==="Enter" && !btn.disabled) btn.click(); });
+    pwd.addEventListener("keyup", handleKeyEvent);
+
+    // Göster / gizle
+    pwToggle.addEventListener("click",(e)=>{
+      e.preventDefault();
+      const icon = pwToggle.querySelector("i");
+      const show = pwd.type === "password";
+      pwd.type = show ? "text" : "password";
+      icon.className = show ? "fa-regular fa-eye-slash" : "fa-regular fa-eye";
+      pwd.focus();
+    });
+
+    // Geri
+    btnBack.addEventListener("click", ()=>{
+      // İstersen burada şifre girişini sıfırlayabilirsin
+      location.replace("admin-register-login.html");
+    });
+
+    // Devam
+    btn.addEventListener("click", async ()=>{
+      const pass = (pwd.value || "").trim();
+      // Son bir kontrol
+      const ok = /[a-zA-Z]/.test(pass) && /\d/.test(pass) && pass.length>=8;
+      if(!ok){ validate(pass); return; }
+
+      btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Kaydediliyor…';
+      try{
+        // NOT: Bu aşamada sadece localStorage’a yazıyoruz.
+        // Gerçek Firebase Auth kullanıcı oluşturma, 8. sayfadaki "Kaydı oluştur"ta yapılacak.
+        localStorage.setItem("pending_admin_password", pass);
+        localStorage.setItem("admin_onboarding_last_step", "1");
+        // Bir sonraki adım
+        location.replace("admin-register2.html");
+      }catch(err){
+        console.error(err);
+        alert("İşlem başarısız: " + (err?.message || "hata"));
+        btn.disabled=false; btn.textContent="Devam Et";
+      }
+    });
+
+    // İlk odak
+    setTimeout(()=>{ pwd.focus(); }, 50);
+  </script>
+</body>
+</html>

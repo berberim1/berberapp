@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Takvim — Gün / Hafta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/calendar.css">
+  <link rel="stylesheet" href="css/rail.css">
+  <link rel="stylesheet" href="css/calendar.mobile.css">
+</head>
+
+<body> <!-- Bottom Rail (mobile) -->
+  <nav class="rail">
+    <ul class="rail__list">
+      <li class="rail__item"> <a class="rail__btn" href="calendar.html" data-tip="Takvim"> <svg class="ico"
+            viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="3" />
+            <path d="M16 2v4M8 2v4M3 10h18" />
+          </svg> </a> </li>
+      <li class="rail__item"> <a class="rail__btn" href="checkout.html" data-tip="Kasa"> <svg class="ico"
+            viewBox="0 0 24 24">
+            <rect x="3" y="7" width="18" height="10" rx="2" />
+            <circle cx="12" cy="12" r="2" />
+            <path d="M7 12h.01M17 12h.01" />
+          </svg> </a> </li>
+      <li class="rail__item"> <a class="rail__btn" href="stats-and-reports.html" data-tip="Raporlar"> <svg class="ico"
+            viewBox="0 0 24 24">
+            <path d="M3 3v18h18" />
+            <rect x="7" y="12" width="3" height="6" rx="1" />
+            <rect x="12" y="9" width="3" height="9" rx="1" />
+            <rect x="17" y="5" width="3" height="13" rx="1" />
+          </svg> </a> </li>
+      <li class="rail__item"> <a class="rail__btn" href="staff.html" data-tip="Personel"> <svg class="ico"
+            viewBox="0 0 24 24">
+            <circle cx="12" cy="8" r="4" />
+            <path d="M20 21a8 8 0 1 0-16 0" />
+          </svg> </a> </li>
+      <li class="rail__item"> <a class="rail__btn" href="settings.html" data-tip="Ayarlar"> <svg class="ico"
+            viewBox="0 0 24 24">
+            <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.07a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.07a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.02 3.4l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.07a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .67.39 1.28 1 1.51.32.12.66.18 1 .18h.07a2 2 0 0 1 0 4H21a1.65 1.65 0 0 0-1.6 1.31Z" />
+          </svg> </a> </li>
+    </ul>
+  </nav>
+  <div class="app">
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-inner"> <!-- Görünüm -->
+          <div class="view-select" id="viewSelect"> <button class="view-chip" id="viewChip" aria-haspopup="listbox"
+              aria-expanded="false" type="button"> <span id="currentView">Gün</span> <svg class="chev"
+                viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg> </button>
+            <div class="view-pop" id="viewPop" role="listbox" aria-labelledby="viewChip"> <button
+                class="view-item selected" role="option" data-view="Gün"><span>Gün</span><span
+                  class="right">✓</span></button> <button class="view-item" role="option"
+                data-view="Hafta"><span>Hafta</span><span class="right">✓</span></button> </div>
+          </div> <!-- Tarih -->
+          <div class="date-nav"> <button class="icon-btn" id="prevDay" title="Önceki"> <svg viewBox="0 0 24 24"
+                fill="none">
+                <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg> </button> <button class="date-chip" id="dateLabelWrap" type="button" aria-haspopup="dialog"
+              aria-expanded="false">
+              <div class="date-main"> <strong id="dateLabel">—</strong> <svg class="chev" viewBox="0 0 24 24"
+                  fill="none">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg> </div> <span class="date-range" id="dateRange"></span>
+            </button> <button class="icon-btn" id="nextDay" title="Sonraki"> <svg viewBox="0 0 24 24" fill="none">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg> </button> <button class="icon-btn" id="todayBtn" title="Bugün"> <svg viewBox="0 0 24 24"
+                fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="12" r="2" fill="currentColor" />
+              </svg> </button> </div> <!-- Personel ve Kaynaklar -->
+          <div class="staff-wrap"> <button class="pill" id="staffBtn" type="button"> Personel ve Kaynaklar <svg
+                class="chev" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg> </button>
+            <div class="staff-pop" id="staffPop" role="dialog" aria-labelledby="spTitle" aria-modal="false">
+              <div class="sp-title" id="spTitle">Personel ve Kaynaklar <svg class="chev" viewBox="0 0 24 24" width="16"
+                  height="16">
+                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg> </div>
+              <div class="sp-sec" id="scopeSec"> <label class="radio"><input type="radio" name="scope"
+                    value="only"><span>Yalnızca ben</span></label> <label class="radio"><input type="radio" name="scope"
+                    value="working" checked><span>Çalışan Personel</span></label> </div>
+              <div class="sp-sep"></div> <!-- Dinamik personel listesi -->
+              <div class="sp-sec">
+                <div id="staffChkWrap"></div> <button class="apply" id="applyStaff">UYGULA</button>
+              </div>
+            </div>
+          </div> <!-- Sağ aksiyonlar -->
+          <div class="actions"> <button class="icon-btn" id="bellBtn" title="Bildirimler"> <svg viewBox="0 0 24 24"
+                fill="none">
+                <path
+                  d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .53-.21 1.04-.59 1.41L4 17h5m6 0a3 3 0 1 1-6 0m6 0H9"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg> </button>
+            <div class="search"> <input type="text" placeholder="Ara" /> <span class="magnifier"><svg
+                  viewBox="0 0 24 24" fill="none">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                  <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg></span> </div>
+          </div>
+        </div>
+      </div> <!-- Mini Takvim -->
+      <div class="center-pop" id="calendarPopover" aria-hidden="true">
+        <div class="calendar-head"> <button class="icon-btn" id="calPrev" title="Önceki Ay"><svg viewBox="0 0 24 24"
+              fill="none">
+              <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg></button> <strong id="calMonthLabel">—</strong> <button class="icon-btn" id="calNext"
+            title="Sonraki Ay"><svg viewBox="0 0 24 24" fill="none">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg></button> </div>
+        <div class="dow">
+          <div>Paz</div>
+          <div>Pzt</div>
+          <div>Sal</div>
+          <div>Çar</div>
+          <div>Per</div>
+          <div>Cum</div>
+          <div>Cmt</div>
+        </div>
+        <div class="calendar-grid" id="miniCal"></div>
+      </div> <!-- GÜN -->
+      <section class="calendar" id="dayView">
+        <div class="staff-row" id="staffRow"></div>
+        <div class="grid" id="dayGrid"></div>
+      </section> <!-- HAFTA -->
+      <section class="week" id="weekView" hidden>
+        <div class="wk-head" id="wkHead"></div>
+        <div class="wk-grid" id="wkGrid"></div>
+      </section>
+      <div style="height:48px"></div>
+    </main>
+  </div> <!-- Backdrop (bildirimler için) -->
+  <div class="backdrop" id="backdrop"></div> <!-- Bildirim Paneli -->
+  <aside class="notify" id="notify">
+    <div class="notify-head"> <span>Bildirimler</span> <button class="icon-btn" id="notifyClose" title="Kapat"> <svg
+          viewBox="0 0 24 24" fill="none">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg> </button> </div>
+    <div class="notify-body">Henüz bildiriminiz yok…</div>
+  </aside> <!-- Switch Business / Logout Modal -->
+  <div class="bm-overlay" id="bmOverlay"></div>
+  <div class="bm-modal" id="bmModal" aria-hidden="true">
+    <div class="bm-box" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+      <div class="bm-head"> <button class="bm-x" id="bmClose" title="Kapat"> <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg> </button>
+        <h3 id="bmTitle">Switch Business</h3>
+      </div>
+      <div class="bm-body">
+        <div class="bm-search"> <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+            <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg> <input id="bmQuery" type="text" placeholder="Search..." /> </div> <!-- İstersen işletme listesi -->
+        <div class="bm-list" id="bmList"></div>
+      </div>
+      <div class="bm-foot">
+        <div class="bm-user">
+          <div class="avatar" id="bmAvatar">A</div>
+          <div class="bm-ident">
+            <div class="lbl">LOGGED AS</div> <strong id="bmName">—</strong>
+            <div class="muted" id="bmBusiness"></div>
+            <div class="muted" id="bmMail">—</div> <!-- 👈 Admin e-posta -->
+          </div>
+        </div> <button class="bm-logout" type="button" id="bmLogout">LOGOUT</button>
+      </div>
+    </div>
+  </div> <!-- Switch Business (drawer sürümü) -->
+  <div class="sb-overlay" id="sbOverlay" aria-hidden="true">
+    <div class="sb-modal" role="dialog" aria-modal="true" aria-labelledby="sbTitle">
+      <div class="sb-head"> <button class="sb-x" id="sbClose" aria-label="Kapat"> <svg class="ico" viewBox="0 0 24 24">
+            <path d="M18 6 6 18M6 6l12 12" />
+          </svg> </button>
+        <div class="sb-title" id="sbTitle">İşletme Değiştir</div>
+      </div>
+      <div class="sb-body">
+        <div class="sb-search"> <svg viewBox="0 0 24 24">
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+          </svg> <input id="sbSearch" type="text" placeholder="Ara..." /> </div>
+        <div class="sb-card" aria-current="true">
+          <div class="sb-dot"></div>
+          <div>
+            <div>Abdullah</div>
+            <div class="sb-sub">Olarak oturum açtınız</div>
+          </div>
+        </div>
+      </div>
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="sb-avatar">A</div>
+          <div>
+            <div>Abdullah</div>
+            <div class="sb-sub">Olarak oturum açtınız</div>
+          </div>
+        </div> <button class="sb-logout" id="sbLogout">ÇIKIŞ YAP</button>
+      </div>
+    </div>
+  </div> <!-- Scripts (tekil, tekrar yok) -->
+  <script type="module" src="js/calendar.js?v=5"></script>
+  <script type="module" src="js/rail-mount.js"></script>
+  <script type="module" src="js/calendar.mobile.js" defer></script>
+</body>
+
+</html>

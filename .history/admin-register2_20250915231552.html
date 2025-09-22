@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Yönetici Kaydı – Hakkınızda</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+  <style>
+    :root{
+      --bg:#efefef; --card:#ffffff; --text:#111827; --muted:#6b7280;
+      --border:#e5e7eb; --primary:#191919; --accent:#22c55e;
+      --current:#2563eb; --radius:14px; --shadow:0 8px 30px rgba(0,0,0,0.08);
+      --input:#f9fafb;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:var(--bg); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      color:var(--text); display:flex; flex-direction:column; align-items:center; padding:28px 18px 32px;
+    }
+    .stepper{ width:min(960px, 100%); margin:4px auto 18px; display:flex; align-items:center; gap:10px; padding:0 4px; }
+    .step{ display:flex; align-items:center; gap:10px; flex:1 1 auto; }
+    .dot{ width:34px; height:34px; border-radius:999px; display:grid; place-items:center; font-weight:800; border:2px solid var(--border); background:#fff; color:var(--muted); }
+    .step.done .dot{ border-color:var(--accent); color:#fff; background:var(--accent); }
+    .step.current .dot{ border-color:var(--current); color:var(--current); background:#fff; }
+    .bar{ height:6px; border-radius:999px; flex:1; background:#e9ecef; }
+    .bar.done{ background:var(--accent); }
+
+    .card{ width:min(560px, 100%); background:var(--card); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 26px 26px; }
+    .top{ display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+    .back-btn{ width:40px; height:40px; border-radius:10px; border:1px solid var(--border); display:flex; align-items:center; justify-content:center; background:#fff; cursor:pointer; }
+    h1{ font-size:26px; font-weight:800; margin:10px 0 6px; text-align:center; }
+    .subtitle{ text-align:center; color:var(--muted); margin-bottom:16px; }
+
+    .form{ margin-top:6px; }
+    .row{ margin-bottom:14px; }
+    label{ display:block; font-size:12px; color:var(--muted); margin-bottom:6px; font-weight:600; letter-spacing:.2px; }
+    input[type="text"], input[type="tel"]{ width:100%; height:46px; border-radius:10px; border:1px solid var(--border); background:var(--input); padding:0 14px; font-size:14px; }
+    .segmented{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .seg-btn{ height:46px; border-radius:10px; border:1px solid var(--border); background:var(--input); display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; cursor:pointer; }
+    .seg-btn.active{ background:var(--primary); color:#fff; border-color:var(--primary); }
+    .grid-2{ display:grid; grid-template-columns:160px 1fr; gap:10px; }
+    .prefix{ display:flex; align-items:center; gap:10px; height:46px; border-radius:10px; border:1px solid var(--border); background:#fff; padding:0 12px; }
+    .prefix img{ width:22px; height:16px; border-radius:2px; object-fit:cover; }
+    .prefix span{ font-weight:700; }
+    .btn{ margin-top:10px; width:100%; height:46px; border-radius:10px; border:none; background:var(--primary); color:#fff; font-weight:800; cursor:pointer; }
+    .help{ font-size:12px; color:var(--muted); margin-top:6px; }
+    .toast{ position:fixed; left:50%; bottom:22px; transform:translateX(-50%); background:#111827; color:#fff; padding:10px 14px; border-radius:10px; font-size:14px; display:none; z-index:1000 }
+    .toast.show{ display:block; animation:fade 2.2s ease both }
+    .toast.err{ background:#dc2626; }
+    @keyframes fade{ 0%{opacity:0;transform:translate(-50%,8px)} 10%{opacity:1;transform:translate(-50%,0)} 90%{opacity:1} 100%{opacity:0;transform:translate(-50%,8px)} }
+  </style>
+</head>
+<body>
+
+  <!-- Adım çubuğu -->
+  <nav class="stepper" aria-label="Kayıt adımları">
+    <div class="step done"><div class="dot"><i class="fa-solid fa-check"></i></div><div class="bar done"></div></div>
+    <div class="step current"><div class="dot">2</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">3</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">4</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">5</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">6</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">7</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">8</div><div class="bar"></div></div>
+    <div class="step"><div class="dot">9</div></div>
+  </nav>
+
+  <main class="card" role="main">
+    <div class="top">
+      <button class="back-btn" aria-label="Geri" id="btnBack"><i class="fa-solid fa-arrow-left"></i></button>
+    </div>
+
+    <h1>Hakkınızda</h1>
+    <p class="subtitle">Kendiniz ve işletmeniz hakkında bize biraz daha bilgi verin.</p>
+
+    <form id="aboutForm" class="form" autocomplete="off">
+      <div class="row">
+        <label>İŞLETME TÜRÜ <span style="font-weight:400">(en az birini seçin)</span></label>
+        <div class="segmented">
+          <button type="button" id="btnKuafor" class="seg-btn"><i class="fa-solid fa-scissors"></i> Kuaför</button>
+          <button type="button" id="btnBerber" class="seg-btn"><i class="fa-solid fa-user"></i> Berber</button>
+        </div>
+        <div class="help" id="typeHelp">Seçili: —</div>
+      </div>
+
+      <div class="row">
+        <label for="business">İŞLETME ADI</label>
+        <input id="business" type="text" placeholder="X Kuaför" required/>
+      </div>
+
+      <div class="row">
+        <label for="yourname">SALON SAHİBİ (Admin Adı)</label>
+        <input id="yourname" type="text" placeholder="Ad Soyad" required/>
+      </div>
+
+      <div class="row">
+        <div class="grid-2">
+          <div>
+            <label>ÜLKE KODU</label>
+            <div class="prefix"><img src="https://flagcdn.com/tr.svg" alt="TR"/><span>+90</span></div>
+          </div>
+          <div>
+            <label for="phone">TELEFON NUMARANIZ</label>
+            <input id="phone" type="tel" placeholder="5xx xxx xx xx" required/>
+            <div class="help">Biçim: 5xx xxx xx xx</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" type="submit" id="submitBtn">DEVAM ET</button>
+    </form>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script type="module">
+    // --- Anahtarlar ---
+    const K_PROFILE = "pending_admin_profile";        // { businessTypes, businessName, adminName, adminPhone }
+    const K_LAST    = "admin_onboarding_last_step";   // "2" vb.
+
+    // --- Kısa yardımcılar ---
+    const $ = (s,r=document)=>r.querySelector(s);
+    const toast=$("#toast");
+    const showToast=(t,err=true)=>{
+      toast.textContent=t;
+      toast.className = "toast show" + (err ? " err" : "");
+      setTimeout(()=>toast.classList.remove("show","err"),2200);
+    };
+
+    // --- Elemanlar ---
+    const btnKuafor=$("#btnKuafor");
+    const btnBerber=$("#btnBerber");
+    const typeHelp=$("#typeHelp");
+    const business=$("#business");
+    const yourname=$("#yourname");
+    const phone=$("#phone");
+    const btnBack=$("#btnBack");
+    const form=$("#aboutForm");
+
+    // --- Telefon maskesi ---
+    function maskPhone(v){
+      const d=(v||"").replace(/\D/g,"").slice(0,10);
+      let o=""; if(d.length>0)o+=d.substring(0,3); if(d.length>3)o+=" "+d.substring(3,6);
+      if(d.length>6)o+=" "+d.substring(6,8); if(d.length>8)o+=" "+d.substring(8,10);
+      return o;
+    }
+    phone.addEventListener("input",e=> e.target.value=maskPhone(e.target.value));
+
+    // --- Tür seçimi ---
+    function refreshHelp(){
+      const arr=[];
+      if(btnKuafor.classList.contains("active")) arr.push("Kuaför");
+      if(btnBerber.classList.contains("active")) arr.push("Berber");
+      typeHelp.textContent="Seçili: "+(arr.length?arr.join(" + "):"—");
+    }
+    function toggle(btn){ btn.classList.toggle("active"); refreshHelp(); }
+    btnKuafor.addEventListener("click",()=>toggle(btnKuafor));
+    btnBerber.addEventListener("click",()=>toggle(btnBerber));
+
+    // --- localStorage'dan oku ve formu doldur ---
+    function loadProfile(){
+      try{
+        const raw = localStorage.getItem(K_PROFILE);
+        if(!raw) return;
+        const p = JSON.parse(raw);
+
+        // businessTypes: ["kuafor","berber"]
+        if(Array.isArray(p.businessTypes)){
+          btnKuafor.classList.toggle("active", p.businessTypes.includes("kuafor"));
+          btnBerber.classList.toggle("active", p.businessTypes.includes("berber"));
+        }
+        business.value = p.businessName || "";
+        yourname.value = p.adminName || "";
+        if(p.adminPhone) phone.value = maskPhone(String(p.adminPhone));
+        refreshHelp();
+      }catch(e){ /* yok say */ }
+    }
+    loadProfile();
+
+    // --- Sayfadan ayrılma uyarısı (kayıt olmayınca) ---
+    let allowLeave=false;
+    window.addEventListener("beforeunload",e=>{ if(!allowLeave){ e.preventDefault(); e.returnValue=""; }});
+
+    // Geri: admin-register1.html'e git, veriler kalır
+    btnBack.addEventListener("click",e=>{
+      e.preventDefault();
+      allowLeave=true;
+      location.replace("admin-register1.html");
+    });
+
+    // --- Gönder ---
+    form.addEventListener("submit",e=>{
+      e.preventDefault();
+
+      const types=[];
+      if(btnKuafor.classList.contains("active")) types.push("kuafor");
+      if(btnBerber.classList.contains("active")) types.push("berber");
+      if(types.length===0){ showToast("Lütfen işletme türü seçin."); return; }
+
+      const nameBusiness = business.value.trim();
+      const nameAdmin    = yourname.value.trim();
+      const national     = phone.value.replace(/\D/g,"");
+      if(!/^\d{10}$/.test(national)){ showToast("Telefon numarası geçersiz."); return; }
+
+      // --- JSON'u DB alan adlarıyla kaydet ---
+      const profile = {
+        businessTypes: types,     // ["kuafor","berber"]
+        businessName:  nameBusiness,
+        adminName:     nameAdmin,
+        adminPhone:    national   // 10 hane, sadece rakam
+      };
+      localStorage.setItem(K_PROFILE, JSON.stringify(profile));
+      localStorage.setItem(K_LAST, "2");
+
+      allowLeave=true;
+      location.replace("admin-register3.html");
+    });
+
+    // İlk render sonrası seçili metni güncelle
+    refreshHelp();
+  </script>
+</body>
+</html>

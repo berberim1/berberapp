@@ -1,0 +1,182 @@
+/* ===========================================================
+   SETTINGS — MOBİL Stilleri (≤768px)
+   - Desktop CSS’e dokunmaz; sadece mobil/tablet UX katmanı
+   - Alt rail (nav.rail) ile güvenli alt boşluk
+   - Picker/Toast/Thumb ve BizHours mobil optimizasyonu
+   =========================================================== */
+
+@media (max-width: 768px){
+
+  /* ---- Değişkenler (mobil) ---- */
+  :root{
+    /* JS (mobil_settings.js) bunu gerçek rail yüksekliğiyle günceller */
+    --rail-mobile-h: 76px;
+    /* JS (mobil_settings.js) topbar yüksekliğini günceller */
+    --topbar-h: 56px;
+  }
+
+  /* ---- Sayfa yerleşimi + üst bar ---- */
+  .page{
+    margin-left: 0;
+    padding: 16px 14px calc(16px + var(--rail-mobile-h) + env(safe-area-inset-bottom));
+  }
+  .topbar{
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: none;
+  }
+  .topbar__inner{ height: 56px; padding: 0 12px; }
+  #saveBtn{ min-height: 42px; }
+
+  /* ---- Alt rail mobil (varsa) ---- */
+  nav.rail.rail--mobile,
+  nav.rail[data-mobile="true"]{
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 910;
+  }
+
+  /* ---- Hizmet tablosu: mobil kırılım ---- */
+  .table .thead{ display: none; }
+  .table .tr{
+    grid-template-columns: 28px 1fr auto;
+    grid-template-areas:
+      "n name ops"
+      "n extra extra";
+    row-gap: 6px;
+  }
+  .table .td:nth-child(1){ grid-area: n; }
+  .table .td:nth-child(2){ grid-area: name; }
+  .table .td:nth-child(3),
+  .table .td:nth-child(4){ grid-area: extra; }
+  .table .td:nth-child(5){ grid-area: ops; justify-content: flex-end; }
+
+  /* ---- Uploader / thumb’lar ---- */
+  .thumbs{
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .thumb img{ height: 110px; }
+
+  /* ---- Picker modal: daha ferah kenarlar ---- */
+  .picker{
+    width: 96vw;
+    max-height: 86vh;
+    border-radius: 14px;
+  }
+
+  /* ---- Toast: üst bar hizası ---- */
+  .toast{
+    top: calc(var(--topbar-h, 56px) + 12px);
+  }
+
+  /* =======================================================
+     DÜKKAN SAATLERİ (BizHours) — Settings içindeki blok
+     ======================================================= */
+  .bizhours{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .bizhours .bh-row{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: #fff;
+  }
+  .bizhours .bh-row.off{ opacity: .6; }
+
+  .bizhours .bh-day{
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .bizhours .bh-right{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: center;
+  }
+
+  /* Ana switch */
+  .bizhours .bh-switch{
+    appearance: none;
+    width: 42px; height: 24px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+  }
+  .bizhours .bh-switch:checked{ background: #10b981; }
+  .bizhours .bh-switch::after{
+    content: "";
+    position: absolute; top: 3px; left: 3px;
+    width: 18px; height: 18px; background: #fff; border-radius: 50%;
+    transition: left .2s ease;
+  }
+  .bizhours .bh-switch:checked::after{ left: 21px; }
+
+  /* Saat aralığı */
+  .bizhours .bh-range{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 6px;
+    align-items: center;
+  }
+  .bizhours .bh-range .select,
+  .bizhours .bh-range .input{
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    font-size: 14px;
+  }
+  .bizhours .bh-dash{
+    width: 14px; height: 1px; background: #cbd5e1; justify-self: center;
+  }
+
+  /* Not / ara dinlenme */
+  .bizhours .bh-note{
+    color: var(--muted);
+    font-size: 12px;
+    grid-column: 1 / -1;
+  }
+  .bizhours .bh-breaks{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    grid-column: 1 / -1;
+  }
+  .bizhours .bh-chip{
+    background: var(--chip);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  /* ---- Odak görünürlüğü (erişilebilirlik) ---- */
+  .show-focus :focus-visible{
+    outline: 3px solid rgba(99,102,241,.35);
+    outline-offset: 2px;
+  }
+}
+
+/* Hareket hassasiyeti (mobilde de geçerli) */
+@media (prefers-reduced-motion: reduce){
+  .toast,
+  .thumb,
+  .table .tbody .tr,
+  .thumb img{ transition: none !important; }
+}

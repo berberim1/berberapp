@@ -1,0 +1,400 @@
+/* ===========================================================
+   MOBİL CHECKOUT (≤ 900px)
+   Masaüstüne dokunmaz; sadece mobil düzen/ölçüler.
+   =========================================================== */
+@media (max-width: 900px) {
+
+  /* Genel sayfa boşlukları ve tipografi */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  .content {
+    padding: 12px;
+    padding-bottom: 96px; /* alt bar + sayfa aksiyonlarına nefes */
+  }
+
+  /* Üst sekmeler */
+  .top-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .top-tabs .tab {
+    text-align: center;
+    padding: 10px 8px;
+    border-radius: 12px;
+    border: 1px solid #e6e7eb;
+    background: #fff;
+    font-weight: 600;
+  }
+  .top-tabs .tab.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  /* Ana çalışma alanı: tek kolona in */
+  .workarea {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* Sol kolon (hizmetler/özel tutar) */
+  .left-col {
+    background: #fff;
+    border: 1px solid #e6e7eb;
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .left-head {
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .left-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .left-nav .nav-btn {
+    flex: 1 1 auto;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #e6e7eb;
+    background: #fff;
+    font-weight: 600;
+  }
+  .left-nav .nav-btn.active {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .search input,
+  .desc-input input,
+  .amount-input input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #e6e7eb;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 16px;
+  }
+
+  .amount-input {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 10px;
+  }
+  .amount-input > span {
+    font-weight: 800;
+  }
+
+  .keypad {
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .keypad button {
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #e6e7eb;
+    background: #fff;
+    font-weight: 600;
+  }
+
+  .add-btn {
+    width: 100%;
+    height: 44px;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-weight: 700;
+    border: 0;
+    margin-top: 8px;
+  }
+
+  /* Sağ kolon (sepet + özet) */
+  .right-col {
+    background: #fff;
+    border: 1px solid #e6e7eb;
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .cart {
+    border: 1px solid #f0f1f4;
+    border-radius: 12px;
+    padding: 10px;
+  }
+  .cart-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    font-weight: 700;
+    border-bottom: 1px solid #f0f1f4;
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+  }
+
+  .tap-change {
+    font-size: 11px;
+    color: #8590a3;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .tap-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: #cfd6e2;
+    display: inline-block;
+  }
+
+  .sums { margin: 8px 0; }
+  .sum-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 14px;
+  }
+
+  .discount {
+    display: grid;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center;
+    gap: 8px;
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+  .discount .plus {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    display: grid;
+    place-items: center;
+    border: 1px dashed #e5e7eb;
+    font-weight: 800;
+  }
+  #discountInput {
+    height: 40px;
+    border: 1px solid #e6e7eb;
+    border-radius: 10px;
+    padding: 0 10px;
+    max-width: 120px;
+    justify-self: end;
+  }
+
+  .total {
+    margin-top: 8px;
+    font-weight: 900;
+    font-size: 20px;
+    text-align: right;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .actions .trash {
+    flex: 0 0 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #e6e7eb;
+    background: #fff;
+    font-size: 18px;
+  }
+  .actions .pay {
+    flex: 1 1 auto;
+    height: 44px;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-weight: 800;
+    border: 0;
+  }
+
+  /* ÖDEME EKRANI */
+  .paylayout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pay-left, .pay-right {
+    background: #fff;
+    border: 1px solid #e6e7eb;
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .pay-hdr {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .pay-hdr .back {
+    font-weight: 700;
+  }
+
+  .pm-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .pm-card {
+    border: 1px solid #e6e7eb;
+    border-radius: 12px;
+    padding: 10px;
+    min-height: 72px;
+    background: #fff;
+  }
+  .pm-card.active {
+    border-color: #111;
+    box-shadow: inset 0 0 0 1px #111;
+  }
+  .pm-ttl { font-weight: 800; margin-bottom: 2px; }
+  .rc-sub { color: #8590a3; font-size: 12px; }
+
+  .confirm {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .confirm .trash {
+    flex: 0 0 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 1px solid #e6e7eb;
+    background: #fff;
+    font-size: 18px;
+  }
+  .confirm .pay {
+    flex: 1 1 auto;
+    height: 44px;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-weight: 800;
+    border: 0;
+  }
+
+  /* TAMAMLANDI ekranı */
+  .complete-wrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .done-left, .receipt {
+    background: #fff;
+    border: 1px solid #e6e7eb;
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .big-ok {
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    display: grid;
+    place-items: center;
+    background: #10b981;
+    color: #fff;
+    font-weight: 900;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .done-title { font-weight: 900; font-size: 18px; margin-bottom: 6px; }
+  .cal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    font-weight: 800;
+    text-decoration: none;
+    margin-top: 8px;
+  }
+
+  /* İŞLEMLER görünümü */
+  .tx-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .tx-left, .tx-right {
+    background: #fff;
+    border: 1px solid #e6e7eb;
+    border-radius: 12px;
+    padding: 12px;
+  }
+  .tx-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .tx-tab {
+    text-align: center;
+    padding: 10px 6px;
+    border-radius: 10px;
+    border: 1px solid #e6e7eb;
+    background: #fff;
+    font-weight: 600;
+  }
+  .tx-tab.active {
+    background: #111; color: #fff; border-color: #111;
+  }
+  .tx-search input {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #e6e7eb;
+    border-radius: 10px;
+    padding: 0 12px;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  /* Modal (telefon ekranında rahat) */
+  .modal-backdrop .modal {
+    width: calc(100vw - 24px);
+    max-width: none;
+    border-radius: 12px;
+    margin: 12px auto;
+  }
+  .modal header {
+    padding: 12px 16px;
+  }
+  .modal .body {
+    padding: 12px 16px;
+  }
+  .modal .buttons .btn {
+    height: 42px;
+    border-radius: 10px;
+  }
+
+  /* Alt bar (rail) ile çakışmayı engelle */
+  /* Rail mobilde 60px; biraz ek boşluk verelim */
+  .actions,
+  .confirm {
+    margin-bottom: 8px;
+  }
+  .content {
+    /* üstte tanımladık; burada da not düşelim */
+    padding-bottom: 96px;
+  }
+}

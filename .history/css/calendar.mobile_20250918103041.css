@@ -1,0 +1,87 @@
+/* =============================
+📱 calendar.mobile.css (rev)
+============================= */
+:root { --border: var(--line); --topbar-h: 56px; }
+
+
+/**************
+* ≤ 768px *
+**************/
+@media (max-width: 768px){
+/* --- RAIL → Bottom Nav --- */
+.rail{
+position: fixed; inset: auto 0 0 0;
+width: 100%; height: 64px; padding: 8px 10px;
+display: flex; flex-direction: row; align-items: center; justify-content: space-around;
+border-right: 0; border-top: 1px solid var(--rail-divider);
+box-shadow: 0 -8px 22px rgba(15,17,21,.18); z-index: 1000;
+}
+.rail__list{ width:100%; flex-direction: row; justify-content: space-around; align-items:center; }
+.rail__item{ flex: 1; }
+.rail__bottom{ display:none; }
+nav.rail .ico{ width:22px; height:22px; }
+.rail__btn[aria-current="page"]::before{ display:none; }
+.rail__btn[data-tip]::after{ display:none; }
+
+
+/* İçerikten boşluk: rail altta */
+.app{ padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+.main{ padding-left: 0 !important; }
+
+
+/* --- Topbar (sticky ve kompakt) --- */
+.topbar{ position: sticky; top: 0; z-index: 900; background: var(--panel); border-bottom:1px solid var(--line); }
+.topbar-inner{
+display: grid; gap: 8px; padding: 8px 10px;
+grid-template-columns: 1fr auto;
+grid-template-areas:
+"date actions"
+"view actions";
+}
+.date-nav{ grid-area: date; }
+.view-select{ grid-area: view; }
+.actions{ grid-area: actions; align-items:center; }
+.actions .search{ display:none; }
+
+
+.view-select .view-chip{ border-radius:999px; padding:8px 12px; font-weight:800; border:1px solid var(--border); background:#fff; }
+
+
+/* --- Gün görünümü: header sticky, grid dikey scroll --- */
+.calendar{
+margin: 12px; display: grid; grid-template-rows: auto 1fr;
+height: min( calc(100vh - var(--topbar-h,56px) - 24px - env(safe-area-inset-bottom)), var(--calH, 9999px) );
+overflow-x: auto; overflow-y: hidden; /* dikey scroll sadece .grid */
+}
+/* header sticky kalsın */
+.staff-row{ position: sticky; top: 0; z-index: 880; background:#fcfdff; }
+.grid{ overflow-y:auto; -webkit-overflow-scrolling:touch; }
+
+
+/* Sol zaman sütunu yatayda sabit kalsın */
+.staff-row .time-head{ position: sticky; left: 0; z-index: 47; background: #fff; box-shadow: 3px 0 0 0 var(--line); }
+.grid .time-col{ position: sticky; left: 0; z-index: 46; background: #fff; box-shadow: 3px 0 0 0 var(--line); }
+
+
+/* Kolon sayısı: 2 görünür, fazlası yatay kayar */
+.staff-row, .grid{
+grid-template-columns: var(--timeW) repeat(2, var(--colW));
+grid-auto-columns: var(--colW);
+min-width: calc(var(--timeW) + 2 * var(--colW));
+}
+
+
+.time-cell, .hour-cell{ height:48px; }
+.event, .reservation, .timeoff{ left:6px; right:6px; padding:6px 8px; border-radius:8px; font-size:11px; }
+
+
+/* --- Hafta görünümü (daha kompakt) --- */
+.week{ margin:10px; }
+.wk-head{ position: sticky; top: 0; z-index: 870; background:#fff; grid-template-columns: 120px repeat(7, minmax(120px,1fr)); }
+.wk-grid{ grid-template-columns: 120px repeat(7, minmax(120px,1fr)); }
+.wk-col-inner{ height: var(--wkRowH, 150px); }
+.wk-day-btn{ padding: 6px 8px; }
+.wk-staff{ gap: 8px; padding: 8px; }
+
+
+}

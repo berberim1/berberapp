@@ -1,0 +1,76 @@
+/* ===============================
+   LAYOUT GENEL
+=================================*/
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ===============================
+   HERO
+=================================*/
+.hero {
+  position: relative;
+  min-height: 75vh;
+  display: flex;
+  align-items: flex-end;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.4), rgba(0,0,0,0));
+  pointer-events: none;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* ===============================
+   HERO MENU
+=================================*/
+.hero-menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: .75rem 0;
+}
+
+.hero-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  opacity: .9;
+  position: relative;
+  transition: opacity .25s ease;
+}
+
+.hero-menu a:hover {
+  opacity: 1;
+}
+
+.hero-menu a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 3px;
+  border-radius: 3px;
+  background: #fff;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+
+.hero-menu a:hover::after {
+  opacity: 1;
+}

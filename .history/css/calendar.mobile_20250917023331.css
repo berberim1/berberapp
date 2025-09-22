@@ -1,0 +1,153 @@
+/* calendar.mobile.css */
+
+/* Eksik token: border için line'ı kullan */
+:root { --border: var(--line); }
+
+@media (max-width: 768px){
+
+  /* RAIL → Bottom Nav */
+  .rail{
+    position: fixed; inset: auto 0 0 0;
+    width: 100%; height: 64px; padding: 8px 10px;
+    flex-direction: row; border-right: 0;
+    border-top: 1px solid var(--rail-divider);
+    box-shadow: 0 -8px 22px rgba(15,17,21,.18); z-index: 1000;
+  }
+  .rail__list{ width:100%; flex-direction: row; justify-content: space-around; align-items: center; }
+  .rail__item{ flex: 1; }
+  .rail__bottom{ display: none; }
+  nav.rail .ico{ width:22px; height:22px; }
+  .rail__btn[aria-current="page"]::before{ display:none; }
+  .rail__btn[data-tip]::after{ display:none; }
+
+  /* İçerikten boşluk: rail altta */
+  .app{ padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+  .main{ padding-left: 0 !important; }
+  body{ padding-bottom: 0; }
+
+  /* Topbar kompakt + sticky */
+  .topbar{
+    position: sticky; top: 0; z-index: 900;
+    background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner{
+    display: grid; gap: 8px; padding: 8px 10px;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "date actions"
+      "view actions";
+  }
+  .date-nav{ grid-area: date; }
+  .view-select{ grid-area: view; }
+  .actions{ grid-area: actions; align-items: center; }
+  .actions .search{ display: none; }
+
+  /* View chip daha dokunmatik */
+  .view-select .view-chip{
+    border-radius: 999px; padding: 8px 12px; font-weight: 800;
+    border: 1px solid var(--border); background: #fff;
+  }
+
+  /* ===== Gün görünümü — Header sabit, yalnızca grid dikey kayar ===== */
+  .calendar{
+    margin: 12px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    /* ESKİ: height: calc(100vh - var(--topbar-h,56px) - 24px - env(safe-area-inset-bottom)); */
+    height: min(
+      calc(100vh - var(--topbar-h,56px) - 24px - env(safe-area-inset-bottom)),
+      var(--calH, 9999px)            /* içerik yüksekliğini aşma */
+    );
+    overflow-y: hidden;              /* dikey scroll sadece .grid’de */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+  }
+
+  /* Header artık sticky değil; tamamen sabit */
+  .staff-row{
+    position: static;
+    top: auto;
+    z-index: 880;
+    background: #fcfdff;
+  }
+
+  /* Sadece içerik dikey kayar */
+  .grid{
+    overflow-y: auto;                /* dikey scroll burada */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Scroll-snap: hem header hem grid kolonları hizalansın */
+  .staff-row > .staff-head,
+  .grid > .staff-col{
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  /* Sol zaman sütunları yatayda sabit */
+  .staff-row .time-head{
+    position: sticky; left: 0; z-index: 47; background: #fff;
+    box-shadow: 3px 0 0 0 var(--line);
+  }
+  .grid .time-col{
+    position: sticky; left: 0; z-index: 46; background: #fff;
+    box-shadow: 3px 0 0 0 var(--line);
+  }
+
+  /* Boyut dokunuşları */
+  .time-cell, .hour-cell{ height: 48px; }
+
+  .avatar-mini{
+    display: grid; place-items: center;
+    width: 32px; height: 32px; border-radius: 999px;
+    background:#24262c; color:#cfd3dc; border:0;
+  }
+
+  /* =============================== */
+  /*   Mobil Bildirim "Baloncuğu"   */
+  /* =============================== */
+  /* Masaüstü ve calendar.css’teki mobil “tam ekran notify” kuralını override eder. */
+  .notify{
+    position: fixed;
+    top: calc(var(--topbar-h,56px) + 8px);
+    right: 12px;                 /* sağdan biraz içeride */
+    left: auto; bottom: auto;
+    width: min(420px, 50vw);     /* EN FAZLA ekranın yarısı */
+    height: auto;
+    max-height: calc(100vh - var(--topbar-h,56px) - 24px);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;            /* içerik taşarsa kes */
+    display: flex; flex-direction: column;
+
+    /* Animasyon/etkileşim */
+    transform: translateX(16px);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform .22s ease, opacity .22s ease;
+
+    /* Üstte kal */
+    z-index: 1100;
+  }
+  .notify.open{
+    right: 12px;                 /* calendar.css’teki .open{right:0}’ı bastır */
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* “Balon” oku */
+  .notify::before{
+    content:"";
+    position:absolute; top:-8px; right:18px;
+    border-width:0 8px 8px 8px;
+    border-style:solid;
+    border-color:transparent transparent #fff transparent;
+    filter: drop-shadow(0 -1px 0 var(--line));
+  }
+  /* İçerik pedleri mobilde kompakt */
+  .notify-head{ padding:12px 14px; }
+  .notify-body{ padding:12px 14px; }
+}

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>İstatistikler ve Raporlar</title>
+
+  <!-- ✅ Ortak bar-menu stilleri -->
+  <link rel="stylesheet" href="css/rail.css">
+  <!-- Sayfa özgü desktop stilleri -->
+  <link rel="stylesheet" href="css/stats-and-reports.css">
+  <!-- ✅ Mobil/tablet override (yalnızca küçük ekranlar) -->
+  <link rel="stylesheet" href="css/mobil_stats-and-reports.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ✅ YENİ BAR-MENU (rail) – settings.html ile birebir -->
+  <nav class="rail">
+    <ul class="rail__list">
+      <li class="rail__item">
+        <a class="rail__btn" href="calendar.html" data-tip="Takvim">
+          <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </a>
+      </li>
+      <li class="rail__item">
+        <a class="rail__btn" href="checkout.html" data-tip="Kasa">
+          <svg class="ico" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="10" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M7 12h.01M17 12h.01"/></svg>
+        </a>
+      </li>
+      <li class="rail__item">
+        <a class="rail__btn" href="stats-and-reports.html" data-tip="Raporlar" aria-current="page">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6" rx="1"/><rect x="12" y="9" width="3" height="9" rx="1"/><rect x="17" y="5" width="3" height="13" rx="1"/></svg>
+        </a>
+      </li>
+      <li class="rail__item">
+        <a class="rail__btn" href="staff.html" data-tip="Personel">
+          <svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+        </a>
+      </li>
+      <li class="rail__item">
+        <a class="rail__btn" href="settings.html" data-tip="Ayarlar">
+          <svg class="ico" viewBox="0 0 24 24"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.07a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.07a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.02 3.4l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.07a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c0 .67.39 1.28 1 1.51.32.12.66.18 1 .18h.07a2 2 0 0 1 0 4H21a1.65 1.65 0 0 0-1.6 1.31Z"/></svg>
+        </a>
+      </li>
+    </ul>
+    <div class="rail__bottom"><button class="avatar-btn">A</button></div>
+  </nav>
+
+  <!-- SAYFA BAŞI -->
+  <div class="wrap">
+    <div class="header">
+      <div class="title">İstatistikler ve raporlar</div>
+      <div class="period">
+        <button class="btn btn-ghost" id="prevBtn">‹</button>
+        <button class="btn" id="monthBtn"><b>Ağu 2025</b></button>
+        <button class="btn btn-ghost" id="nextBtn">›</button>
+      </div>
+    </div>
+
+    <nav class="tabs" aria-label="Sekmeler">
+      <a class="tab" data-tab="dashboard" href="#dashboard">Panel</a>
+      <a class="tab" data-tab="appointments" href="#appointments">Randevular</a>
+      <a class="tab" data-tab="revenue" href="#revenue">Gelir</a>
+      <a class="tab" data-tab="staff" href="#staff">Personel</a>
+    </nav>
+
+    <!-- PANEL -->
+    <section id="dashboard">
+      <div class="grid">
+        <div>
+          <section class="card panel">
+            <div class="card-body">
+              <div class="card-title">Randevular &amp; Doluluk <span class="muted">— tahmin</span></div>
+              <canvas id="appointmentsChart" height="120" aria-label="Randevular grafiği"></canvas>
+              <div class="kpis" style="margin-top:12px">
+                <div class="kpi"><b>Randevu</b><span class="green">0</span><div class="muted"></div></div>
+                <div class="kpi"><b>Rezerve süre</b><span>0s</span><div class="muted"></div></div>
+                <div class="kpi"><b>Tamamlanan</b><span>0</span><div class="muted"></div></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card panel">
+            <div class="card-body">
+              <div class="card-title">Gelir <span class="muted">— tahmin</span></div>
+              <canvas id="revenueChart" height="120" aria-label="Gelir grafiği"></canvas>
+            </div>
+          </section>
+        </div>
+
+        <aside class="right">
+          <div class="small">
+            <div class="mini">
+              <h4>Randevular</h4>
+              <div class="row"><span>Tamamlanan</span><b>2</b></div>
+              <div class="row"><span>Gel(e)meyen</span><b>0</b></div>
+              <div class="row"><span>İptal</span><b>0</b></div>
+            </div>
+
+            <div class="mini">
+              <h4>Gelir <span class="chip"></span></h4>
+              <div class="row"><span>Hizmetler</span><b>$0.00</b></div>
+              <div class="row"><span>Bahşiş</span><b>$0.00</b></div>
+              <div class="row"><span>Ürünler</span><b>$0.00</b></div>
+              <div class="row"><span>Üyelikler</span><b>$0.00</b></div>
+              <hr style="border:none;border-top:1px solid var(--border);margin:8px 0">
+              <div class="row"><span><b>Toplam</b></span><b class="blue">$0</b></div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- RANDEVULAR -->
+    <section id="appointments" hidden>
+      <div id="app-main">
+        <div class="grid">
+          <div>
+            <section class="card panel">
+              <div class="card-body">
+                <div class="card-title">Randevular &amp; Doluluk <span class="muted">— tahmin</span></div>
+                <canvas id="appChart2" height="120"></canvas>
+
+                <div style="margin:16px 0 10px; font-weight:600; font-size:13px;">Öne çıkanlar</div>
+                <div class="barline"></div>
+
+                <table class="table" style="margin-top:10px;">
+                  <thead>
+                    <tr><th>Durum</th><th>Adet</th><th>Yüzde</th><th>Tutar</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><span class="dot d-gray"></span>Tamamlanmamış</td><td>0</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-green"></span>Tamamlanan</td><td>2</td><td>%100</td><td>$70.00</td></tr>
+                    <tr><td><span class="dot d-yellow"></span>Gel(e)meyen</td><td>0</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-red"></span>İptal</td><td>0</td><td>%0</td><td>$0.00</td></tr>
+                  </tbody>
+                </table>
+
+                <div style="margin:16px 0 6px; font-weight:600; font-size:13px;">İlk 10 hizmet</div>
+                <table class="table">
+                  <thead><tr><th>Hizmet</th><th>Randevu</th><th>Tutar</th></tr></thead>
+                  <tbody>
+                    <tr><td>Saç kesimi</td><td>1</td><td>$40.00</td></tr>
+                    <tr><td>Çocuk saç kesimi</td><td>1</td><td>$30.00</td></tr>
+                  </tbody>
+                </table>
+
+                <div style="margin:16px 0 6px; font-weight:600; font-size:13px;">İlk 10 eklenti</div>
+                <div class="muted" style="padding:16px; border:1px dashed var(--border); border-radius:10px; text-align:center;">Gösterilecek sonuç yok</div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right">
+            <div class="mini">
+              <h4>Raporlar</h4>
+              <div class="row" data-goto="app-summary"><span>Randevu özeti</span><span>›</span></div>
+              <div class="row" data-goto="app-list"><span>Randevu listesi</span><span>›</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- ÖZET -->
+      <div id="app-summary" hidden>
+        <div class="grid">
+          <div>
+            <section class="card panel">
+              <div class="card-body">
+                <div class="subheader"><button class="btn btn-ghost" id="back-from-summary">‹ Geri</button><div class="title-sm">Randevu özeti</div></div>
+
+                <div class="card-title" style="margin-top:6px;">Durum özeti</div>
+                <table class="table">
+                  <thead>
+                  <tr><th>Durum</th><th>Adet</th><th>%</th><th>Süre</th><th>Hizmet Tutarı</th><th>Eklenti Tutarı</th><th>Gelir</th></tr>
+                  </thead>
+                  <tbody>
+                  <tr><td><span class="dot d-gray"></span>Tamamlanmamış</td><td>0</td><td>%0</td><td>0s 0dk</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+                  <tr><td><span class="dot d-green"></span>Tamamlanan</td><td>2</td><td>%100</td><td>0s 0dk</td><td>$70.00</td><td>$0.00</td><td>$0.00</td></tr>
+                  <tr><td><span class="dot d-yellow"></span>Gel(e)meyen</td><td>0</td><td>%0</td><td>0s 0dk</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+                  <tr><td><span class="dot d-red"></span>İptal</td><td>0</td><td>%0</td><td>0s 0dk</td><td>$0.00</td><td>$0.00</td><td>$0.00</td></tr>
+                  </tbody>
+                </table>
+
+                <div class="card-title" style="margin-top:18px;">Zaman kullanımı</div>
+                <table class="table">
+                  <thead><tr><th>Kalem</th><th>Saat</th><th>%</th></tr></thead>
+                  <tbody>
+                  <tr><td>Çalışma saatleri</td><td>117s 0dk</td><td>%100</td></tr>
+                  <tr><td>Rezervli saatler</td><td>1s 0dk</td><td>%1</td></tr>
+                  <tr><td>Boş saatler</td><td>116s 0dk</td><td>%99</td></tr>
+                  <tr><td>Zaman blokları</td><td>0s 0dk</td><td>%0</td></tr>
+                  </tbody>
+                </table>
+
+                <div class="card-title" style="margin-top:18px;">En iyi günler</div>
+                <table class="table">
+                  <thead><tr><th>Gün</th><th>Süre</th><th>%</th></tr></thead>
+                  <tbody>
+                  <tr><td>Pazar</td><td>0s 0dk</td><td>%0</td></tr>
+                  <tr><td>Pazartesi</td><td>0s 30dk</td><td>%50</td></tr>
+                  <tr><td>Cumartesi</td><td>0s 30dk</td><td>%50</td></tr>
+                  <tr><td><b>Toplam</b></td><td><b>1s 0dk</b></td><td><b>%100</b></td></tr>
+                  </tbody>
+                </table>
+
+                <div class="card-title" style="margin-top:18px;">En iyi saatler</div>
+                <table class="table">
+                  <thead><tr><th>Saat Aralığı</th><th>Randevu</th><th>Toplam süre</th></tr></thead>
+                  <tbody>
+                  <tr><td>10:00 - 11:00</td><td>1</td><td>0s 30dk</td></tr>
+                  <tr><td>18:00 - 19:00</td><td>1</td><td>0s 30dk</td></tr>
+                  <tr><td><b>Toplam</b></td><td><b>2</b></td><td><b>1s 0dk</b></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right">
+            <div class="mini">
+              <h4>Raporlar</h4>
+              <div class="row" data-goto="app-summary"><span>Randevu özeti</span><span>›</span></div>
+              <div class="row" data-goto="app-list"><span>Randevu listesi</span><span>›</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- LİSTE -->
+      <div id="app-list" hidden>
+        <div class="grid">
+          <div>
+            <section class="card panel">
+              <div class="card-body">
+                <div class="subheader"><button class="btn btn-ghost" id="back-from-list">‹ Geri</button><div class="title-sm">Randevu listesi</div></div>
+
+                <table class="table" style="margin-top:6px;">
+                  <thead>
+                  <tr>
+                    <th>Tarih</th><th>Saat</th><th>Müşteri</th><th>Hizmet</th><th>Personel</th><th>Süre</th><th>Tutar</th><th>Durum</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <td>19 Ağu 2025</td><td>10:00</td><td>Ali K.</td><td>Saç kesimi</td><td>Abdullah</td><td>30 dk</td><td>$40.00</td><td>Tamamlandı</td>
+                  </tr>
+                  <tr>
+                    <td>23 Ağu 2025</td><td>18:00</td><td>Ayşe D.</td><td>Çocuk saç kesimi</td><td>Muhtin</td><td>30 dk</td><td>$30.00</td><td>Tamamlandı</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right">
+            <div class="mini">
+              <h4>Raporlar</h4>
+              <div class="row" data-goto="app-summary"><span>Randevu özeti</span><span>›</span></div>
+              <div class="row" data-goto="app-list"><span>Randevu listesi</span><span>›</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- GELİR -->
+    <section id="revenue" hidden>
+      <!-- Ana görünüm -->
+      <div id="rev-main">
+        <div class="grid">
+          <div>
+            <!-- Üst özetler -->
+            <section class="card panel">
+              <div class="card-body" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                <div class="mini" style="margin:0;">
+                  <div class="muted" style="font-weight:600;">TOPLAM GELİR</div>
+                  <div style="font-size:22px; font-weight:800; margin-top:6px;">$0.00</div>
+                </div>
+                <div class="mini" style="margin:0;">
+                  <div class="muted" style="font-weight:600;">TOPLAM RANDEVU</div>
+                  <div style="font-size:22px; font-weight:800; margin-top:6px;"></div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Gelir grafiği -->
+            <section class="card panel">
+              <div class="card-body">
+                <div class="card-title">Gelir <span class="muted">— tahmin</span></div>
+                <canvas id="revenueChartPage" height="120"></canvas>
+              </div>
+            </section>
+
+            <!-- Türe göre gelir -->
+            <section class="card panel">
+              <div class="card-body">
+                <div class="card-title">Türe göre toplam gelir</div>
+                <table class="table" style="margin-top:12px;">
+                  <thead><tr><th>Kalem</th><th>%</th><th>Gelir</th></tr></thead>
+                  <tbody>
+                    <tr><td><span class="dot d-blue"></span>Hizmetler</td><td>%100</td><td>$0.0</td></tr>
+                    <tr><td><span class="dot d-indigo"></span>Ürünler</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-green"></span>Paketler</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-gray"></span>Üyelikler</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-yellow"></span>Hediye kartları</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-red"></span>İptal ücretleri</td><td>%0</td><td>$0.00</td></tr>
+                    <tr><td><span class="dot d-gray"></span>Yol/servis ücretleri</td><td>%0</td><td>$0.00</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right">
+            <div class="mini">
+              <h4>Raporlar</h4>
+              <div class="row" id="go-sales-by-services"><span>Hizmete göre satışlar</span><span>›</span></div>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Hizmete göre satışlar raporu -->
+      <div id="rev-services" hidden>
+        <section class="card panel">
+          <div class="card-body">
+            <div class="subheader">
+              <button class="btn btn-ghost" id="back-from-rev-services">‹ Geri</button>
+              <div class="title-sm">Hizmete göre satışlar</div>
+            </div>
+
+            <table class="table" style="margin-top:6px;">
+              <thead>
+                <tr>
+                  <th style="width:160px">Kategori</th>
+                  <th>Tarih &amp; Saat</th>
+                  <th>Rez. ID</th>
+                  <th>Müşteri</th>
+                  <th>Süre</th>
+                  <th>Hizmet tutarı</th>
+                  <th>Eklenti</th>
+                  <th>Net</th>
+                  <th>İnd.</th>
+                  <th>Vergi</th>
+                  <th>Bahşiş</th>
+                  <th>Toplam</th>
+                  <th>Durum</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><b>- Haircut</b></td>
+                  <td>25 Ağu 10:00</td>
+                  <td>52679574</td>
+                  <td>Walk-in</td>
+                  <td>00:30</td>
+                  <td>$40.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$18.33</td>
+                  <td>$138.33</td>
+                  <td>Tamamlandı</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><b>Toplam</b></td>
+                  <td></td><td></td><td></td>
+                  <td><b>$40.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$18.33</b></td>
+                  <td><b>$138.33</b></td>
+                  <td></td>
+                </tr>
+
+                <tr>
+                  <td><b>- Kid's haircut</b></td>
+                  <td>30 Ağu 18:00</td>
+                  <td>52861606</td>
+                  <td>Walk-in</td>
+                  <td>00:30</td>
+                  <td>$30.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$0.00</td>
+                  <td>$9.17</td>
+                  <td>$39.17</td>
+                  <td>Tamamlandı</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td><b>Toplam</b></td>
+                  <td></td><td></td><td></td>
+                  <td><b>$30.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$0.00</b></td>
+                  <td><b>$9.17</b></td>
+                  <td><b>$39.17</b></td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="card-title" style="margin-top:18px;">Hizmet kategorileri özeti</div>
+            <table class="table">
+              <thead>
+                <tr><th>Kategori</th><th>Adet</th><th>Net</th><th>İnd.</th><th>Vergi</th><th>Bahşiş</th><th>Toplam</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>—</td><td>4</td><td>$0.0</td><td>$0.00</td><td>$0.00</td><td>$0.0</td><td>$0.0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <!-- PERSONEL -->
+    <section id="staff" hidden>
+      <div class="grid--single">
+        <section class="card panel">
+          <div class="card-body">
+            <div class="card-title">Gelire göre ilk 10 personel</div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Personel</th><th>Randevu</th><th>Hizmet</th><th>Ürün</th><th>Hediye Kartı</th><th>Paket</th><th>Üyelik</th><th>Toplam Gelir</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="display:flex; align-items:center; gap:10px;"><span class="avatar">A</span> Abdullah</td>
+                  <td>2</td><td>$110.00</td><td>$0.00</td><td>$0.00</td><td>$0.00</td><td>$0.00</td><td><b>$110.00</b></td>
+                </tr>
+                <tr>
+                  <td style="display:flex; align-items:center; gap:10px;"><span class="avatar">M</span> Muhtin</td>
+                  <td>0</td><td>$40.00</td><td>$0.00</td><td>$0.00</td><td>$0.00</td><td>$0.00</td><td><b>$40.00</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="card-body">
+            <div class="card-title">Komisyona göre ilk 10</div>
+            <table class="table">
+              <thead><tr><th>Personel</th><th>Randevu</th><th>Toplam Gelir</th><th>Komisyon</th></tr></thead>
+            </table>
+          </div>
+        </section>
+
+        <section class="card panel">
+          <div class="card-body">
+            <div class="card-title">Personel başına doluluk</div>
+            <table class="table">
+              <thead><tr><th>Personel</th><th>Doluluk</th><th>Ziyaret Süresi</th><th>Çalışma Saati</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="display:flex; align-items:center; gap:10px;"><span class="avatar">A</span> Abdullah</td>
+                  <td style="min-width:220px;">
+                    <div class="bar"><i style="width:1%;"></i></div>
+                    <div class="muted">%1</div>
+                  </td>
+                  <td>1s 0dk</td><td>0s 0dk</td>
+                </tr>
+                <tr>
+                  <td style="display:flex; align-items:center; gap:10px;"><span class="avatar">M</span> Muhtin</td>
+                  <td>
+                    <div class="bar"><i style="width:0%;"></i></div>
+                    <div class="muted">%0</div>
+                  </td>
+                  <td>0s 0dk</td><td>45s 0dk</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <!-- === AY SEÇİCİ MODAL === -->
+  <div class="overlay" id="monthOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="monthTitle">
+      <div class="m-head">
+        <div class="m-nav">
+          <button class="circle" id="yearPrev" aria-label="Önceki yıl">‹</button>
+          <button class="circle" id="yearNext" aria-label="Sonraki yıl">›</button>
+        </div>
+        <b id="monthTitle">2025</b>
+      </div>
+      <div class="m-grid" id="monthGrid"></div>
+      <div class="m-foot">
+        <button class="btn btn-ghost" id="monthClear">Temizle</button>
+        <button class="btn" id="monthOk">Tamam</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bm-overlay" id="bmOverlay"></div>
+  <div class="bm-modal" id="bmModal" aria-hidden="true">
+    <div class="bm-box" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+      <div class="bm-head">
+        <h3 id="bmTitle">Switch Business</h3>
+        <button class="bm-x" id="bmClose" title="Kapat">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="bm-body">
+        <div class="bm-search">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="bmQuery" type="text" placeholder="Search business..." />
+        </div>
+        <div class="bm-list" id="bmList">
+          <button class="bm-item" type="button">
+            <div class="left">
+              <span class="bm-dot" aria-hidden="true"></span>
+              <div>
+                <div style="font-weight:700">Abdullah Berber</div>
+                <div class="bm-meta">12, New York</div>
+              </div>
+            </div>
+            <div class="bm-status">• Currently using</div>
+          </button>
+        </div>
+      </div>
+      <div class="bm-foot">
+        <div class="bm-user">
+          <div class="avatar">A</div>
+          <div>
+            <div class="lbl">LOGGED AS</div>
+            <strong>Abdullah</strong>
+          </div>
+        </div>
+        <button class="bm-logout" id="bmLogout" type="button">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script type="module" src="js/stats-and-reports.js"></script>
+  <!-- ✅ Mobil/tablet davranışları -->
+  <script src="js/mobil_stats-and-reports.js"></script>
+</body>
+</html>

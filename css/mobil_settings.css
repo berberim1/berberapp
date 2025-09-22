@@ -1,0 +1,82 @@
+/* css/mobil_settings.css */
+/* —————————————————————————————————————————
+   SETTINGS • Mobil alt bar (≤1024px)
+   - Sidebar rail’i alta sabitler
+   - Menüyü YATAY’a çevirir (sınıf isimlerinden bağımsız)
+   - İçeriğe güvenli alt boşluk bırakır
+   ————————————————————————————————————————— */
+
+html, body{
+  max-width:100% !important;
+  overflow-x:hidden !important;
+}
+
+@media (max-width:1024px){
+  :root{ --rail-height:60px; }
+
+  /* Masaüstü sol boşluğu iptal et (her ihtimale karşı) */
+  body{ margin-left:0 !important; }
+
+  /* İçerik altına güvenli boşluk (alt bardan taşmasın) */
+  .page{
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--rail-height) + 24px) !important;
+  }
+
+  /* === ALT RAIL === */
+  nav.rail{
+    position:fixed !important;
+    left:0; right:0; bottom:0; top:auto !important;
+    width:100% !important; height:var(--rail-height);
+    background:#0f172a;
+    border-top:1px solid #e7e9ee; border-right:0 !important;
+    z-index:5000;
+  }
+
+  /* Dikey listeleri yakalayıp yataya çevir (isimden bağımsız) */
+  nav.rail .rail__list,
+  nav.rail .rail__links,
+  nav.rail .rail__menu,
+  nav.rail > ul,
+  nav.rail [role="menubar"]{
+    display:flex !important;
+    flex-direction:row !important;
+    align-items:center; justify-content:space-around;
+    width:100%; height:100%;
+    margin:0 !important; padding:0 !important;
+    list-style:none;
+  }
+
+  /* Öğeler eşit bölünsün */
+  nav.rail .rail__item,
+  nav.rail li{
+    flex:1 1 0 !important;
+    height:100%;
+  }
+
+  /* Buton/anchor tüm hücreyi doldursun */
+  nav.rail .rail__btn,
+  nav.rail a{
+    display:flex !important;
+    flex-direction:column; align-items:center; justify-content:center;
+    height:100%; width:100%;
+    gap:4px; padding:0; text-decoration:none;
+    color:#cbd5e1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  nav.rail .rail__btn[aria-current="page"],
+  nav.rail a[aria-current="page"],
+  nav.rail .rail__btn.is-active,
+  nav.rail a.is-active{ color:#fff; }
+
+  /* İkon boyutu */
+  nav.rail .ico,
+  nav.rail svg{
+    width:20px; height:20px;
+    stroke:currentColor; fill:none; stroke-width:1.9;
+  }
+
+  /* Masaüstüye özgü kısımları gizle */
+  nav.rail .rail__bottom,
+  nav.rail .rail__top,
+  nav.rail .rail__brand{ display:none !important; }
+}

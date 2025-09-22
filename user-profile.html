@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Profilim – Arat Türkçe</title>
+
+  <!-- ortak stillerin kalsın -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f7f8; --card:#fff; --ink:#0b0b0c; --muted:#6d7076; --border:#ececf0;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --radius:16px; --btn:#111; --btn-ink:#fff; --btn-hover:#1b1b1b;
+      --chip:#151515; --chip-border:#242424;
+      --primary:#19a0b6; --danger:#e11d48; --success:#16a34a; --warn:#f59e0b;
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 "Inter",system-ui}
+    a{color:#111;text-decoration:none}
+
+    /* ===== NAVBAR (kuafor.html ile aynı) ===== */
+    .topbar{position:sticky;top:0;z-index:40;background:#0f0f12;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+    .topbar-inner{display:flex;align-items:center;gap:16px;padding:10px 20px}
+    .logo{font-weight:800;font-size:22px;color:#fff}
+    .searchbar-top{display:flex;align-items:center;gap:10px;flex:1}
+    .searchbar-top input{background:var(--chip);border:1px solid var(--chip-border);color:#eee;outline:0;border-radius:12px;padding:10px 12px;min-width:220px}
+    .menu-right{display:flex;align-items:center;gap:12px}
+    .menu-right .btn-primary{background:#161616;border:1px solid #242424;border-radius:12px;color:#fff;padding:8px 12px;font-weight:600}
+    .menu-right a{color:#eaeaea}
+
+    .hero-cats{position:relative;display:flex;justify-content:center;gap:90px;padding:10px 20px;border-top:1px solid #1c1c1f;border-bottom:1px solid #1c1c1f}
+    .hero-cats a{color:#f1f1f2;font-weight:800;position:relative;padding:10px 4px}
+    .hero-cats a.active{color:#fff}
+    .hero-cats a.active::after{content:"";position:absolute;left:0;right:0;height:3px;border-radius:2px;background:#fff;bottom:-11px}
+
+    .mini-nav{position:fixed;top:0;left:0;right:0;background:#0f0f12;border-bottom:1px solid #17171b;box-shadow:0 10px 24px rgba(0,0,0,.20);transform:translateY(-120%);transition:transform .25s ease;z-index:50}
+    .mini-nav.show{transform:translateY(0)}
+    .mini-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+    .mini-logo{color:#fff;font-weight:900;font-size:20px;margin-right:8px}
+    .mini-search{display:flex;gap:10px;flex:1}
+    .mini-chip{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:9px 12px;border:1px solid #e7e7ea;min-width:220px}
+    .mini-chip input{border:0;outline:0;width:100%;background:transparent}
+    .mini-right{display:flex;align-items:center;gap:10px}
+    .mini-right a{color:#f4f4f6}
+    .mini-right .cta{background:#fff;color:#111;font-weight:800;border-radius:12px;padding:9px 12px}
+
+    /* ===== PAGE LAYOUT (booksy tarzı) ===== */
+    .container{max-width:1240px;margin:0 auto;padding:0 24px}
+    .layout{display:grid;grid-template-columns:300px 1fr;gap:24px;margin:24px 0}
+    @media (max-width:1000px){ .layout{grid-template-columns:1fr} }
+
+    /* Sol panel */
+    .side{background:var(--card);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
+    .side .hd{display:flex;align-items:center;gap:12px;padding:18px;border-bottom:1px solid var(--border)}
+    .avatar{width:52px;height:52px;border-radius:50%;background:#e5e7eb;display:grid;place-items:center;color:#6b7280}
+    .me .name{font-weight:900}
+    .menu{padding:8px}
+    .mitem{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:12px;cursor:pointer}
+    .mitem:hover{background:#f5f6f7}
+    .mitem.active{background:#111;color:#fff}
+    .mitem.active i{color:#fff}
+
+    /* Sağ içerik */
+    .content{min-height:500px}
+    .card{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow)}
+    .card .hd{padding:16px 18px;border-bottom:1px solid var(--border);font-weight:900}
+    .card .bd{padding:16px 18px}
+
+    /* Appointments */
+    .group-title{margin:18px 0 8px;font-weight:900;color:#111}
+    .appt{display:flex;gap:14px;align-items:stretch;border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;background:#fbfbfc}
+    .appt .meta{flex:1}
+    .appt .title{font-weight:900}
+    .pill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:12px;color:#fff}
+    .pill.unconfirmed{background:var(--warn)}
+    .pill.scheduled{background:var(--warn)}
+    .pill.completed{background:var(--success)}
+    .pill.cancelled{background:#666}
+
+    .datebox{display:grid;place-items:center;border-left:1px solid var(--border);padding:0 14px;min-width:90px}
+    .datebox .day{font-weight:900;font-size:18px}
+    .datebox .mon,.datebox .time{color:var(--muted);font-size:12px;margin-top:2px}
+
+    /* Modals */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.46);backdrop-filter:blur(4px);display:none;place-items:center;z-index:9999}
+    .overlay.show{display:grid}
+    .modal{background:#fff;width:min(720px,calc(100% - 32px));border-radius:18px;padding:20px 20px 22px;box-shadow:0 24px 70px rgba(0,0,0,.25);position:relative}
+    .modal h3{margin:4px 0 8px}
+    .close{position:absolute;right:14px;top:14px;border:0;background:transparent;cursor:pointer}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    @media (max-width:720px){ .row2{grid-template-columns:1fr} }
+    .label{color:var(--muted);font-size:13px;margin-bottom:6px}
+    .input{width:100%;border:1.6px solid #e6e8ec;border-radius:12px;padding:12px 14px;font-size:15px;background:#fff}
+    .input:focus{outline:none;border-color:#b7e1e7;box-shadow:0 0 0 3px rgba(14,165,183,.12)}
+    .btn{background:#111;color:#fff;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+    .btn.outline{background:#fff;color:#111;border:1px solid var(--border)}
+    .btn.danger{background:var(--danger)}
+    .hint{color:var(--muted);font-size:12px}
+    .toast{position:fixed;left:50%;top:90px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:10000}
+    .toast.show{opacity:1}
+
+    /* ======== MOBİL DÜZEN (<= 860px) ======== */
+@media (max-width: 860px){
+  /* Genel: yatay taşıntıyı tamamen engelle */
+  html, body { overflow-x: hidden; }
+  *, *::before, *::after { box-sizing: border-box; min-width: 0; }
+  img, video { max-width: 100%; height: auto; display: block; }
+
+  /* Dış boşluklar daha kompakt olsun */
+  .container { padding: 0 12px; }
+  .layout { grid-template-columns: 1fr; gap: 14px; margin: 14px 0; }
+
+  /* Sidebar ve içerik blokları tam genişlik */
+  .side, .card { border-radius: 14px; }
+
+  /* Üst bar */
+  .topbar { position: sticky; top: 0; }
+  .topbar-inner { padding: 10px 12px; gap: 10px; }
+  .logo { font-size: 18px; }
+
+  /* Üst barda arama alanları: taşma yapmasın */
+  .searchbar-top { flex-wrap: wrap; gap: 8px; }
+  .searchbar-top input{
+    flex: 1 1 100%;
+    min-width: 0;           /* min-width:220px taşmasını engelle */
+    width: 100%;
+  }
+
+  /* Kategori şeridi */
+  .hero-cats{
+    gap: 24px;
+    padding: 8px 12px;
+  }
+  .hero-cats a{ font-weight: 800; }
+
+  /* Mini–nav (scroll ile çıkan) taşmasın */
+  .mini-inner { padding: 10px 12px; gap: 10px; }
+  .mini-search { flex-wrap: wrap; gap: 8px; }
+  .mini-chip{
+    flex: 1 1 100%;
+    min-width: 0;           /* 220px sabitlik kalksın */
+    width: 100%;
+  }
+
+  /* Kart içerikleri ve randevu satırları dar ekranda rahat sığsın */
+  .appt{
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+  }
+  .appt .meta { min-width: 0; }
+  .appt .title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .datebox{ min-width: 74px; padding: 0 10px; }
+
+  /* Listelerde/hiyerarşide taşma güvenliği */
+  .card .bd, .card .hd, .menu, .side .hd, .mini-inner, .topbar-inner { overflow: hidden; }
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR (aynı) ===== -->
+  <header id="mainTopbar" class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="index.html">~arat</a>
+      <div class="searchbar-top">
+        <input type="search" placeholder="Hizmet veya işletme ara">
+        <input type="search" placeholder="Konum (örn. İstanbul)">
+        <input type="search" placeholder="Ne zaman?">
+      </div>
+      <nav class="menu-right">
+        <a href="#" class="open-auth auth-link"><span class="auth-text">Giriş Yap / Kayıt Ol</span></a>
+        <a class="btn-primary" href="isletmeni-listele.html">İşletmeni listele</a>
+      </nav>
+    </div>
+
+    <nav class="hero-cats">
+      <a href="kuafor.html" >Kuaför</a>
+      <a href="guzellik-salonu.html">Güzellik Salonu</a>
+    </nav>
+  </header>
+
+  <!-- mini-nav -->
+  <div id="miniNav" class="mini-nav" aria-hidden="true">
+    <div class="mini-inner">
+      <a class="mini-logo" href="index.html">~arat</a>
+      <div class="mini-search">
+        <div class="mini-chip"><span>🔎</span><input placeholder="Hizmet veya işletme ara"></div>
+        <div class="mini-chip"><span>📍</span><input placeholder="Konum"></div>
+        <div class="mini-chip"><span>🕒</span><input placeholder="Ne zaman?"></div>
+      </div>
+      <div class="mini-right">
+        <a href="#" class="open-auth auth-link"><span class="auth-text">Giriş Yap / Kayıt Ol</span></a>
+        <a class="cta" href="isletmeni-listele.html">İşletmeni listele</a>
+      </div>
+    </div>
+  </div>
+  <div class="sentinel" data-sentinel style="height:1px"></div>
+
+  <!-- ===== PAGE ===== -->
+  <main class="container">
+    <div class="layout">
+      <!-- SOL MENÜ -->
+      <aside class="side">
+        <div class="hd">
+          <div class="avatar"><i class="fas fa-user"></i></div>
+          <div class="me">
+            <div class="name" id="meName">Kullanıcı</div>
+            <div class="hint" id="meEmail">—</div>
+          </div>
+        </div>
+        <nav class="menu">
+          <div class="mitem active" data-view="appointments"><span>Appointments</span><i class="fas fa-chevron-right"></i></div>
+          <div class="mitem" data-view="settings"><span>Account & Settings</span><i class="fas fa-gear"></i></div>
+          <div style="height:6px"></div>
+          <div class="mitem" id="menuLogout"><span>Log Out</span><i class="fas fa-arrow-right-from-bracket"></i></div>
+        </nav>
+      </aside>
+
+      <!-- SAĞ İÇERİK -->
+      <section class="content">
+        <div class="card">
+          <div class="hd">Appointments</div>
+          <div class="bd">
+            <div id="upcomingBlock">
+              <div class="group-title">UPCOMING</div>
+              <div id="upcomingList"></div>
+            </div>
+
+            <div id="finishedBlock" style="margin-top:20px">
+              <div class="group-title">FINISHED APPOINTMENTS</div>
+              <div id="pastList"></div>
+            </div>
+
+            <div id="noAppt" class="hint" style="display:none">Henüz randevu bulunmuyor.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="container" style="padding:28px 0 40px;color:var(--muted)">
+    © 2025 Arat Türkçe. Tüm hakları saklıdır.
+  </footer>
+
+  <!-- ===== SETTINGS MODAL ===== -->
+  <div id="setOverlay" class="overlay">
+    <div class="modal">
+      <button class="close" aria-label="Kapat"><i class="fas fa-times"></i></button>
+      <h3>Account & Settings</h3>
+
+      <div class="row2" style="margin-top:10px">
+        <div>
+          <div class="label">Ad</div>
+          <input id="firstName" class="input" placeholder="Ad">
+        </div>
+        <div>
+          <div class="label">Soyad</div>
+          <input id="lastName" class="input" placeholder="Soyad">
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="label">Doğum günü (opsiyonel)</div>
+        <input id="birthday" type="date" class="input" />
+        <div class="hint">Boş bırakabilirsiniz.</div>
+      </div>
+
+      <div class="row2" style="margin-top:14px">
+        <button id="openAddr" class="btn outline">Adresini Düzenle</button>
+        <button id="openPw" class="btn outline">Şifreyi Değiştir</button>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn outline" id="setCancel">Kapat</button>
+        <button class="btn" id="saveProfile">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== PASSWORD MODAL ===== -->
+  <div id="pwOverlay" class="overlay">
+    <div class="modal" style="width:min(520px,calc(100% - 32px))">
+      <button class="close" aria-label="Kapat"><i class="fas fa-times"></i></button>
+      <h3>Şifreyi Değiştir</h3>
+      <p class="hint" style="margin-top:-4px">Güvenlik için mevcut şifreni doğrulaman gerekiyor.</p>
+      <div class="row2" style="margin-top:10px">
+        <div>
+          <div class="label">Mevcut şifre</div>
+          <input id="curPw" type="password" class="input" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <div>
+          <div class="label">Yeni şifre</div>
+          <input id="newPw" type="password" class="input" placeholder="En az 6 karakter" autocomplete="new-password" />
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <div class="label">Yeni şifre (tekrar)</div>
+        <input id="newPw2" type="password" class="input" placeholder="Tekrar yazın" autocomplete="new-password" />
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn outline" id="pwCancel">Vazgeç</button>
+        <button class="btn" id="pwSave" disabled>Güncelle</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADDRESS MODAL ===== -->
+  <div id="addrOverlay" class="overlay">
+    <div class="modal">
+      <button class="close" aria-label="Kapat"><i class="fas fa-times"></i></button>
+      <h3>Adresi Düzenle</h3>
+      <div class="row2" style="margin-top:10px">
+        <div>
+          <div class="label">İl</div>
+          <select id="addrCity" class="input"></select>
+        </div>
+        <div>
+          <div class="label">İlçe</div>
+          <select id="addrDistrict" class="input" disabled></select>
+        </div>
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <div>
+          <div class="label">Mahalle</div>
+          <select id="addrNeighborhood" class="input" disabled></select>
+        </div>
+        <div>
+          <div class="label">Sokak / Adres</div>
+          <input id="addrStreet" class="input" placeholder="Sokak, kapı no, daire…">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px">
+        <button class="btn outline" id="addrCancel">Vazgeç</button>
+        <button class="btn" id="addrSave">Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===== JS ===== -->
+  <script type="module">
+    import { auth, db } from "./js/firebase.js";
+    import {
+      onAuthStateChanged, signOut,
+      EmailAuthProvider, reauthenticateWithCredential, updatePassword
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+    import {
+      doc, getDoc, setDoc, collection, getDocs, query, orderBy, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+
+    const $  = (s,r=document)=>r.querySelector(s);
+    const $$ = (s,r=document)=>Array.from(r.querySelectorAll(s));
+    const toast = $("#toast");
+    const showToast = (t)=>{ toast.textContent=t; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1800); };
+
+    /* mini-nav görünümü */
+    (function(){
+      const mini=$("#miniNav"), sentinel=$("[data-sentinel]");
+      if(!mini||!sentinel) return;
+      const io=new IntersectionObserver((es)=>es.forEach(e=>{
+        if(e.isIntersecting){ mini.classList.remove("show"); mini.setAttribute("aria-hidden","true"); }
+        else{ mini.classList.add("show"); mini.setAttribute("aria-hidden","false"); }
+      }),{rootMargin:"-80px 0px 0px 0px",threshold:0.01});
+      io.observe(sentinel);
+    })();
+
+    /* Auth link: login ise profil, değilse index#login */
+    const authTexts=$$(".auth-text");
+    const authLinks=$$(".auth-link");
+    authLinks.forEach(a=>a.addEventListener("click",(e)=>{
+      e.preventDefault();
+      if(auth.currentUser){
+        if(location.pathname.endsWith("user-profile.html")) return;
+        location.href="user-profile.html";
+      }else{
+        location.href="index.html#login";
+      }
+    }));
+
+    // Sol menü
+    const sideItems=$$(".mitem[data-view]");
+    const setOverlay=$("#setOverlay");
+    const setClose=setOverlay.querySelector(".close");
+    $("#setCancel").addEventListener("click",()=>setOverlay.classList.remove("show"));
+    setClose.addEventListener("click",()=>setOverlay.classList.remove("show"));
+    setOverlay.addEventListener("click",(e)=>{ if(e.target===setOverlay) setOverlay.classList.remove("show"); });
+
+    sideItems.forEach(it=>{
+      it.addEventListener("click",()=>{
+        sideItems.forEach(x=>x.classList.remove("active"));
+        it.classList.add("active");
+        const v=it.dataset.view;
+        if(v==="appointments"){
+          // zaten sağ panel randevuları gösteriyor
+          window.scrollTo({top:0,behavior:"smooth"});
+        }
+        if(v==="settings"){
+          setOverlay.classList.add("show");
+        }
+      });
+    });
+
+    // Kullanıcı ve profil alanları
+    const meName=$("#meName"), meEmail=$("#meEmail");
+    const emailLabel=$("#meEmail"); // görüntü için
+    const firstName=$("#firstName"), lastName=$("#lastName"), birthday=$("#birthday");
+    const saveProfile=$("#saveProfile");
+
+    // Randevular DOM
+    const listUpcoming=$("#upcomingList");
+    const listPast=$("#pastList");
+    const noAppt=$("#noAppt");
+
+    const fmtDate=(ts)=>{
+      const d = ts instanceof Date ? ts : new Date(ts);
+      const ay=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];
+      const hh=String(d.getHours()).padStart(2,"0");
+      const mm=String(d.getMinutes()).padStart(2,"0");
+      return { day:d.getDate(), mon:ay, time:`${hh}:${mm}` };
+    };
+    function apptCard(a){
+      const {serviceTitle,salonName,status,time}=a;
+      const d=fmtDate(time);
+      return `
+        <article class="appt">
+          <div class="meta">
+            <div class="title">${serviceTitle||"Hizmet"}</div>
+            <div class="hint">${salonName||"Salon"}</div>
+            <div style="margin-top:6px"><span class="pill ${status}">${status}</span></div>
+          </div>
+          <div class="datebox">
+            <div class="day">${d.day}</div>
+            <div class="mon">${d.mon}</div>
+            <div class="time">${d.time}</div>
+          </div>
+        </article>
+      `;
+    }
+    async function loadAppointments(uid){
+      listUpcoming.innerHTML=""; listPast.innerHTML="";
+      const q=query(collection(db,"users",uid,"appointments"), orderBy("time","desc"));
+      const snap=await getDocs(q);
+      if(snap.empty){ noAppt.style.display="block"; return; }
+      noAppt.style.display="none";
+      const now=Date.now();
+      snap.forEach(docu=>{
+        const d=docu.data();
+        const time= d.time?.toDate ? d.time.toDate() : (d.time ? new Date(d.time) : null);
+        const item={ serviceTitle:d.serviceTitle, salonName:d.salonName, status:d.status||"scheduled", time:time||new Date() };
+        if(item.time.getTime()>=now && item.status!=="completed" && item.status!=="cancelled"){
+          listUpcoming.insertAdjacentHTML("beforeend", apptCard(item));
+        }else{
+          listPast.insertAdjacentHTML("beforeend", apptCard(item));
+        }
+      });
+    }
+
+    // Şifre modalı
+    const pwOverlay=$("#pwOverlay");
+    const pwClose=pwOverlay.querySelector(".close");
+    const pwCancel=$("#pwCancel");
+    $("#openPw").addEventListener("click",()=>pwOverlay.classList.add("show"));
+    pwClose.addEventListener("click",()=>pwOverlay.classList.remove("show"));
+    pwCancel.addEventListener("click",()=>pwOverlay.classList.remove("show"));
+    pwOverlay.addEventListener("click",(e)=>{ if(e.target===pwOverlay) pwOverlay.classList.remove("show"); });
+
+    const curPw=$("#curPw"), newPw=$("#newPw"), newPw2=$("#newPw2"), pwSave=$("#pwSave");
+    const validatePw=()=>{
+      const ok = newPw.value.length>=6 && newPw.value===newPw2.value && curPw.value.length>=6;
+      pwSave.disabled=!ok;
+    };
+    [curPw,newPw,newPw2].forEach(i=>i.addEventListener("input",validatePw));
+    pwSave.addEventListener("click", async ()=>{
+      const user=auth.currentUser; if(!user || !user.email) return;
+      try{
+        const cred=EmailAuthProvider.credential(user.email, curPw.value);
+        await reauthenticateWithCredential(user, cred);
+        await updatePassword(user, newPw.value);
+        showToast("Şifre güncellendi");
+        pwOverlay.classList.remove("show");
+        curPw.value=newPw.value=newPw2.value="";
+      }catch(err){ console.error(err); showToast("Şifre değiştirilemedi: " + (err.code||"hata")); }
+    });
+
+    // Adres modalı
+    const addrOverlay=$("#addrOverlay");
+    const addrClose=addrOverlay.querySelector(".close");
+    const addrCancel=$("#addrCancel"), addrSave=$("#addrSave");
+    const addrCity=$("#addrCity"), addrDistrict=$("#addrDistrict"),
+          addrNeighborhood=$("#addrNeighborhood"), addrStreet=$("#addrStreet");
+    $("#openAddr").addEventListener("click",()=>addrOverlay.classList.add("show"));
+    addrClose.addEventListener("click",()=>addrOverlay.classList.remove("show"));
+    addrCancel.addEventListener("click",()=>addrOverlay.classList.remove("show"));
+    addrOverlay.addEventListener("click",(e)=>{ if(e.target===addrOverlay) addrOverlay.classList.remove("show"); });
+
+    // Basit şehir-veri
+    const DATA = {
+      "İstanbul": { "Kadıköy":["Moda","Kozyatağı","Fikirtepe"], "Beşiktaş":["Etiler","Levent","Ortaköy"], "Üsküdar":["Acıbadem","Altunizade"] },
+      "Ankara":   { "Çankaya":["Kızılay","Ayrancı"], "Yenimahalle":["Batıkent","Demetevler"] },
+      "İzmir":    { "Konak":["Alsancak","Güzelyalı"], "Karşıyaka":["Bostanlı","Mavişehir"] }
+    };
+    function fillCities(){
+      addrCity.innerHTML = `<option value="" disabled selected>İl seçin</option>`;
+      Object.keys(DATA).forEach(c=>{
+        const o=document.createElement('option'); o.value=o.textContent=c; addrCity.appendChild(o);
+      });
+    }
+    function fillDistricts(){
+      addrDistrict.innerHTML=`<option value="" disabled selected>İlçe seçin</option>`;
+      addrNeighborhood.innerHTML=`<option value="" disabled selected>Mahalle seçin</option>`;
+      addrDistrict.disabled = !addrCity.value;
+      addrNeighborhood.disabled = true;
+      if(!addrCity.value) return;
+      Object.keys(DATA[addrCity.value]).forEach(d=>{
+        const o=document.createElement('option'); o.value=o.textContent=d; addrDistrict.appendChild(o);
+      });
+    }
+    function fillNeighborhoods(){
+      addrNeighborhood.innerHTML=`<option value="" disabled selected>Mahalle seçin</option>`;
+      addrNeighborhood.disabled = !addrDistrict.value;
+      if(!addrCity.value || !addrDistrict.value) return;
+      DATA[addrCity.value][addrDistrict.value].forEach(n=>{
+        const o=document.createElement('option'); o.value=o.textContent=n; addrNeighborhood.appendChild(o);
+      });
+    }
+    addrCity.addEventListener("change",fillDistricts);
+    addrDistrict.addEventListener("change",fillNeighborhoods);
+
+    // Profil kaydet
+    saveProfile.addEventListener("click", async ()=>{
+      const user=auth.currentUser; if(!user) return;
+      try{
+        const payload={ firstName:firstName.value.trim()||null, lastName:lastName.value.trim()||null };
+        const b=birthday.value.trim(); if(b) payload.birthday=b; // opsiyonel
+        await setDoc(doc(db,"users",user.uid), {...payload, updatedAt:serverTimestamp()}, {merge:true});
+        showToast("Profil kaydedildi");
+        setOverlay.classList.remove("show");
+      }catch(err){ console.error(err); showToast("Profil kaydedilemedi"); }
+    });
+
+    addrSave.addEventListener("click", async ()=>{
+      const user=auth.currentUser; if(!user) return;
+      try{
+        const address={
+          city:addrCity.value||null,
+          district:addrDistrict.value||null,
+          neighborhood:addrNeighborhood.value||null,
+          street:addrStreet.value.trim()||null
+        };
+        await setDoc(doc(db,"users",user.uid), { address, updatedAt:serverTimestamp() }, {merge:true});
+        addrOverlay.classList.remove("show");
+        showToast("Adres güncellendi");
+      }catch(err){ console.error(err); showToast("Adres kaydedilemedi"); }
+    });
+
+    // Çıkış
+    $("#menuLogout").addEventListener("click", async ()=>{
+      try{ await signOut(auth); location.href="index.html"; }
+      catch(err){ alert("Çıkış yapılamadı: " + (err.code||err.message)); }
+    });
+
+    // Kullanıcıyı ve randevuları yükle
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){ location.href="index.html#login"; return; }
+      authTexts.forEach(t=>t.textContent="Profilim");
+      meEmail.textContent = user.email || "";
+      const nameFromEmail = (user.email||"").split("@")[0];
+      meName.textContent = nameFromEmail;
+
+      fillCities(); // adres modalına
+
+      // profil verisi
+      try{
+        const snap=await getDoc(doc(db,"users",user.uid));
+        if(snap.exists()){
+          const u=snap.data();
+          if(u.firstName || u.lastName){
+            meName.textContent = [u.firstName||"", u.lastName||""].join(" ").trim() || nameFromEmail;
+          }
+          if(u.firstName) firstName.value=u.firstName;
+          if(u.lastName)  lastName.value=u.lastName;
+          if(u.birthday)  birthday.value=u.birthday;
+          if(u.address){
+            const a=u.address;
+            if(a.city && DATA[a.city]){ addrCity.value=a.city; fillDistricts(); }
+            if(a.district && DATA[a.city]?.[a.district]){ addrDistrict.value=a.district; fillNeighborhoods(); }
+            if(a.neighborhood){ addrNeighborhood.value=a.neighborhood; }
+            if(a.street){ addrStreet.value=a.street; }
+          }
+        }
+      }catch(e){ console.error(e); }
+
+      // randevular
+      await loadAppointments(user.uid);
+    });
+  </script>
+
+  <!-- Firebase bootstrap -->
+  <script type="module" src="./js/firebase.js"></script>
+</body>
+</html>

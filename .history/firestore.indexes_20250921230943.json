@@ -1,0 +1,53 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "adminOnboarding",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "business.published", "order": "ASCENDING" },
+        { "fieldPath": "business.category",  "order": "ASCENDING" },
+        { "fieldPath": "updatedAt",          "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "adminOnboarding",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "business.published", "order": "ASCENDING" },
+        { "fieldPath": "business.category",  "order": "ASCENDING" },
+        { "fieldPath": "business.featured",  "order": "ASCENDING" },
+        { "fieldPath": "updatedAt",          "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "adminOnboarding",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "business.published",              "order": "ASCENDING" },
+        { "fieldPath": "business.category",               "order": "ASCENDING" },
+        { "fieldPath": "step5.businessLocation.province", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt",                       "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "adminOnboarding",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "business.published",              "order": "ASCENDING" },
+        { "fieldPath": "business.category",               "order": "ASCENDING" },
+        { "fieldPath": "step5.businessLocation.province", "order": "ASCENDING" },
+        { "fieldPath": "step5.businessLocation.district", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt",                       "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bookings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "businessId", "order": "ASCENDING" },
+        { "fieldPath": "startAt",    "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

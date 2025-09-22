@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Takvim — Gün / Hafta</title>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Masaüstü stilleri -->
+  <link rel="stylesheet" href="css/calendar.css">
+  <!-- Mobil stilleri (@media max-width:900px içeride) -->
+  <link rel="stylesheet" href="css/mobil_calendar.css">
+
+  <style>
+    /* Sadece masaüstü sabitle (mobilde devre dışı) */
+    @media (min-width: 1200px) {
+      html { min-width: 1200px; }
+      body, .container { width: 1200px; margin: 0 auto; }
+    }
+  </style>
+</head>
+
+<body class="has-rail">
+  <!-- Ortak bar menu mount -->
+  <div id="rail-mount" aria-hidden="true"></div>
+
+  <div class="app">
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-inner">
+          <!-- Görünüm -->
+          <div class="view-select" id="viewSelect">
+            <button class="view-chip" id="viewChip" aria-haspopup="listbox" aria-expanded="false" type="button">
+              <span id="currentView">Gün</span>
+              <svg class="chev" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+            <div class="view-pop" id="viewPop" role="listbox" aria-labelledby="viewChip">
+              <button class="view-item selected" role="option" data-view="Gün">
+                <span>Gün</span><span class="right">✓</span>
+              </button>
+              <button class="view-item" role="option" data-view="Hafta">
+                <span>Hafta</span><span class="right">✓</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tarih -->
+          <div class="date-nav">
+            <button class="icon-btn" id="prevDay" title="Önceki">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <button class="date-chip" id="dateLabelWrap" type="button" aria-haspopup="dialog" aria-expanded="false">
+              <div class="date-main">
+                <strong id="dateLabel">—</strong>
+                <svg class="chev" viewBox="0 0 24 24" fill="none">
+                  <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+              <span class="date-range" id="dateRange"></span>
+            </button>
+
+            <button class="icon-btn" id="nextDay" title="Sonraki">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <button class="icon-btn" id="todayBtn" title="Bugün">
+              <svg viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="12" r="2" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+
+          <!-- Personel ve Kaynaklar -->
+          <div class="staff-wrap">
+            <button class="pill" id="staffBtn" type="button">
+              Personel ve Kaynaklar
+              <svg class="chev" viewBox="0 0 24 24" fill="none">
+                <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <div class="staff-pop" id="staffPop" role="dialog" aria-labelledby="spTitle" aria-modal="false">
+              <div class="sp-title" id="spTitle">
+                Personel ve Kaynaklar
+                <svg class="chev" viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
+
+              <div class="sp-sec" id="scopeSec">
+                <label class="radio"><input type="radio" name="scope" value="only"><span>Yalnızca ben</span></label>
+                <label class="radio"><input type="radio" name="scope" value="working" checked><span>Çalışan Personel</span></label>
+              </div>
+
+              <div class="sp-sep"></div>
+
+              <div class="sp-sec">
+                <div id="staffChkWrap"></div>
+                <button class="apply" id="applyStaff">UYGULA</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sağ aksiyonlar -->
+          <div class="actions">
+            <button class="icon-btn bell-btn" id="bellBtn" title="Bildirimler">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .53-.21 1.04-.59 1.41L4 17h5m6 0a3 3 0 1 1-6 0m6 0H9"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              </svg>
+            </button>
+
+            <!-- Arama (mobil CSS’te gizli) -->
+            <div class="search">
+              <input type="text" placeholder="Ara" />
+              <span class="magnifier">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+                  <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini Takvim -->
+      <div class="center-pop" id="calendarPopover" aria-hidden="true">
+        <div class="calendar-head">
+          <button class="icon-btn" id="calPrev" title="Önceki Ay">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+          <strong id="calMonthLabel">—</strong>
+          <button class="icon-btn" id="calNext" title="Sonraki Ay">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+        <div class="dow">
+          <div>Paz</div><div>Pzt</div><div>Sal</div><div>Çar</div><div>Per</div><div>Cum</div><div>Cmt</div>
+        </div>
+        <div class="calendar-grid" id="miniCal"></div>
+      </div>
+
+      <!-- GÜN -->
+      <section class="calendar" id="dayView">
+        <div class="staff-row" id="staffRow"></div>
+        <div class="grid" id="dayGrid"></div>
+      </section>
+
+      <!-- HAFTA -->
+      <section class="week" id="weekView" hidden>
+        <div class="wk-head" id="wkHead"></div>
+        <div class="wk-grid" id="wkGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Bildirim Paneli -->
+  <aside class="notify" id="notify" aria-hidden="true">
+    <div class="notify-head">
+      <span>Bildirimler</span>
+      <button class="icon-btn" id="notifyClose" title="Kapat">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+    <div class="notify-body">Henüz bildiriminiz yok…</div>
+  </aside>
+
+  <!-- Profil Modal (overlay yok) -->
+  <div class="bm-modal" id="bmModal" aria-hidden="true">
+    <div class="bm-box" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+      <div class="bm-head">
+        <button class="bm-x" id="bmClose" title="Kapat">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <h3 id="bmTitle">Profil</h3>
+      </div>
+      <div class="bm-body">
+        <div class="bm-search">
+          <svg viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+            <path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </div>
+        <div class="bm-list" id="bmList"></div>
+      </div>
+      <div class="bm-foot">
+        <div class="bm-user">
+          <div class="avatar" id="bmAvatar">A</div>
+          <div class="bm-ident">
+            <div class="lbl">GİRİŞ YAPILDI</div>
+            <strong id="bmName">—</strong>
+            <div class="muted" id="bmBusiness"></div>
+            <div class="muted" id="bmMail">—</div>
+          </div>
+        </div>
+        <button class="bm-logout" type="button" id="bmLogout">ÇIKIŞ</button>
+      </div>
+    </div>
+    <!-- MOBİL: Hamburger menü (yalnız mobilde görünür) -->
+<div class="mob-menu-wrap">
+  <button id="mobMenuBtn" class="mob-menu-btn" aria-haspopup="true" aria-expanded="false" title="Menü"></button>
+  <div id="mobMenu" class="mob-menu" role="menu" aria-hidden="true">
+    <button id="mobMenuView"  class="mob-menu-item" role="menuitem">
+      <span class="mm-ic mm-ic-view" aria-hidden="true"></span>
+      Görünüm
+      <span class="mm-check" aria-hidden="true">✓</span>
+    </button>
+    <button id="mobMenuStaff" class="mob-menu-item" role="menuitem">
+      <span class="mm-ic mm-ic-staff" aria-hidden="true"></span>
+      Personel
+      <span class="mm-check" aria-hidden="true">✓</span>
+    </button>
+  </div>
+</div>
+  </div>
+
+  <!-- Rail (bar-menu) yükleyici -->
+  <script>
+  (function loadRail(){
+    const mount = document.getElementById('rail-mount');
+    if(!mount) return;
+
+    const CANDIDATES = [
+      'bar-menu.html', '/bar-menu.html',
+      'partials/bar-menu.html', '/partials/bar-menu.html',
+      '../bar-menu.html'
+    ];
+
+    function ensureRailStyles(){
+      const hasRuleHint = document.querySelector('[data-rail-style]') ||
+        Array.from(document.styleSheets).some(ss=>{
+          try { return Array.from(ss.cssRules||[]).some(r=>String(r.cssText).includes('.rail')); }
+          catch { return false; }
+        });
+      if(hasRuleHint) return;
+
+      const css = `
+        .rail{position:fixed; inset:0 auto 0 0; width:72px; background:#151619; color:#b9bec7;
+          display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+          z-index:1000; border-right:1px solid #2a2d34; padding:12px 0;}
+        .rail__list{list-style:none; margin:0; padding:0; width:100%; flex:1; display:flex; flex-direction:column; justify-content:space-evenly; align-items:center}
+        .rail__item{width:100%; display:flex; justify-content:center}
+        .rail__btn{width:44px; height:44px; display:grid; place-items:center; border-radius:12px; color:#b9bec7; text-decoration:none; position:relative}
+        .rail__btn:hover{background:#1d1f24; color:#fff}
+        .rail__btn[aria-current="page"]{background:rgba(124,108,255,.12); color:#fff; box-shadow:inset 0 0 0 1px rgba(124,108,255,.35)}
+        .main{ padding-left:72px; } /* rail için boşluk */
+      `;
+      const style = document.createElement('style');
+      style.dataset.railStyle = '1';
+      style.textContent = css;
+      document.head.appendChild(style);
+    }
+
+    async function tryFetch(url){
+      try{
+        const r = await fetch(url, { credentials:'same-origin' });
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        const html = await r.text();
+        mount.innerHTML = html;
+        mount.removeAttribute('aria-hidden');
+
+        ensureRailStyles();
+
+        // Takvim’i aktif işaretle
+        const links = mount.querySelectorAll('.rail__btn, .rail a, nav a');
+        let found = false;
+        links.forEach(a=>{
+          const href = (a.getAttribute('href')||'').split(/[?#]/)[0];
+          if(/(^|\/)calendar\.html$/i.test(href)) {
+            a.setAttribute('aria-current','page'); found = true;
+          }
+        });
+        if(!found){
+          const alt = mount.querySelector('[data-page="calendar"]');
+          if(alt) alt.setAttribute('aria-current','page');
+        }
+
+        // Rail → Profil modal (karartmasız)
+        mount.querySelectorAll('#bmOpen, #topProfileBtn, [data-open="bm"], .avatar-btn, #railProfile, [data-role="profile"]').forEach(btn=>{
+          btn.addEventListener('click', (e)=>{
+            e.preventDefault();
+            const bm = document.getElementById('bmModal');
+            bm?.classList.add('show');
+            bm?.setAttribute('aria-hidden','false');
+          });
+        });
+
+        // Rail → Bildirim
+        mount.querySelectorAll('#railBell, [data-open="notify"]').forEach(btn=>{
+          btn.addEventListener('click', (e)=>{
+            e.preventDefault();
+            document.getElementById('notify')?.classList.add('open');
+          });
+        });
+
+        console.info('[rail] yüklendi:', url);
+        return true;
+      }catch(err){
+        console.warn('[rail] yüklenemedi:', url, err);
+        return false;
+      }
+    }
+
+    (async ()=>{
+      let ok = false;
+      for(const u of CANDIDATES){
+        ok = await tryFetch(u);
+        if(ok) break;
+      }
+      if(!ok){
+        /* Fallback rail (profil butonu dahil) */
+        mount.innerHTML = `
+          <div class="rail">
+            <ul class="rail__list">
+              <li class="rail__item"><a class="rail__btn" href="calendar.html" aria-current="page" title="Takvim">📅</a></li>
+              <li class="rail__item"><a class="rail__btn" href="staff.html" title="Personel">👤</a></li>
+              <li class="rail__item"><button class="rail__btn avatar-btn" type="button" id="railProfile" title="Profil">👤</button></li>
+            </ul>
+          </div>`;
+        mount.removeAttribute('aria-hidden');
+        ensureRailStyles();
+        console.error('[rail] hiçbir yoldan yüklenemedi.');
+      }
+    })();
+  })();
+  </script>
+
+  <!-- Sayfa JS -->
+  <script type="module" src="js/calendar.js?v=5"></script>
+  <script type="module" src="js/mobil_calendar.js"></script>
+
+  <!-- Bildirim aç/kapat (ek güvence) ve Profil modal kapat -->
+  <script>
+    document.getElementById('bellBtn')?.addEventListener('click', ()=> {
+      document.getElementById('notify')?.classList.add('open');
+    });
+    document.getElementById('notifyClose')?.addEventListener('click', ()=> {
+      document.getElementById('notify')?.classList.remove('open');
+    });
+    document.addEventListener('mousedown', (e)=>{
+      const panel = document.getElementById('notify');
+      const open = panel?.classList.contains('open');
+      const inside = e.target.closest('#notify') || e.target.closest('#bellBtn');
+      if (open && !inside) panel.classList.remove('open');
+    });
+
+    // Profil modal kapatma
+    document.getElementById('bmClose')?.addEventListener('click', ()=>{
+      const bm = document.getElementById('bmModal');
+      bm?.classList.remove('show');
+      bm?.setAttribute('aria-hidden','true');
+    });
+    // modal dışına tıklayınca kapat
+    document.addEventListener('mousedown', (e)=>{
+      const bm = document.getElementById('bmModal');
+      if (!bm?.classList.contains('show')) return;
+      const inside = e.target.closest('#bmModal') || e.target.closest('.avatar-btn') || e.target.closest('#railProfile');
+      if (!inside) {
+        bm.classList.remove('show');
+        bm.setAttribute('aria-hidden','true');
+      }
+    });
+  </script>
+</body>
+</html>

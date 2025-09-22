@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ayarlar</title>
+
+  <!-- Ortak stiller (projendeki mevcut dosya adları) -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/rail.css" />
+  <link rel="stylesheet" href="css/settings.css" />
+</head>
+<body>
+
+  <!-- ====== Üst bar (opsiyonel) ====== -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="logo" href="index.html">~arat</a>
+      <div class="spacer"></div>
+      <button id="saveBtn" class="btn btn--primary">Kaydet</button>
+    </div>
+  </header>
+
+  <!-- ====== Sol ray / menü (projenin mevcut yapısı) ====== -->
+  <aside class="rail">
+    <div class="rail__top">
+      <a class="rail__item" href="calendar.html" title="Takvim">📅</a>
+      <a class="rail__item" href="checkout.html" title="Randevular">🧾</a>
+      <a class="rail__item rail__item--active" href="settings.html" title="Ayarlar">⚙️</a>
+      <a class="rail__item" href="staff.html" title="Personel">👥</a>
+      <a class="rail__item" href="stats-and-reports.html" title="Raporlar">📈</a>
+    </div>
+    <div class="rail__bottom">
+      <button class="avatar-btn" title="Hesap">🧑</button>
+    </div>
+  </aside>
+
+  <!-- ====== BM (hesap) modal ====== -->
+  <div id="bmOverlay" class="bm-ov"></div>
+  <div id="bmModal" class="bm-modal" aria-hidden="true" role="dialog" aria-label="Hesap">
+    <div class="bm-modal__hd">
+      <div class="bm-user">
+        <div class="bm-avatar">🧑</div>
+        <div class="bm-meta">
+          <div id="bmUserName" class="bm-name">Kullanıcı</div>
+          <div class="bm-sub">Hesap</div>
+        </div>
+      </div>
+      <button id="bmClose" class="bm-x" aria-label="Kapat">✕</button>
+    </div>
+    <div class="bm-modal__ct">
+      <button id="bmLogout" class="btn btn--danger" style="width:100%">Çıkış Yap</button>
+    </div>
+  </div>
+
+  <!-- ====== SAYFA İÇERİĞİ ====== -->
+  <main class="page">
+    <h1 class="page__title">Ayarlar</h1>
+
+    <!-- İşletme Bilgileri -->
+    <section class="card">
+      <h2 class="card__title">İşletme Bilgileri</h2>
+
+      <div class="grid2">
+        <label class="field">
+          <span>Salon adı (sitede görünen ad)</span>
+          <input id="bizName" class="input" placeholder="Örn. Barber Abdullah" />
+        </label>
+        <label class="field">
+          <span>Konum (Google Harita URL – opsiyonel)</span>
+          <input id="mapUrl" class="input" placeholder="https://maps.app.goo.gl/..." />
+        </label>
+      </div>
+
+      <div class="grid3">
+        <label class="field">
+          <span>İl</span>
+          <select id="city" class="input"></select>
+        </label>
+        <label class="field">
+          <span>İlçe</span>
+          <select id="district" class="input" disabled></select>
+        </label>
+        <label class="field">
+          <span>Mahalle</span>
+          <select id="hood" class="input" disabled></select>
+        </label>
+      </div>
+
+      <div class="grid3">
+        <label class="field">
+          <span>Bina No</span>
+          <input id="buildingNo" class="input" placeholder="Örn. 12" />
+        </label>
+      </div>
+    </section>
+
+    <!-- Görseller -->
+    <section class="card">
+      <h2 class="card__title">Görseller</h2>
+      <p class="muted">Aşağıdaki üç alandan görsel ekleyin. Her biri için <strong>tek görsel</strong> yükleyebilirsiniz.</p>
+
+      <div class="grid3">
+        <!-- Kapak -->
+        <div class="uploader">
+          <div class="uploader__hd">
+            <div>
+              <strong>Kapak</strong>
+              <div class="muted">Anasayfadaki kartlarda görünen ana görsel (öneri: 1200×800)</div>
+            </div>
+            <button class="btn" data-upload="cover">Yükle</button>
+          </div>
+          <input type="file" accept="image/*" hidden data-input="cover" />
+          <div id="coverThumbs" class="thumbs"></div>
+        </div>
+
+        <!-- Salon & Profil -->
+        <div class="uploader">
+          <div class="uploader__hd">
+            <div>
+              <strong>Salon & Profil</strong>
+              <div class="muted">Dükkanınız, siz veya personeliniz</div>
+            </div>
+            <button class="btn" data-upload="salon">Yükle</button>
+          </div>
+          <input type="file" accept="image/*" hidden data-input="salon" />
+          <div id="salonThumbs" class="thumbs"></div>
+        </div>
+
+        <!-- Servis & Model -->
+        <div class="uploader">
+          <div class="uploader__hd">
+            <div>
+              <strong>Servis & Model</strong>
+              <div class="muted">Hizmet örneği / saç modeli</div>
+            </div>
+            <button class="btn" data-upload="model">Yükle</button>
+          </div>
+          <input type="file" accept="image/*" hidden data-input="model" />
+          <div id="modelThumbs" class="thumbs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hizmetler -->
+    <section class="card">
+      <div class="card__titlebar">
+        <h2 class="card__title">Hizmetler & Ücretler</h2>
+        <button id="openPicker" class="btn">Hizmetleri Seç</button>
+      </div>
+
+      <div class="table">
+        <div class="thead">
+          <div class="th" style="width:36px">#</div>
+          <div class="th">Hizmet adı</div>
+          <div class="th" style="width:120px">Süre (dk)</div>
+          <div class="th" style="width:120px">Ücret (₺)</div>
+          <div class="th" style="width:160px">İşlem</div>
+        </div>
+        <div id="serviceList" class="tbody">
+          <!-- settings.js render edecektir -->
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <button id="addQuick" class="btn">+ Hızlı satır ekle</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====== Hizmet Picker Modali ====== -->
+  <div id="picker" class="picker-ov" aria-hidden="true">
+    <div class="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTtl">
+      <div class="picker__hd">
+        <div class="ttl" id="pickerTtl">Hizmet Kütüphanesi</div>
+        <button class="btn btn--ghost" data-close>✕</button>
+      </div>
+      <div class="picker__ct">
+        <input id="pickerSearch" class="input" placeholder="Hizmet ara..." />
+        <div id="pickedChips" class="chips"></div>
+        <div id="pickerList" class="pick-list"></div>
+      </div>
+      <div class="picker__ft">
+        <button id="savePicked" class="btn btn--primary">Seçilenleri Kaydet (0)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Toast ====== -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ====== Scriptler ====== -->
+  <!-- Sadece settings.js’i modül olarak yükle; firebase import’u settings.js içinde zaten yapılıyor -->
+  <script type="module" src="js/settings.js"></script>
+</body>
+</html>

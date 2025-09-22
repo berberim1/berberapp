@@ -1,0 +1,139 @@
+/* ===========================================================
+   MOBILE/TABLET (≤1024px)
+   — Yatay scroll YOK
+   — Tüm bölümler TEK KOLON (aside aşağıda)
+   — Canvas/tablolar %100, grafik yüksekliği küçültülmüş
+   — Alt sabit rail için güvenli boşluk
+   =========================================================== */
+
+*, *::before, *::after { box-sizing:border-box; }
+html, body{
+  width:100% !important; max-width:100% !important;
+  overflow-x:hidden !important;
+  -webkit-text-size-adjust:100%;
+  overscroll-behavior-x:none;
+}
+img, svg, canvas, video{ display:block; max-width:100% !important; height:auto !important; }
+
+@media (max-width:1024px){
+  :root{ --rail-width:0px; --rail-height:60px; }
+
+  body{ margin-left:0 !important; }
+
+  .wrap{
+    width:100% !important; max-width:100% !important; margin:0 auto;
+    padding:12px 12px calc(env(safe-area-inset-bottom,0px) + var(--rail-height) + 30px);
+    overflow-x:hidden !important;
+  }
+  .wrap, .header, .tabs, nav.rail, .overlay, .bm-modal, .modal{ max-width:100% !important; }
+
+  /* Alt rail */
+  nav.rail{
+    position:fixed !important; left:0; right:0; bottom:0; top:auto !important;
+    width:100% !important; height:var(--rail-height) !important;
+    border-top:1px solid var(--border); border-right:0 !important;
+    background:#0f172a; z-index:5000;
+    display:flex; align-items:center; justify-content:space-around; padding:0 6px;
+  }
+  nav.rail .rail__list{ display:flex; width:100%; height:100%; align-items:center; justify-content:space-around; }
+  nav.rail .rail__item{ list-style:none; height:100%; flex:1; }
+  nav.rail .rail__btn{ display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; gap:4px; color:#cbd5e1; padding:0; flex:1; }
+  nav.rail .rail__btn[aria-current="page"]{ color:#fff; }
+  nav.rail .ico{ width:20px; height:20px; stroke:currentColor; fill:none; stroke-width:1.9; }
+  nav.rail .rail__bottom{ display:none !important; }
+
+  /* Başlık + sekmeler */
+  .header{ position:sticky; top:0; z-index:1200; background:var(--page-bg); padding:12px; border-bottom:1px solid var(--border); margin-bottom:0; }
+  .header .title{ font-size:18px; font-weight:800; }
+  .header .period .btn{ height:36px; }
+  .tabs{
+    position:sticky; top:56px; z-index:1190; background:var(--page-bg);
+    border-bottom:1px solid var(--border); padding:8px 12px; margin-bottom:12px;
+    display:flex; gap:6px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch;
+  }
+  .tabs .tab{ white-space:nowrap; padding:8px 10px; border-radius:10px; }
+  .tabs .tab[aria-selected="true"]{ background:#fff; border:1px solid var(--border); }
+
+  /* ===== Yerleşim: her şey TEK KOLON ===== */
+  .grid, .grid--single{ display:block !important; max-width:100% !important; }
+  .grid > *, .grid--single > *{ width:100% !important; min-width:0 !important; max-width:100% !important; }
+  .grid > .right{
+    float:none !important; clear:both !important;
+    grid-column:auto / span 1 !important; order:2 !important;
+    margin-top:12px !important;
+  }
+
+  /* Kartlar */
+  .card.panel{ border-radius:12px; min-width:0 !important; max-width:100% !important; overflow-x:hidden !important; }
+  .card .card-body{ padding:14px; overflow-x:clip !important; max-width:100% !important; }
+  .card .card-title{ font-size:14px; font-weight:800; }
+
+  .mini{ min-width:0 !important; max-width:100% !important; }
+  .mini h4{ font-size:14px; margin:0 0 8px; }
+
+  /* KPI’lar tek kolon */
+  .kpis{ display:grid !important; grid-template-columns:1fr !important; gap:10px !important; }
+  .kpis > *{ width:100% !important; }
+
+  /* Kart içi 2 sütun grid’leri tek kolona zorla (inline style dahil) */
+  .card .card-body[style*="grid-template-columns"]{ grid-template-columns:1fr !important; }
+  .card .card-body[style*="display:grid"]{ display:grid !important; grid-template-columns:1fr !important; }
+
+  /* Yardımcı 2 sütun sınıfları */
+  .two-col, .columns, .cols, .split, .rowgroup{ display:block !important; }
+
+  /* Medya ve tablolar */
+  .card canvas{ width:100% !important; max-width:100% !important; }
+  .table{ width:100% !important; min-width:0 !important; table-layout:fixed !important; border-collapse:collapse; }
+  .table th, .table td{ padding:8px; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; word-break:break-word; overflow-wrap:anywhere; }
+
+  /* === Grafik yüksekliği küçült === */
+  #appointmentsChart,
+  #revenueChart,
+  #appChart2,
+  #revenueChartPage{
+    height:160px !important;       /* mobil için */
+    max-height:40vh !important;
+  }
+}
+
+/* Çok dar telefonlar */
+@media (max-width:480px){
+  #appointmentsChart, #revenueChart, #appChart2, #revenueChartPage{ height:140px !important; }
+}
+
+/* Randevu Listesi — dar ekranda kolon gizleme */
+@media (max-width:640px){
+  #app-list .table th:nth-child(3), #app-list .table td:nth-child(3),
+  #app-list .table th:nth-child(5), #app-list .table td:nth-child(5),
+  #app-list .table th:nth-child(7), #app-list .table td:nth-child(7){ display:none !important; }
+}
+
+/* Hizmete göre satışlar — sadeleştirme */
+@media (max-width:768px){
+  #rev-services .table th:nth-child(3),  #rev-services .table td:nth-child(3),
+  #rev-services .table th:nth-child(4),  #rev-services .table td:nth-child(4),
+  #rev-services .table th:nth-child(5),  #rev-services .table td:nth-child(5),
+  #rev-services .table th:nth-child(7),  #rev-services .table td:nth-child(7),
+  #rev-services .table th:nth-child(8),  #rev-services .table td:nth-child(8),
+  #rev-services .table th:nth-child(9),  #rev-services .table td:nth-child(9),
+  #rev-services .table th:nth-child(10), #rev-services .table td:nth-child(10),
+  #rev-services .table th:nth-child(11), #rev-services .table td:nth-child(11){ display:none !important; }
+}
+
+/* Personel tabloları — gereksiz kolonları gizle */
+@media (max-width:640px){
+  #staff .table th:nth-child(3), #staff .table td:nth-child(3),
+  #staff .table th:nth-child(4), #staff .table td:nth-child(4),
+  #staff .table th:nth-child(5), #staff .table td:nth-child(5),
+  #staff .table th:nth-child(6), #staff .table td:nth-child(6),
+  #staff .table th:nth-child(7), #staff .table td:nth-child(7){ display:none !important; }
+}
+
+/* Ay seçici modal — mobil genişlik */
+@media (max-width:640px){
+  .overlay .modal{ width:min(95vw,560px); max-height:90vh; overflow:auto; border-radius:16px; }
+  .m-grid{ grid-template-columns:repeat(3,1fr); gap:8px; }
+  .m-head{ padding:12px; }
+  .m-foot{ padding:12px; }
+}

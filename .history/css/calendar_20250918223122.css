@@ -1,0 +1,348 @@
+:root{
+  --bg:#f7f7f9; --panel:#ffffff; --muted:#7b8190; --text:#131722;
+  --line:#e7e8ee; --hover:#f5f6fb; --shadow:0 6px 20px rgba(16,24,40,.08);
+  --fab:#111318; --ink:#fff; --quarter:#eef0f3; --ok:#10b981; --warn:#ef4444;
+  --pill:#e9f7ff; --pill-b:#cdeaff; --block:#f3f4f6; --block-b:#e5e7eb;
+  --off:#fff2f2; --off-b:#ffdcdc;
+
+  /* Takvim kolon ölçüleri */
+  --timeW: 80px;        /* saat sütunu */
+  --colW: 360px;        /* varsayılan kişi genişliği (JS 1/2 alanı inline hesaplayacak) */
+
+  --miniPad:16px; --miniGap:10px; --miniCell:72px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--text); background:var(--bg)}
+.app{display:grid; grid-template-columns:1fr; height:100%; overflow:hidden}
+
+[hidden]{display:none !important}
+
+/* ana */
+.main{display:flex; flex-direction:column; padding-left:72px; min-width:1200px; height:100%; overflow:auto}
+
+/* topbar */
+.topbar{position:sticky; top:0; z-index:50; background:var(--panel); box-shadow:var(--shadow)}
+.topbar-inner{display:flex; align-items:center; gap:12px; padding:12px 16px; position:relative}
+
+/* görünüm seçim */
+.view-select{position:relative}
+.view-chip{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  height:40px; min-width:140px; padding:0 12px;
+  border:1px solid var(--line); border-radius:10px; background:#fff; cursor:pointer; font-weight:600;
+}
+.view-chip:hover{background:var(--hover)}
+.chev{width:16px; height:16px; opacity:.8}
+.view-pop{
+  position:absolute; top:48px; left:0; width:240px; background:#fff;
+  border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow);
+  padding:6px; display:none; z-index:60;
+}
+.view-pop.open{display:block}
+.view-pop::before{content:""; position:absolute; top:-8px; left:18px; border-width:0 8px 8px 8px; border-style:solid; border-color:transparent transparent #fff transparent; filter:drop-shadow(0 -1px 0 var(--line))}
+.view-item{width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 12px; border-radius:10px; border:0; background:#fff; cursor:pointer; font:500 14px/1 Inter}
+.view-item:hover{background:var(--hover)}
+.view-item.selected{background:#f3f4f8}
+.view-item .right{opacity:.7}
+
+/* tarih gezinme */
+.date-nav{position:absolute; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:8px; pointer-events:none}
+.date-nav>*{pointer-events:auto}
+.icon-btn{width:40px; height:40px; border-radius:12px; border:1px solid var(--line); background:#fff; display:grid; place-items:center; cursor:pointer}
+.date-chip{border:1px solid var(--line); border-radius:14px; background:#fff; padding:6px 14px; min-width:260px; display:flex; flex-direction:column; align-items:center; cursor:pointer; position:relative}
+.date-chip:hover{background:var(--hover)}
+.date-main{display:flex; align-items:center; gap:8px}
+.date-main strong{font-weight:600; white-space:nowrap}
+.date-range{font-size:12px; color:var(--muted)}
+
+/* personel & kaynaklar */
+.staff-wrap{position:relative}
+.pill{display:flex; align-items:center; gap:8px; padding:8px 12px; border:1px solid var(--line); border-radius:10px; background:#fff; cursor:pointer; font-weight:600}
+.pill:hover{background:var(--hover)}
+.staff-pop{
+  position:absolute; top:48px; left:0; width:280px; background:#fff;
+  border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow);
+  padding:10px 12px 12px; display:none; z-index:65;
+}
+.staff-pop.open{display:block}
+.staff-pop::before{content:""; position:absolute; top:-8px; left:18px; border-width:0 8px 8px; border-style:solid; border-color:transparent transparent #fff; filter:drop-shadow(0 -1px 0 var(--line))}
+.sp-title{display:flex; align-items:center; justify-content:space-between; font-weight:700; margin:4px 4px 10px}
+.sp-sec{padding:6px 4px}
+.radio,.chk{display:flex; align-items:center; gap:10px; padding:8px 8px; border-radius:10px}
+.radio input{appearance:none; width:18px; height:18px; border:1.5px solid #c9ceda; border-radius:50%; background:#fff; margin:0; display:grid; place-items:center}
+.radio input:checked{border-color:#111318}
+.radio input:checked::after{content:""; width:8px; height:8px; background:#111318; border-radius:50%}
+.chk input{appearance:none; width:18px; height:18px; border:1.5px solid #c9ceda; border-radius:6px; background:#fff; margin:0}
+.chk input:checked{background:#111318; border-color:#111318}
+.sp-sep{height:1px; background:var(--line); margin:8px 4px}
+.dot{width:8px; height:8px; border-radius:50%; background:var(--ok); margin-left:auto}
+.apply{width:100%; margin-top:10px; padding:12px 14px; border:0; border-radius:12px; background:#111318; color:#fff; font-weight:800; letter-spacing:.4px; cursor:pointer}
+.apply:disabled{opacity:.6; cursor:not-allowed}
+
+/* arama + bildirim */
+.actions{margin-left:auto; display:flex; align-items:center; gap:10px}
+.topbar .search{position:relative; width:240px}
+.topbar .search input{height:40px; padding:0 38px 0 12px; border:1px solid var(--line); border-radius:10px; background:#fff; outline:none}
+.topbar .search .magnifier{position:absolute; right:10px; top:50%; transform:translateY(-50%); width:20px; height:20px; display:grid; place-items:center; pointer-events:none; opacity:.7}
+.topbar .search .magnifier svg{width:16px; height:16px}
+
+/* mini takvim (merkez popover) */
+.center-pop{width:600px; max-width:calc(100vw - 32px); padding:14px var(--miniPad) 18px}
+.center-pop{position:fixed; top:16px; left:50%; transform:translateX(-50%); background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); display:none; z-index:60}
+.center-pop.open{display:block}
+.calendar-head{position:relative; padding:4px 12px 12px}
+.calendar-head strong{display:block; text-align:center; font-weight:700}
+.calendar-head .icon-btn{position:absolute; top:0}
+.calendar-head .icon-btn#calPrev{left:0}
+.calendar-head .icon-btn#calNext{right:0}
+.dow{display:grid; grid-template-columns:repeat(7,1fr); gap:var(--miniGap); margin-bottom:6px}
+.dow div{font-size:12px; color:#a1a7b5; text-align:center}
+.calendar-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:var(--miniGap); justify-items:center}
+.calendar-grid .cell{width:var(--miniCell); height:52px; display:grid; place-items:center; border:1px solid var(--line); border-radius:12px; background:#fff; cursor:pointer; transition:.15s; font-size:14px}
+.calendar-grid .cell:hover{background:var(--hover)}
+.calendar-grid .today{outline:2px solid #ffb4b4; background:#ffeaea; color:#c01010}
+.calendar-grid .selected{border-color:#111318; outline:3px solid #111318; color:#111318}
+
+/* gün görünümü */
+.calendar{
+  margin:18px; background:#fff; border-radius:16px; box-shadow:var(--shadow);
+  border:1px solid var(--line); position:relative; flex:1;
+
+  /* >>> yatay kaydırmayı açık tut (2 kişi sabit görünür, fazlası sağa kayar) */
+  overflow-x:auto; 
+  overflow-y:auto;
+}
+
+/* İSİM ŞERİDİ DAİMA ÜSTE (sticky) */
+.staff-row{
+  grid-auto-flow: column;
+  display:grid;
+
+  /* >>> iki kişi görünür + zaman sütunu */
+  grid-template-columns: var(--timeW) repeat(2, var(--colW));
+  grid-auto-columns: var(--colW);
+
+  align-items:center; height:56px; border-bottom:1px solid var(--line); background:#fcfdff;
+
+  /* >>> en az 2 kişi + zaman sütunu kadar genişlik */
+  min-width: calc(var(--timeW) + (2 * var(--colW)));
+  position:sticky; top:0; z-index:45;
+}
+.time-gutter{border-right:1px solid var(--line); height:100%}
+.staff-head{display:flex; align-items:center; gap:10px; padding:0 14px; border-right:1px solid var(--line); height:100%}
+.staff-head:last-child{border-right:none}
+.avatar{width:28px; height:28px; border-radius:50%; background:#e9ecf4; color:#555; display:grid; place-items:center; font-weight:600}
+.name{font-weight:600; font-size:14px}
+.sub{font-size:12px; color:#667085}
+
+.grid{
+  display:grid;
+
+  /* >>> içerik kısmı da aynı kurgu */
+  grid-template-columns: var(--timeW) repeat(2, var(--colW));
+  grid-auto-columns: var(--colW);
+
+  height:calc(100% - 56px);
+
+  /* >>> min görünür genişlik: zaman + 2 kolon */
+  min-width: calc(var(--timeW) + (2 * var(--colW)));
+}
+.time-col{
+  background:#fff; border-right:1px solid var(--line); overflow:hidden;
+  position:relative;
+}
+.time-cell{height:64px; display:flex; align-items:flex-start; justify-content:flex-end; padding:6px 8px; font-size:12px; color:#9aa0ae; border-bottom:1px solid var(--line); position:relative}
+.time-end{
+  position:absolute; left:0; right:0; bottom:0;
+  display:flex; align-items:flex-end; justify-content:flex-end;
+  padding:0 8px 6px 0; height:16px;
+  font-size:12px; color:#9aa0ae; pointer-events:none;
+}
+.staff-col{position:relative; background:#fff; border-right:1px solid var(--line); overflow:hidden}
+.staff-col:last-child{border-right:none}
+.hour-cell{height:64px; border-bottom:1px solid var(--line); position:relative}
+.hour-cell::before{
+  content:""; position:absolute; inset:0;
+  background:
+    linear-gradient(to bottom,
+      transparent 0, transparent calc(25% - .5px), var(--quarter) calc(25% - .5px), var(--quarter) calc(25% + .5px),
+      transparent calc(25% + .5px), transparent calc(50% - .5px), var(--quarter) calc(50% - .5px), var(--quarter) calc(50% + .5px),
+      transparent calc(50% + .5px), transparent calc(75% - .5px), var(--quarter) calc(75% - .5px), var(--quarter) calc(75% + .5px),
+      transparent calc(75% + .5px), transparent
+    );
+  pointer-events:none;
+  z-index:0;
+}
+.staff-col.closed::after{
+  content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(135deg, rgba(0,0,0,.09), rgba(0,0,0,.09) 8px, transparent 8px, transparent 16px);
+  z-index:3; pointer-events:none;
+}
+.offband{
+  position:absolute; left:0; right:0;
+  background:repeating-linear-gradient(135deg, rgba(0,0,0,0.06), rgba(0,0,0,0.06) 6px, transparent 6px, transparent 12px);
+  pointer-events:none; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  z-index:2;
+}
+.event{position:absolute; left:8px; right:8px; border-radius:10px; background:var(--pill); border:1px solid var(--pill-b); display:flex; align-items:center; padding:6px 10px; font-size:12px; cursor:pointer}
+.reservation{position:absolute; left:8px; right:8px; background:var(--block); border:1px solid var(--block-b); border-radius:10px; padding:6px 10px; font-size:12px; display:flex; align-items:center; gap:8px; color:#111318; cursor:pointer}
+.timeoff{position:absolute; left:8px; right:8px; background:var(--off); border:1px solid var(--off-b); border-radius:10px; padding:6px 10px; font-size:12px; display:flex; align-items:center; gap:8px; color:#8b0000; cursor:pointer}
+
+/* hafta */
+.week{margin:12px 16px 18px; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:auto; display:flex; flex-direction:column}
+.wk-head{display:grid; grid-template-columns:180px repeat(7, minmax(160px,1fr)); background:#fff; border-bottom:1px solid var(--line)}
+.wk-head .left{padding:12px; font-weight:700}
+.wk-day{padding:8px; text-align:center; border-left:1px solid var(--line)}
+.wk-day-btn{width:100%; background:#fff; border:1px solid var(--line); border-radius:10px; padding:8px 10px; cursor:pointer; transition:.15s; display:grid; gap:4px}
+.wk-day-btn:hover{background:var(--hover)}
+.wk-day .date{font-weight:600}
+.wk-day .sub{font-size:12px; color:#7b8190}
+.wk-grid{display:grid; grid-template-columns:180px repeat(7, minmax(160px,1fr))}
+.wk-staff{display:flex; align-items:center; gap:10px; padding:10px 12px; border-top:1px solid var(--line); background:#fff}
+.wk-staff .avatar{background:#eef1f6}
+.wk-col{position:relative; border-left:1px solid var(--line); border-top:1px solid var(--line); background:#fff}
+.wk-col-inner{position:relative; height:520px}
+.badge{position:absolute; left:10px; right:10px; padding:6px 10px; font-size:12px; border-radius:10px; background:var(--pill); border:1px solid var(--pill-b); cursor:pointer}
+
+/* fab */
+.fab{position:fixed; right:22px; bottom:22px; z-index:70; width:56px; height:56px; border-radius:28px; border:none; background:var(--fab); color:var(--ink); display:grid; place-items:center; box-shadow:0 10px 24px rgba(0,0,0,.2); cursor:pointer}
+.fab svg{width:26px; height:26px}
+.fab-menu{position:fixed; right:22px; bottom:92px; z-index:71; background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); padding:8px; width:260px; display:none}
+.fab-menu.open{display:block}
+.fab-menu button{width:100%; text-align:left; border:1px solid var(--line); background:#fff; border-radius:12px; padding:12px 14px; cursor:pointer; font-weight:600; margin:6px 0}
+.fab-menu button:hover{background:var(--hover)}
+
+/* backdrop */
+.backdrop{position:fixed; inset:0; background:rgba(17,19,24,.45); opacity:0; pointer-events:none; transition:.2s; z-index:60}
+.backdrop.show{opacity:1; pointer-events:auto}
+
+/* drawer (randevu) */
+.drawer{position:fixed; top:0; right:-520px; width:520px; height:100%; background:#fff; box-shadow:-10px 0 30px rgba(0,0,0,.15); z-index:80; transition:.25s; display:flex; flex-direction:column}
+.drawer.open{ right:0; }
+.drawer-head{display:flex; align-items:center; gap:10px; padding:16px 20px; border-bottom:1px solid var(--line)}
+.drawer-head h3{margin:0; font-size:22px}
+.drawer-body{padding:16px 20px; overflow:auto; display:grid; gap:14px}
+.field{display:grid; gap:6px}
+.label{font-size:12px; font-weight:700; color:#6b7280; text-transform:uppercase}
+.input, .btn-like{height:44px; border:1px solid var(--line); border-radius:12px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; cursor:pointer; background:#fff}
+.input.readonly{cursor:default}
+.dropdown{position:relative}
+.menu{position:absolute; top:48px; left:0; right:0; max-height:280px; overflow:auto; background:#fff; border:1px solid var(--line); border-radius:12px; box-shadow:var(--shadow); display:none; z-index:90}
+.menu.open{display:block}
+.menu button{width:100%; padding:10px 12px; background:#fff; border:0; text-align:left; cursor:pointer}
+.menu button:hover{background:var(--hover)}
+.muted{color:#9aa0ae}
+.total{display:flex; justify-content:space-between; align-items:center; border:1px dashed var(--line); border-radius:12px; padding:10px 12px; margin-top:6px}
+.drawer-footer{margin-top:auto; padding:14px 20px; border-top:1px solid var(--line); display:flex; gap:12px; flex-wrap:wrap}
+.btn{height:44px; border-radius:12px; padding:0 16px; font-weight:700; cursor:pointer; border:1px solid transparent}
+.btn.secondary{background:#fff; border-color:var(--line)}
+.btn.primary{background:#111318; color:#fff}
+.btn.danger{background:#ffe2e2; color:#8b0000; border-color:#ffd1d1}
+.btn:disabled{opacity:.6; cursor:not-allowed}
+
+/* servis paneli */
+.svc-panel{position:absolute; top:0; right:-520px; width:520px; height:100%; background:#fff; border-left:1px solid var(--line); box-shadow:-10px 0 24px rgba(0,0,0,.08); transition:.25s; z-index:81; display:flex; flex-direction:column}
+.svc-panel.open{right:0}
+.svc-head{display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line); font-weight:700}
+.svc-list{padding:12px 16px; overflow:auto; display:grid; gap:10px}
+.svc-item{display:flex; align-items:center; justify-content:space-between; border:1px solid var(--line); border-radius:12px; padding:12px 14px; cursor:pointer}
+.svc-item:hover{background:var(--hover)}
+.pill-mini{font-size:12px; padding:2px 8px; border-radius:999px; background:#eef8f1; border:1px solid #cde7d4}
+
+/* Bildirim paneli (masaüstü sağ çekme) */
+.notify{position:fixed; top:0; right:-420px; width:420px; height:100%; background:#fff; box-shadow:-10px 0 28px rgba(0,0,0,.18); transition:.25s; z-index:80; display:flex; flex-direction:column}
+.notify.open{right:0}
+.notify-head{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--line); font-weight:800}
+.notify-body{padding:16px; color:#7a8192; display:grid; place-items:center}
+
+/* ortak küçük tarih seçici (modallerde) */
+.dp-head{display:flex; align-items:center; justify-content:center; gap:8px; padding:8px 10px; border-bottom:1px solid var(--line)}
+.dp-head strong{font-weight:700}
+.dp-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; padding:10px}
+.dp-dow{display:grid; grid-template-columns:repeat(7,1fr); gap:6px; padding:8px 10px 0; color:#a1a7b5; font-size:12px; text-align:center}
+.dp-cell{height:40px; border:1px solid var(--line); border-radius:10px; display:grid; place-items:center; cursor:pointer; background:#fff}
+.dp-cell:hover{background:var(--hover)}
+.dp-today{outline:2px solid #ffb4b4; background:#ffeaea; color:#c01010}
+.dp-selected{border-color:#111318; outline:3px solid #111318; color:#111318}
+.dp-nav{width:36px; height:36px; border:1px solid var(--line); border-radius:999px; background:#fff; display:grid; place-items:center; cursor:pointer}
+
+/* İzin Ekle modal */
+.modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:85}
+.modal.show{display:flex}
+.modal .box{width:720px; max-width:calc(100vw - 32px); background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); display:flex; flex-direction:column}
+.modal .box .head{display:flex; align-items:center; justify-content:space-between; padding:14px 16px; border-bottom:1px solid var(--line); font-weight:800}
+.modal .box .body{padding:16px; display:grid; gap:12px}
+.row{display:grid; grid-template-columns:1fr 160px 160px; gap:10px}
+.switch{display:flex; align-items:center; gap:12px}
+.switch input{width:16px; height:16px}
+.ctrl{height:44px; border:1px solid var(--line); border-radius:12px; padding:0 12px; display:flex; align-items:center; justify-content:space-between; background:#fff; cursor:pointer}
+.select{position:relative}
+.select .menu{max-height:220px}
+.kap{display:flex; gap:10px; align-items:center}
+.kap .chip{display:flex; align-items:center; gap:6px; padding:6px 10px; background:#f6f7fb; border:1px solid var(--line); border-radius:999px; cursor:pointer}
+.kap .chip.sel{background:#111318; color:#fff; border-color:#111318}
+
+textarea.input-area{width:100%; min-height:84px; border:1px solid var(--line); border-radius:12px; padding:10px; font:inherit; resize:vertical}
+
+/* ===================== */
+/* BAR MENÜ PROFİL MODAL */
+/* ===================== */
+.bm-overlay{position:fixed; inset:0; background:rgba(17,19,24,.45); z-index:95; opacity:0; pointer-events:none; transition:.2s}
+.bm-overlay.show{opacity:1; pointer-events:auto}
+.bm-modal{position:fixed; inset:0; display:grid; place-items:center; z-index:96; pointer-events:none; opacity:0; transition:.2s}
+.bm-modal.show{opacity:1; pointer-events:auto}
+.bm-box{width:720px; max-width:calc(100vw - 40px); background:#fff; border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:hidden}
+.bm-head{display:flex; align-items:center; gap:10px; padding:16px 18px; border-bottom:1px solid var(--line)}
+.bm-head h3{font-size:22px; margin:0; font-weight:800}
+.bm-x{width:36px; height:36px; border-radius:10px; border:1px solid var(--line); background:#fff; display:grid; place-items:center; cursor:pointer}
+.bm-body{padding:14px 18px 20px}
+.bm-search{position:relative; margin-bottom:12px}
+.bm-search input{width:100%; height:44px; border:1px solid var(--line); border-radius:12px; padding:0 12px 0 40px; outline:none}
+.bm-search svg{position:absolute; left:12px; top:50%; transform:translateY(-50%); width:18px; height:18px; opacity:.7}
+.bm-list{display:grid; gap:10px}
+.bm-item{width:100%; text-align:left; border:1px solid var(--line); background:#fff; border-radius:12px; padding:12px 14px; cursor:pointer; display:flex; align-items:center; justify-content:space-between}
+.bm-item:hover{background:#f8f9fc}
+.bm-item .left{display:flex; gap:10px; align-items:center}
+.bm-dot{width:8px;height:8px;border-radius:50%;background:#10b981}
+.bm-meta{font-size:12px; color:#7b8190}
+.bm-status{font-size:12px; color:#10b981; font-weight:700}
+.bm-foot{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; border-top:1px solid var(--line); background:#fafbff}
+.bm-user{display:flex; align-items:center; gap:10px}
+.bm-user .avatar{width:32px;height:32px;border-radius:50%;background:#eef1f6;color:#555;display:grid;place-items:center;font-weight:700}
+.bm-user .lbl{font-size:11px; color:#9aa0ae}
+.bm-logout{height:38px; padding:0 14px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; font-weight:700}
+
+/* Hafta görünümü satır yüksekliği */
+:root{ --wkRowH: 220px; }
+.wk-col-inner{ position:relative; height:var(--wkRowH); }
+
+/* Hafta görünümü: kapalı gün taraması */
+.wk-col-inner.closed::after{
+  content:""; position:absolute; inset:0;
+  background:repeating-linear-gradient(135deg, rgba(0,0,0,.08), rgba(0,0,0,.08) 8px, transparent 8px, transparent 16px);
+  border:1px solid var(--line);
+  border-radius:10px;
+  pointer-events:none;
+}
+
+/* ===================== */
+/* SOL RAIL (bar-menu)  */
+/* ===================== */
+:root{
+  --rail-bg:#151619; --rail-fg:#b9bec7; --rail-active:#fff; --rail-accent:#7c6cff;
+  --rail-hover:#1d1f24; --rail-divider:#2a2d34;
+}
+.rail{position:fixed; inset:0 auto 0 0; width:72px; background:var(--rail-bg); color:var(--rail-fg);
+  display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+  z-index:1000; border-right:1px solid var(--rail-divider); padding:12px 0;}
+.rail__list{list-style:none; margin:0; padding:0; width:100%; flex:1; display:flex; flex-direction:column; justify-content:space-evenly; align-items:center}
+.rail__item{width:100%; display:flex; justify-content:center}
+.rail__btn{width:44px; height:44px; display:grid; place-items:center; border-radius:12px; color:var(--rail-fg); text-decoration:none; position:relative}
+.rail__btn:hover{background:var(--rail-hover); color:var(--rail-active)}
+.rail__btn[aria-current="page"]{background:rgba(124,108,255,.12); color:var(--rail-active); box-shadow:inset 0 0 0 1px rgba(124,108,255,.35)}
+.rail__btn[aria-current="page"]::before{content:""; position:absolute; left:-8px; top:6px; bottom:6px; width:3px; background:var(--rail-accent); border-radius:8px}
+.ico{width:22px; height:22px; stroke:currentColor; fill:none; stroke-width:1.8}
+.rail__bottom{display:flex; flex-direction:column; align-items:center; gap:10px}
+.avatar-btn{width:42px; height:42px; border-radius:50%; background:#24262c; display:grid; place-items:center; color:#cfd3dc; border:none; cursor:pointer}

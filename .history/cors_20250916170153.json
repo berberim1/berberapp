@@ -1,0 +1,13 @@
+[
+  {
+    "origin": [
+      "http://127.0.0.1:5501",
+      "http://localhost:5501",
+      "https://my-barber-system.web.app",
+      "https://my-barber-system.firebaseapp.com"
+    ],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+    "responseHeader": ["Content-Type", "Authorization", "X-Firebase-AppCheck"],
+    "maxAgeSeconds": 3600
+  }
+]

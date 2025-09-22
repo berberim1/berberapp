@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Güzellik Salonları – Arat Türkçe</title>
+
+<link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/navbar.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#f6f7f8; --card:#fff; --ink:#0b0b0c; --muted:#6d7076; --border:#ececf0;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
+    --radius:16px; --btn:#111; --btn-ink:#fff; --btn-hover:#1b1b1b;
+    --chip:#151515; --chip-border:#242424;
+    --primary:#19a0b6;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 "Inter",system-ui}
+  a{color:#111;text-decoration:none} img{max-width:100%;display:block}
+  .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+  /* ===== TOP BAR ===== */
+  .topbar{position:sticky;top:0;z-index:40;background:#0f0f12;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+  .topbar-inner{display:flex;align-items:center;gap:16px;padding:10px 20px}
+  .logo{font-weight:800;font-size:22px;color:#fff}
+  .searchbar-top{display:flex;align-items:center;gap:10px;flex:1}
+  .searchbar-top input{background:var(--chip);border:1px solid var(--chip-border);color:#eee;outline:0;border-radius:12px;padding:10px 12px;min-width:220px}
+  .menu-right{display:flex;align-items:center;gap:12px}
+  .menu-right .btn-primary{background:#161616;border:1px solid #242424;border-radius:12px;color:#fff;padding:8px 12px;font-weight:600}
+  .menu-right a{color:#eaeaea}
+
+  /* Merkezde kategori çubuğu */
+  .hero-cats{position:relative;display:flex;justify-content:center;gap:90px;padding:10px 20px;border-top:1px solid #1c1c1f;border-bottom:1px solid #1c1f}
+  .hero-cats a{color:#f1f1f2;font-weight:800;position:relative;padding:10px 4px}
+  .hero-cats a.active{color:#fff}
+  .hero-cats a.active::after{content:"";position:absolute;left:0;right:0;height:3px;border-radius:2px;background:#fff;bottom:-11px;}
+
+  /* ===== MINI NAV ===== */
+  .mini-nav{position:fixed;top:0;left:0;right:0;background:#0f0f12;border-bottom:1px solid #17171b;box-shadow:0 10px 24px rgba(0,0,0,.20);transform:translateY(-120%);transition:transform .25s ease;z-index:50}
+  .mini-nav.show{transform:translateY(0)}
+  .mini-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:14px}
+  .mini-logo{color:#fff;font-weight:900;font-size:20px;margin-right:8px}
+  .mini-search{display:flex;gap:10px;flex:1}
+  .mini-chip{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:9px 12px;border:1.5px solid #e7e7ea;min-width:220px}
+  .mini-chip input{border:0;outline:0;width:100%;background:transparent}
+  .mini-right{display:flex;align-items:center;gap:10px}
+  .mini-right a{color:#f4f4f6}
+  .mini-right .cta{background:#fff;color:#111;font-weight:800;border-radius:12px;padding:9px 12px}
+
+  /* ===== HEADER ROW ===== */
+  .header-row{display:flex;gap:10px;align-items:center;margin:16px 0}
+  .btn{background:#fff;border:1px solid var(--border);border-radius:12px;padding:9px 12px;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+  .title{font-size:26px;font-weight:900;margin:6px 0 4px}
+  .hint{color:var(--muted);font-size:13px}
+
+  .dropdown{position:relative;display:inline-block}
+  .drop-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 24px 48px rgba(0,0,0,.12);min-width:280px;padding:10px;display:none;z-index:5}
+  .dropdown.open .drop-panel{display:block}
+  .drop-row{display:flex;align-items:center;justify-content:space-between;padding:9px;border-top:1px solid #f1f1f4}
+  .drop-row:first-child{border-top:0}
+  .chip-radio{width:18px;height:18px;border:2px solid #111;border-radius:50%;display:inline-grid;place-items:center}
+  .chip-radio i{width:10px;height:10px;border-radius:50%;background:#111;opacity:0;display:block}
+  .drop-row.active .chip-radio i{opacity:1}
+
+  /* ===== RECOMMENDED CAROUSEL ===== */
+  .rec-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin:4px 0 18px;position:relative}
+  .rec-ttl{font-weight:800;margin:2px 0 10px 6px}
+  .rec-viewport{overflow:hidden}
+  .rec-track{display:flex;gap:18px;scroll-behavior:smooth}
+  .rec-card{min-width:260px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer}
+  .rec-thumb{height:140px;overflow:hidden}
+  .rec-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease}
+  .rec-card:hover .rec-thumb img{transform:scale(1.03)}
+  .rec-meta{padding:10px}
+  .rec-rating{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.85);color:#fff;font-weight:800;border-radius:999px;padding:4px 8px;font-size:12px}
+
+  .arrow{position:absolute;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;background:#111;color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.3)}
+  .arrow.left{left:8px} .arrow.right{right:8px}
+  .rec-viewport::-webkit-scrollbar{display:none}
+
+  /* ===== LIST ===== */
+  .listwrap{display:flex;flex-direction:column;gap:18px;margin:12px 0 20px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .row{display:grid;grid-template-columns:340px 1fr;gap:16px}
+  .thumb{height:210px;background:#ddd;overflow:hidden;border-radius:14px;margin:12px}
+  .thumb a{display:block;width:100%;height:100%}
+  .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .3s ease}
+  .thumb:hover img{transform:scale(1.03)}
+  .meta{padding:12px 12px 14px}
+  .topline{display:flex;align-items:center;gap:10px}
+  .rating{background:#111;color:#fff;font-weight:800;border-radius:999px;padding:6px 10px;font-size:12px}
+  .tag{border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:12px;color:#333}
+  .name{font-weight:800;margin:6px 0 4px;font-size:18px}
+  .addr{color:#6d7076;font-size:14px;margin-bottom:10px}
+
+  .svc{display:flex;flex-direction:column;gap:8px}
+  .svc .line{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;border:1px solid var(--border);border-radius:12px;padding:9px 12px;background:#fbfbfc}
+  .svc .line .fee{white-space:nowrap;color:#111;font-weight:700}
+  .svc .line .book{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer}
+  .svc .line .book:hover{background:var(--btn-hover)}
+
+  .pagination{display:flex;align-items:center;justify-content:center;gap:8px;margin:20px 0}
+  .page{min-width:40px;height:40px;border:1px solid var(--border);border-radius:12px;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:var(--shadow);font-weight:700}
+  .page.active{background:#111;color:#fff;border-color:#111}
+  .page[disabled]{opacity:.5;pointer-events:none}
+
+  .sentinel{height:1px}
+
+  @media (max-width:980px){
+    .row{grid-template-columns:1fr}
+    .thumb{height:190px;margin:12px 12px 0}
+  }
+
+  /* ===== MODAL & TOAST (AUTH ile ortak) ===== */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.46);backdrop-filter:blur(4px);display:none;place-items:center;z-index:9999}
+  .modal-overlay.active{display:grid}
+  .modal-box{background:#fff;width:min(520px,calc(100% - 32px));border-radius:18px;padding:20px 20px 22px;box-shadow:0 24px 70px rgba(0,0,0,.25);position:relative}
+  .modal-close{position:absolute;top:14px;right:14px;border:0;background:transparent;cursor:pointer;color:#333}
+
+  .toast{position:fixed;left:50%;top:90px;transform:translateX(-50%);background:#22c55e;color:#fff;padding:10px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:10000}
+  .toast.show{opacity:1}
+
+  /* ==== FİLTRE MODALI ==== */
+  .filter-box{width:min(720px, calc(100% - 32px));}
+  .filter-title{font-weight:900;font-size:18px;margin:0 0 10px}
+  .filter-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  @media (max-width:700px){ .filter-row{grid-template-columns:1fr} }
+  .fsel{width:100%; padding:12px 12px; border:1px solid var(--border); border-radius:12px; background:#fff; font:600 14px/1.1 "Inter", system-ui; color:#0b0b0c;}
+  .filter-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+  .btn-clear{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+  .btn-apply{background:#111;color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:800;cursor:pointer}
+  .btn-apply:hover{background:#1b1b1b}
+  #openFilter .badge{margin-left:8px; font-size:12px; font-weight:800; background:#111; color:#fff; padding:4px 8px; border-radius:999px;}
+
+  /* ==== AUTH MODAL (güzellik sayfasıyla birebir) ==== */
+  .auth-container{padding-top:4px}
+  .auth-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+  .auth-tab{padding:8px 14px;border-radius:999px;border:1px solid #e5e7eb;background:#f8fafc;cursor:pointer;font-weight:800;color:#0f172a}
+  .auth-tab.active{background:#111;color:#fff;border-color:#111}
+  .auth-form{display:none;max-width:380px;margin:0 auto}
+  .auth-form.active{display:block}
+  .auth-form h2{text-align:center;margin:8px 0 12px}
+  .auth-form input{width:100%;border:1.6px solid #e6e8ec;border-radius:12px;padding:12px 14px;font-size:15px;background:#fff;margin-bottom:10px}
+  .auth-form input:focus{outline:none;border-color:#b7e1e7;box-shadow:0 0 0 3px rgba(14,165,183,.12)}
+  .error{color:#e11d48;font-size:13px;min-height:18px;margin:8px 0 4px}
+  .auth-btn{width:100%;padding:13px;border:none;border-radius:12px;font-weight:800;background:#111;color:#fff;cursor:pointer}
+  .auth-btn:active{transform:translateY(1px)}
+  .oauth-stack{display:grid;gap:10px;max-width:380px;margin:6px auto 10px}
+  .google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:12px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;color:#0f172a;font-weight:700;cursor:pointer;transition:transform .06s ease,background .15s ease,border .15s ease}
+  .google-btn:hover{background:#f8fafc;border-color:#d1d5db}
+  .google-btn img{width:18px;height:18px}
+  .divider{display:flex;align-items:center;gap:10px;color:#6b7280;font-size:12px;margin:2px auto 6px}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:#e5e7eb}
+
+  /* ======== MOBİL İYİLEŞTİRMELER (≤860px) ======== */
+  @media (max-width:860px){
+    html,body{overflow-x:hidden}
+    .container{padding-left:12px;padding-right:12px}
+
+    /* Üst bar kompakt + yalnızca ilk arama inputu */
+    .topbar-inner{padding:10px 12px;gap:10px}
+    .logo{font-size:18px}
+    .searchbar-top{flex-wrap:wrap;gap:8px}
+    .searchbar-top input{flex:1 1 100%;width:100%;min-width:0}
+    .searchbar-top input:nth-child(n+2){display:none !important}
+
+    /* Kategori şeridi */
+    .hero-cats{gap:24px;padding:8px 12px}
+    .hero-cats a{font-size:14px}
+
+    /* Mini-nav: yalnız bir chip */
+    .mini-inner{padding:10px 12px;gap:10px}
+    .mini-search{flex-wrap:wrap;gap:8px}
+    .mini-chip{flex:1 1 100%;min-width:0}
+    .mini-search .mini-chip:nth-child(n+2){display:none !important}
+
+    /* Filtre & Sırala yan yana eşit */
+    .header-row{flex-wrap:nowrap;gap:8px}
+    #openFilter{flex:1}
+    #sortDD{flex:1}
+    #sortBtn{width:100%;display:flex;justify-content:space-between}
+
+    /* Carousel parmakla kaydırma, okları gizle */
+    .rec-viewport{overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .rec-track{gap:12px}
+    .rec-wrap .arrow{display:none}
+
+    /* Modal boyutu */
+    .modal-box{width:calc(100% - 24px);max-height:90vh;overflow-y:auto;border-radius:16px}
+
+    .toast{top:76px}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<header id="mainTopbar" class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="index.html">~arat</a>
+    <div class="searchbar-top">
+      <input type="search" placeholder="Hizmet veya işletme ara">
+      <input type="search" placeholder="Konum (örn. İstanbul)">
+      <input type="search" placeholder="Ne zaman?">
+    </div>
+    <nav class="menu-right">
+      <a href="#" class="open-auth"><i class="fa-regular fa-user"></i> <span class="auth-text">Giriş Yap / Kayıt Ol</span></a>
+      <a class="btn-primary" href="isletmeni-listele.html">İşletmeni listele</a>
+    </nav>
+  </div>
+
+  <nav class="hero-cats">
+    <a href="kuafor.html ">Kuaför</a>
+    <a href="guzellik-salonu.html" class="active">Güzellik Salonu</a>
+  </nav>
+</header>
+
+<!-- ===== MINI NAV (scroll sonrası) ===== -->
+<div id="miniNav" class="mini-nav" aria-hidden="true">
+  <div class="mini-inner">
+    <a class="mini-logo" href="index.html">~arat</a>
+    <div class="mini-search">
+      <div class="mini-chip"><span>🔎</span><input placeholder="Hizmet veya işletme ara"></div>
+      <div class="mini-chip"><span>📍</span><input placeholder="Konum"></div>
+      <div class="mini-chip"><span>🕒</span><input placeholder="Ne zaman?"></div>
+    </div>
+    <div class="mini-right">
+      <a href="#" class="open-auth"><i class="fa-regular fa-user"></i> <span class="auth-text">Giriş Yap / Kayıt Ol</span></a>
+      <a class="cta" href="isletmeni-listele.html">İşletmeni listele</a>
+    </div>
+  </div>
+</div>
+
+<!-- mini-nav tetik -->
+<div class="sentinel" data-sentinel></div>
+
+<main class="container">
+
+  <!-- filtre/sıralama -->
+  <div class="header-row">
+    <button class="btn" id="openFilter">Filtreler ▾</button>
+
+    <div class="dropdown" id="sortDD">
+      <div class="btn" id="sortBtn">Sırala: Önerilen ▾</div>
+      <div class="drop-panel" style="min-width:300px">
+        <div class="drop-row active"><span>Önerilen</span><span class="chip-radio"><i></i></span></div>
+        <div class="drop-row"><span>Mesafe (en yakın)</span><span class="chip-radio"><i></i></span></div>
+        <div class="drop-row"><span>Yorum (en yüksek puan)</span><span class="chip-radio"><i></i></span></div>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="title">Güzellik Salonları – Yakınından Randevu Al</h1>
+
+  <!-- ===== ÖNERİLENLER CAROUSEL ===== -->
+  <section class="rec-wrap">
+    <div class="rec-ttl">Önerilen Güzellik Salonları</div>
+    <div class="rec-viewport" id="recViewport">
+      <div class="rec-track" id="recTrack">
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber2.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Sharp & Fade</div><div class="hint">Şişli</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber3.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Loc’nKey</div><div class="hint">Kadıköy</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber4.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Urban Scissors</div><div class="hint">Beşiktaş</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber5.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Ether9 Hair</div><div class="hint">Ataşehir</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber6.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Posh Natural</div><div class="hint">Üsküdar</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber7.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Queer Cuts</div><div class="hint">Beyoğlu</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber8.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Ritual Salon</div><div class="hint">Sarıyer</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber9.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">North End</div><div class="hint">Kağıthane</div></div></a>
+
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber2.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Blade & Brush</div><div class="hint">Bakırköy</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber3.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Dockside Barber</div><div class="hint">Maltepe</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber4.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Downtown Cuts</div><div class="hint">Fatih</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber5.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Heritage Hair</div><div class="hint">Ümraniye</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber6.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Studio Luxe</div><div class="hint">Beylikdüzü</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber7.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Gold Comb</div><div class="hint">Başakşehir</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber8.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Silk & Shears</div><div class="hint">Pendik</div></div></a>
+        <a class="rec-card" href="ornek-randevu.html"><div class="rec-thumb"><img src="img/berber9.jpeg" alt=""></div><div class="rec-meta"><div style="font-weight:800">Canary Cuts</div><div class="hint">Kartal</div></div></a>
+      </div>
+    </div>
+    <button class="arrow left"  id="recPrev" aria-label="Geri">‹</button>
+    <button class="arrow right" id="recNext" aria-label="İleri">›</button>
+  </section>
+
+  <!-- ===== LİSTE (örnekler) ===== -->
+  <section class="listwrap">
+    <!-- 1 -->
+    <article class="card">
+      <div class="row">
+        <div class="thumb"><a href="ornek-randevu.html"><img src="img/berber3.jpeg" alt="Loc’nKey"></a></div>
+        <div class="meta">
+          <div class="topline"><span class="tag">Promoted</span></div>
+          <div class="name">Loc’nKey</div>
+          <div class="addr">0.7 km • Kadıköy, Moda Cd.</div>
+          <div class="svc">
+            <div class="line"><span>Size gelirim</span><span class="fee">₺6.000+ • 2s 30dk</span><a class="book" href="ornek-randevu.html">Randevu al</a></div>
+            <div class="line"><span>İki bağlama</span><span class="fee">₺4.500+ • 3s</span><a class="book" href="ornek-randevu.html">Randevu al</a></div>
+            <div class="line"><span>Sadece retwist</span><span class="fee">₺2.700+ • 1s 35dk</span><a class="book" href="ornek-randevu.html">Randevu al</a></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 2 -->
+    <article class="card">
+      <div class="row">
+        <div class="thumb"><a href="ornek-randevu.html"><img src="img/berber6.jpeg" alt="African Twin Hair Braiding"></a></div>
+        <div class="meta">
+          <div class="topline"></div>
+          <div class="name">African Twin Hair Braiding</div>
+          <div class="addr">0.9 km • Üsküdar, Bağlarbaşı</div>
+          <div class="svc">
+            <div class="line"><span>Orta kutu örgü</span><span class="fee">₺9.500+ • 4s</span><a class="book" href="ornek-randevu.html">Randevu al</a></div>
+            <div class="line"><span>Mikro örgü</span><span class="fee">₺12.000+ • 5s</span><a class="book" href="ornek-randevu.html">Randevu al</a></div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <!-- ... diğer kartlar değişmeden ... -->
+  </section>
+
+  <nav class="pagination" id="pagination">
+    <button class="page" data-nav="prev">‹</button>
+    <button class="page active" data-page="1">1</button>
+    <button class="page" data-page="2">2</button>
+    <button class="page" data-page="3">3</button>
+    <span class="page" style="pointer-events:none">…</span>
+    <button class="page" data-page="9">9</button>
+    <button class="page" data-nav="next">›</button>
+  </nav>
+</main>
+
+<footer class="container" style="padding:28px 20px 40px;color:var(--muted)">
+  © 2025 Arat Türkçe. Tüm hakları saklıdır.
+</footer>
+
+<!-- ====== TOAST ====== -->
+<div id="toast" class="toast" role="status" aria-live="polite">Giriş yapıldı</div>
+
+<!-- ====== AUTH MODAL (birebir) ====== -->
+<div id="authModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginRegisterTitle">
+  <div class="modal-box">
+    <button class="modal-close" aria-label="Kapat"><i class="fas fa-times"></i></button>
+
+    <div class="auth-container">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+        <button class="auth-tab" data-tab="signup">Kayıt Ol</button>
+      </div>
+
+      <div class="oauth-stack">
+        <button type="button" class="google-btn" id="googleSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" aria-hidden="true">
+          Google ile devam et
+        </button>
+        <div class="divider">veya e-posta ile</div>
+      </div>
+
+      <form id="loginForm" class="auth-form active" data-form="login">
+        <h2>Giriş Yap</h2>
+        <input type="email" name="email" placeholder="E-posta" required />
+        <input type="password" name="password" placeholder="Şifre" required />
+        <div id="loginError" class="error"></div>
+        <button type="submit" class="auth-btn">Giriş Yap</button>
+      </form>
+
+      <form id="signupForm" class="auth-form" data-form="signup">
+        <h2>Kayıt Ol</h2>
+        <input type="email" name="email" placeholder="E-posta" required />
+        <input type="password" name="password" placeholder="Şifre" required />
+        <input type="password" name="confirm" placeholder="Şifre Tekrar" required />
+        <div id="signupError" class="error"></div>
+        <button type="submit" class="auth-btn">Kayıt Ol</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ====== FİLTRE MODALI ====== -->
+<div id="filterModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="filterTitle">
+  <div class="modal-box filter-box">
+    <button class="modal-close" data-close="filter" aria-label="Kapat"><i class="fas fa-times"></i></button>
+    <h3 id="filterTitle" class="filter-title">Konum filtresi</h3>
+    <div class="filter-row" style="margin-top:8px">
+      <select id="citySel" class="fsel" aria-label="Şehir">
+        <option value="" selected>Şehir seç</option>
+      </select>
+      <select id="districtSel" class="fsel" aria-label="İlçe" disabled>
+        <option value="">Önce şehir seçin</option>
+      </select>
+      <select id="neighSel" class="fsel" aria-label="Mahalle" disabled>
+        <option value="">Önce ilçe seçin</option>
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button type="button" id="clearFilters" class="btn-clear">Temizle</button>
+      <button type="button" id="applyFilters" class="btn-apply">Uygula</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase auth (ortak) -->
+<script type="module" src="js/auth.js"></script>
+
+<script>
+  /* Mini navbar görünümü */
+  (function(){
+    const mini=document.getElementById('miniNav');
+    const sentinel=document.querySelector('[data-sentinel]');
+    if(!mini||!sentinel) return;
+    const io=new IntersectionObserver((entries)=>entries.forEach(e=>{
+      if(e.isIntersecting){ mini.classList.remove('show'); mini.setAttribute('aria-hidden','true'); }
+      else{ mini.classList.add('show'); mini.setAttribute('aria-hidden','false'); }
+    }),{rootMargin:'-80px 0px 0px 0px',threshold:0.01});
+    io.observe(sentinel);
+  })();
+
+  /* Sıralama dropdown */
+  (function(){
+    const dd=document.getElementById('sortDD'); if(!dd) return;
+    const btn=dd.querySelector('.btn'); const panel=dd.querySelector('.drop-panel');
+    btn.addEventListener('click',()=>dd.classList.toggle('open'));
+    document.addEventListener('click',(e)=>{ if(!dd.contains(e.target)) dd.classList.remove('open'); });
+    panel.querySelectorAll('.drop-row').forEach(r=>r.addEventListener('click',()=>{
+      panel.querySelectorAll('.drop-row').forEach(x=>x.classList.remove('active'));
+      r.classList.add('active');
+      const label=r.querySelector('span').textContent.trim();
+      document.getElementById('sortBtn').textContent='Sırala: '+label+' ▾';
+    }));
+  })();
+
+  /* Pagination (UI) */
+  (function(){
+    const pag=document.getElementById('pagination'); if(!pag) return;
+    function cur(){ return +pag.querySelector('.page.active')?.dataset.page || 1; }
+    function setActive(p){
+      pag.querySelectorAll('.page[data-page]').forEach(b=>b.classList.toggle('active', +b.dataset.page===p));
+      pag.querySelector('[data-nav="prev"]').toggleAttribute('disabled', p===1);
+      pag.querySelector('[data-nav="next"]').toggleAttribute('disabled', p===9);
+    }
+    pag.addEventListener('click',(e)=>{
+      const t=e.target.closest('.page'); if(!t || t.hasAttribute('disabled')) return;
+      if(t.dataset.page) setActive(+t.dataset.page);
+      if(t.dataset.nav==='prev') setActive(Math.max(1, cur()-1));
+      if(t.dataset.nav==='next') setActive(Math.min(9, cur()+1));
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+    setActive(1);
+  })();
+
+  /* Önerilenler: oklar, wheel scroll, autoplay */
+  (function(){
+    const vp=document.getElementById('recViewport');
+    const prev=document.getElementById('recPrev');
+    const next=document.getElementById('recNext');
+    if(!vp) return;
+    const step=300; let timer=null;
+    function go(dir=1){ vp.scrollBy({left: dir*step, behavior:'smooth'}); }
+    prev?.addEventListener('click', ()=>go(-1));
+    next?.addEventListener('click', ()=>go(1));
+    vp.addEventListener('wheel', (e)=>{
+      if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){
+        e.preventDefault();
+        vp.scrollBy({left: e.deltaY, behavior:'smooth'});
+      }
+    }, {passive:false});
+    function start(){ timer=setInterval(()=>go(1), 2800); }
+    function stop(){ clearInterval(timer); timer=null; }
+    vp.addEventListener('mouseenter', stop);
+    vp.addEventListener('mouseleave', start);
+    start();
+  })();
+
+  /* AUTH MODAL aç/kapat + tablar (birebir) */
+  (function(){
+    const overlay = document.getElementById("authModal");
+    if(!overlay) return;
+    const openers = document.querySelectorAll(".open-auth");
+    const closeBtn = overlay.querySelector(".modal-close");
+
+    function openModal(){ overlay.classList.add("active"); document.body.classList.add("no-scroll"); }
+    function closeModal(){ overlay.classList.remove("active"); document.body.classList.remove("no-scroll"); }
+
+    openers.forEach(b => b.addEventListener("click", (e)=>{ e.preventDefault(); openModal(); }));
+    closeBtn && closeBtn.addEventListener("click", closeModal);
+    overlay.addEventListener("click", (e)=>{ if(e.target === overlay) closeModal(); });
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+
+    document.querySelectorAll(".auth-tab").forEach((btn)=>{
+      btn.addEventListener("click", ()=>{
+        const tab = btn.dataset.tab;
+        document.querySelectorAll(".auth-tab").forEach(b=>b.classList.toggle("active", b===btn));
+        document.querySelectorAll(".auth-form").forEach(f=>f.classList.toggle("active", f.dataset.form===tab));
+      });
+    });
+  })();
+
+  /* FİLTRE MODALI: aç/kapa + kademeli select */
+  (function(){
+    const overlay = document.getElementById('filterModal');
+    const openBtn = document.getElementById('openFilter');
+    const closeBtn = overlay?.querySelector('[data-close="filter"]');
+    if(!overlay || !openBtn) return;
+
+    function open(){ overlay.classList.add('active'); document.body.classList.add('no-scroll'); }
+    function close(){ overlay.classList.remove('active'); document.body.classList.remove('no-scroll'); }
+
+    openBtn.addEventListener('click', open);
+    closeBtn && closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e)=>{ if(e.target===overlay) close(); });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') close(); });
+
+    const DATA = {
+      "İstanbul":{
+        "Kadıköy":["Moda","Fenerbahçe","Kozyatağı","Bostancı"],
+        "Beşiktaş":["Levent","Etiler","Akatlar","Ihlamur"],
+        "Beyoğlu":["Cihangir","Tarlabaşı","Galata","Kasımpaşa"],
+        "Üsküdar":["Bağlarbaşı","Kuzguncuk","Çengelköy","Beylerbeyi"]
+      },
+      "Ankara":{
+        "Çankaya":["Kızılay","GOP","Ayrancı","Yıldız"],
+        "Keçiören":["Etlik","Kavacık","Ayvalı"],
+        "Yenimahalle":["Demetevler","Ragıp Tüzün","Şentepe"]
+      },
+      "İzmir":{
+        "Konak":["Alsancak","Güzelyalı","Göztepe"],
+        "Karşıyaka":["Bostanlı","Mavişehir","Alaybey"],
+        "Bornova":["Işıkken","Kazımdirik","Erzene"]
+      }
+    };
+
+    const citySel = document.getElementById('citySel');
+    const distSel = document.getElementById('districtSel');
+    const neighSel = document.getElementById('neighSel');
+
+    function fillSelect(sel, arr, placeholder){
+      sel.innerHTML = '';
+      const opt0=document.createElement('option');
+      opt0.value=''; opt0.textContent=placeholder;
+      sel.appendChild(opt0);
+      arr.forEach(v=>{
+        const o=document.createElement('option');
+        o.value=v; o.textContent=v;
+        sel.appendChild(o);
+      });
+    }
+
+    fillSelect(citySel, Object.keys(DATA), 'Şehir seç');
+
+    citySel.addEventListener('change', ()=>{
+      const city=citySel.value;
+      if(!city){ distSel.disabled=true; neighSel.disabled=true; fillSelect(distSel, [], 'Önce şehir seçin'); fillSelect(neighSel, [], 'Önce ilçe seçin'); return; }
+      const districts = Object.keys(DATA[city]);
+      fillSelect(distSel, districts, 'İlçe seç');
+      distSel.disabled = false;
+      neighSel.disabled = true;
+      fillSelect(neighSel, [], 'Önce ilçe seçin');
+    });
+
+    distSel.addEventListener('change', ()=>{
+      const city=citySel.value, dist=distSel.value;
+      if(!city || !dist){ neighSel.disabled=true; fillSelect(neighSel, [], 'Önce ilçe seçin'); return; }
+      const neighs = DATA[city][dist] || [];
+      fillSelect(neighSel, neighs, 'Mahalle seç');
+      neighSel.disabled = false;
+    });
+
+    const clearBtn = document.getElementById('clearFilters');
+    const applyBtn = document.getElementById('applyFilters');
+
+    clearBtn.addEventListener('click', ()=>{
+      citySel.value=''; distSel.value=''; neighSel.value='';
+      distSel.disabled=true; neighSel.disabled=true;
+      fillSelect(distSel, [], 'Önce şehir seçin');
+      fillSelect(neighSel, [], 'Önce ilçe seçin');
+      const b=document.querySelector('#openFilter .badge'); if(b) b.remove();
+    });
+
+    applyBtn.addEventListener('click', ()=>{
+      const city=citySel.value || null;
+      const dist=distSel.value || null;
+      const neigh=neighSel.value || null;
+      const summary = [city, dist, neigh].filter(Boolean).join(' / ');
+      let badge=document.querySelector('#openFilter .badge');
+      if(summary){
+        if(!badge){ badge=document.createElement('span'); badge.className='badge'; document.getElementById('openFilter').appendChild(badge); }
+        badge.textContent = summary.length>28 ? (summary.slice(0,27)+'…') : summary;
+      }else{ if(badge) badge.remove(); }
+      overlay.classList.remove('active'); document.body.classList.remove('no-scroll');
+    });
+  })();
+</script>
+</body>
+</html>

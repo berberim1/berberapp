@@ -1,0 +1,183 @@
+/* ===========================================================
+   MOBİL STİLLER — genişlik <= 900px
+   =========================================================== */
+@media (max-width: 900px) {
+  :root{
+    /* Takvim ölçüleri */
+    --timeW: 64px; /* saat sütunu */
+    --colW: calc((100vw - var(--timeW) - 24px) / 2); /* görünürde 2 personel */
+    --cellH: 64px;
+    --wkRowH: 300px;
+    --miniPad: 12px; --miniGap: 8px; --miniCell: 52px;
+  }
+
+  /* Masaüstü kilitlerini söndür + genel yatay scroll KAPALI */
+  html, body, .container { width: auto !important; min-width: 0 !important; }
+  html, body, .app { height: 100%; }
+  html, body, .app, .main { overflow-x: hidden !important; } /* yalnız takvim yatay kayar */
+  body { margin: 0 !important; }
+
+  /* Ana iskelet */
+  .main{
+    padding-left: 0 !important;          /* sol rail boşluğu yok */
+    padding-bottom: 80px;                 /* bottom bar alanı */
+    min-width: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ======================= TOPBAR (kompakt) ======================= */
+  .topbar-inner{
+    padding: 8px 10px;
+    gap: 6px;
+    flex-wrap: wrap;                      /* taşarsa alt satıra insin */
+  }
+
+  .icon-btn{
+    width: 30px;
+    height: 30px;
+  }
+
+  .view-chip{
+    height: 32px;
+    min-width: 100px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+
+  .date-chip{
+    height: 32px;
+    min-width: 168px;
+    max-width: 60vw;                      /* taşmayı kesin engelle */
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .date-chip .date-range{ display:none; } /* mobilde ikinci satırı gizle */
+  .date-chip .chev{ width:14px; height:14px; }
+
+  .pill#staffBtn{
+    height: 32px;
+    padding: 0 8px;
+    font-size: 12px;
+    max-width: 120px;                     /* uzun başlık taşmasın */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar .search{ width: 160px; }
+  .topbar .search input{
+    height: 32px;
+    padding-right: 32px;
+    font-size: 12px;
+  }
+  .topbar .search .magnifier{ right: 8px; width:16px; height:16px; }
+
+  /* ======================= TARİH (mini takvim) ======================= */
+  .center-pop{
+    position: fixed;                      /* sayfayı oynatmaz */
+    inset: 8px auto auto 50%;
+    transform: translateX(-50%);
+    width: min(92vw, 420px);
+    max-height: calc(100vh - 16px);
+    overflow: auto;
+    border-radius: 14px;
+    padding: 10px var(--miniPad) 12px;
+    z-index: 1100;
+    -webkit-overflow-scrolling: touch;
+  }
+  .calendar-head strong{ font-size: 14px; }
+  .calendar-grid .cell{ width: var(--miniCell); height: 42px; }
+
+  /* ======================= PERSONEL POPOVER ======================= */
+  .staff-pop{
+    position: fixed;                      /* sayfayı oynatmaz */
+    left: 50%; transform: translateX(-50%);
+    top: 56px;
+    width: min(92vw, 420px);
+    max-height: calc(100vh - 72px);
+    overflow: auto;
+    padding: 10px;
+    border-radius: 12px;
+    z-index: 1100;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* ======================= GÜN GÖRÜNÜMÜ ======================= */
+  .calendar{
+    margin: 12px;
+    height: calc(100vh - 56px - 60px - 24px); /* topbar ~56, bottom bar 60 */
+    min-height: 520px;
+    border-radius: 14px;
+  }
+
+  /* yalnız takvim bölümü yatay kayar */
+  #dayView { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  /* başlık şeridi (2 kişi görünür, fazlası sağa) */
+  .staff-row{
+    grid-template-columns: var(--timeW) repeat(2, var(--colW));
+    grid-auto-columns: var(--colW);
+    min-width: calc(var(--timeW) + (2 * var(--colW)));
+    height: 46px;
+  }
+  .staff-head{ padding: 0 8px; gap: 6px; }
+  .avatar{ width: 22px; height: 22px; font-size: 10px; }
+  .name{ font-size: 12px; }
+  .sub{ font-size: 10px; }
+
+  /* grid kolonları (2 görünür) */
+  .grid{
+    grid-template-columns: var(--timeW) repeat(2, var(--colW));
+    grid-auto-columns: var(--colW);
+    min-width: calc(var(--timeW) + (2 * var(--colW)));
+  }
+  .time-cell{ font-size: 10px; padding: 2px 6px; }
+  .booking{ border-radius: 9px; padding: 4px 6px; font-size: 11px; }
+
+  /* ======================= HAFTA GÖRÜNÜMÜ ======================= */
+  .week{ margin: 10px 12px 12px; border-radius: 14px; }
+  #weekView { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .wk-head{ grid-template-columns: 124px repeat(7, minmax(112px, 1fr)); }
+  .wk-grid{ grid-template-columns: 124px repeat(7, minmax(112px, 1fr)); }
+  .wk-staff{ padding: 8px 10px; }
+  .wk-day-btn{ padding: 6px 8px; }
+  .wk-day .date{ font-size: 13px; }
+  .wk-col-inner{ height: var(--wkRowH); }
+  .wk-chip{ font-size: 11px; padding: 4px 8px; }
+
+  /* ======================= BOTTOM BAR (rail) ======================= */
+  .rail{
+    position: fixed !important;
+    inset: auto 0 0 0 !important;         /* altta tam genişlik */
+    width: 100% !important;
+    height: 60px !important;
+    padding: 6px 8px !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    border-right: none !important;
+    border-top: 1px solid var(--rail-divider) !important;
+    z-index: 1000 !important;
+    backdrop-filter: saturate(1.2) blur(4px);
+  }
+  .rail__list{
+    width: 100% !important;
+    height: 100% !important;
+    flex-direction: row !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+  .rail__item{ width: auto !important; }
+  .rail__btn{
+    width: 40px !important; height: 40px !important;
+    border-radius: 12px !important;
+  }
+  .rail__btn[aria-current="page"]::before{ display:none !important; }
+  .rail__bottom{ display:none !important; }
+  .avatar-btn{ width: 38px !important; height: 38px !important; }
+
+  /* FAB alt bara çarpmasın */
+  .fab{ bottom: 86px; }
+}

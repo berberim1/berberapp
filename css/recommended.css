@@ -1,0 +1,145 @@
+/* ===============================
+   RECOMMENDED (Booksy-like Carousel)
+=================================*/
+.recommended-section {
+  margin: 4.5rem 0 3rem; /* Hero ile arasında boşluk */
+}
+
+/* Başlık kısmı */
+.recommended-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.recommended-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;      /* Daha kalın */
+  letter-spacing: -0.2px;
+  color: #1a1b1e;
+}
+
+/* Carousel viewport */
+.rec-viewport {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Track */
+.rec-track {
+  display: flex;
+  gap: 1rem;
+  padding: 0 .5rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+.rec-track::-webkit-scrollbar { display: none; }
+
+/* Kart */
+.rec-card {
+  min-width: 320px;
+  max-width: 320px;
+  border: 1px solid #e6e6e6;
+  border-radius: 16px;
+  background: var(--bg);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+:root[data-theme="dark"] .rec-card { border-color: #222; }
+
+.rec-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,.12);
+}
+
+/* Kart görseli */
+.rec-imgwrap { position: relative; }
+
+.rec-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+/* Kart üzerindeki badge */
+.rec-badge {
+  position: absolute;
+  top: .5rem;
+  right: .5rem;
+  background: rgba(0,0,0,.75);
+  color: #fff;
+  padding: .25rem .5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: .9rem;
+}
+
+/* Kart içeriği */
+.rec-info { padding: .75rem 1rem; }
+
+.rec-title {
+  margin: 0 0 .25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1f2937;
+}
+
+.rec-meta {
+  margin: 0;
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+.rec-promoted {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  margin-top: .35rem;
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+/* Scroll butonları */
+.scroll-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid #e6e6e6;
+  background: var(--bg);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08);
+  transition: background 0.3s, color 0.3s;
+}
+
+.scroll-btn:hover {
+  background: #111;
+  color: #fff;
+}
+
+:root[data-theme="dark"] .scroll-btn { border-color: #222; }
+
+.scroll-btn.left { left: -6px; }
+.scroll-btn.right { right: -6px; }
+.scroll-btn:disabled { opacity: .5; pointer-events: none; }
+
+/* ===============================
+   RESPONSIVE
+=================================*/
+@media (max-width: 640px) {
+  .rec-card {
+    min-width: 280px;
+    max-width: 280px;
+  }
+}

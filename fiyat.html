@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Fiyatlandırma | Arat</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+  :root{
+    --bg-1:#0f0f12; --bg-2:#14161a; --card:#171a20; --muted:#9aa3b2; --text:#e9eef7;
+    --brand-1:#8cf7e2; --brand-2:#ffb6c1; --brand-3:#7c8fff; --accent:#17d9c2;
+    --radius:22px; --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,Helvetica,sans-serif; color:var(--text);
+    background:linear-gradient(180deg,var(--bg-1),var(--bg-2));
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; overflow-x:hidden;
+  }
+  img{max-width:100%; display:block}
+  .container{width:min(1120px,92%); margin-inline:auto}
+
+  /* ============ NAVBAR (aynı tasarım) ============ */
+  .sticky-nav{
+    position:sticky; top:0; z-index:70;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 4vw;
+    background:rgba(16,18,22,.55);
+    backdrop-filter:saturate(140%) blur(12px);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    box-shadow:0 6px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .sticky-nav::after{
+    content:""; position:absolute; inset:0 0 auto 0; height:2px;
+    background:linear-gradient(90deg, var(--brand-1), var(--brand-3), var(--brand-2));
+    opacity:.35;
+  }
+  @supports(padding:max(0px)){
+    .sticky-nav{ padding-top:max(14px, env(safe-area-inset-top)); }
+  }
+  .sticky-nav.scrolled{box-shadow:0 6px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.05)}
+  .logo{font-weight:900; letter-spacing:.02em; color:#e6f7ff; text-decoration:none; font-size:18px}
+
+  /* masaüstünde satır; mobilde çekmece */
+  .nav-drawer{display:flex; align-items:center; gap:18px}
+  .nav-center{display:flex; gap:18px; align-items:center}
+  .nav-right{display:flex; align-items:center; gap:10px}
+
+  .nav-center a, .nav-right a{color:#dbe6ff; text-decoration:none; opacity:.9}
+  .nav-center a:hover, .nav-right a:hover{opacity:1}
+
+  .nav-btn{
+    background:transparent; color:#dbe6ff; border:1px solid rgba(255,255,255,.12);
+    border-radius:999px; padding:10px 16px; cursor:pointer; text-decoration:none; display:inline-flex; align-items:center;
+  }
+  .nav-btn:hover{border-color:rgba(255,255,255,.25)}
+  .list-btn{
+    display:inline-flex; padding:10px 16px; border-radius:999px;
+    background:linear-gradient(135deg,var(--brand-3),var(--brand-2)); color:#0a0d12; font-weight:700; text-decoration:none
+  }
+
+  /* hamburger */
+  .menu-toggle{
+    display:none; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.02); color:#dbe6ff; cursor:pointer;
+  }
+  .menu-toggle:active{transform:scale(.98)}
+
+  /* === Hamburger içindeki tüm öğeleri eşitle (butonlar aynı boy) === */
+  @media (max-width: 640px){
+    .menu-toggle{display:inline-flex}
+
+    .nav-drawer{
+      position:absolute; left:0; right:0; top:100%;
+      background:rgba(18,20,24,.88);
+      backdrop-filter:saturate(140%) blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      box-shadow:0 18px 28px rgba(0,0,0,.35);
+      display:block;
+      max-height:0; overflow:hidden;
+      opacity:0; transform:translateY(-6px);
+      transition:max-height .35s ease, opacity .3s ease, transform .3s ease;
+    }
+    .nav-drawer.open{max-height:420px; opacity:1; transform:none}
+
+    .nav-center, .nav-right{
+      display:flex; flex-direction:column; gap:10px; padding:12px 4vw;
+    }
+    .nav-drawer .nav-center a,
+    .nav-drawer .nav-right a,
+    .nav-drawer .nav-btn,
+    .nav-drawer .list-btn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:48px;
+      padding:0 16px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:15px;
+      line-height:1;
+      box-sizing:border-box;
+      text-align:center;
+    }
+    .nav-drawer .nav-center a:not(.list-btn),
+    .nav-drawer .nav-right a:not(.list-btn){
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.12);
+      color:#dbe6ff;
+      text-decoration:none;
+    }
+    .nav-drawer .list-btn{ border:1px solid transparent; }
+  }
+
+  /* ============ HERO (sayfanın geri kalanı) ============ */
+  .hero{
+    position:relative; overflow:hidden;
+    background:
+      radial-gradient(1200px 600px at 70% -10%, rgba(124,143,255,.18), transparent),
+      linear-gradient(180deg,#12151b,#0f1216);
+    padding:84px 0 40px;
+  }
+  .hero .grid{display:grid; grid-template-columns:1.05fr .95fr; gap:36px; align-items:center}
+  .hero h1{font-size:clamp(36px,6vw,64px); margin:0 0 14px; letter-spacing:-.02em}
+  .hero p{color:var(--muted); margin:0 0 22px}
+  .price-line{font-size:clamp(22px,3.2vw,36px); font-weight:900}
+  .price-line .num{color:#ffb6c1}
+  .hero-card{
+    height:420px; border-radius:26px; border:1px solid rgba(255,255,255,.08);
+    background:
+      radial-gradient(500px 260px at 50% 100%, rgba(23,217,194,.18), transparent),
+      linear-gradient(180deg,#191c22 0%,#0e1014 100%);
+    display:grid; place-items:center; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  }
+  .hero-bullets{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-top:22px}
+  .bullet{display:flex; gap:10px; align-items:center; color:#cfe2ff}
+  .bullet i{color:var(--accent)}
+
+  .cta-row{margin-top:24px; display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+  .cta{background:linear-gradient(135deg,var(--brand-3),var(--brand-2)); color:#0a0d12; font-weight:800; text-decoration:none; padding:14px 22px; border-radius:999px}
+  .ghost{color:#eaf0ff; border:1px solid rgba(255,255,255,.12); padding:14px 22px; border-radius:999px; text-decoration:none}
+
+  /* Cards ve diğer bölümler */
+  .section{padding:72px 0}
+  .card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:18px; box-shadow:var(--shadow)}
+  .add-users{display:grid; grid-template-columns:1.1fr .9fr; gap:32px; padding:26px}
+  .add-users h3{margin:0 0 8px}
+  .add-users p{color:var(--muted); margin:0 0 14px}
+  .feat-list{display:grid; gap:12px}
+  .feat{display:flex; align-items:flex-start; gap:10px; color:#cfe2ff}
+  .feat i{color:var(--accent); margin-top:3px}
+  .mock{height:220px; border-radius:14px; background:
+        linear-gradient(180deg, rgba(255,182,193,.24), transparent),
+        url('https://images.unsplash.com/photo-1544717305-996b815c338c?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;}
+  .mock.alt{background:
+        linear-gradient(180deg, rgba(124,143,255,.24), transparent),
+        url('https://images.unsplash.com/photo-1517836357463-d25dfeac3438?q=80&w=1200&auto=format&fit=crop') center/cover no-repeat;}
+
+  .boost{display:grid; grid-template-columns:.9fr 1.1fr; gap:36px; align-items:center}
+  .boost h3{margin:0 0 10px}
+  .boost p{color:var(--muted)}
+  .learn{display:inline-flex; padding:12px 18px; border-radius:10px; background:#0f1319; border:1px solid rgba(255,255,255,.12); text-decoration:none; color:#eef3ff; margin-top:10px}
+
+  .biz-pill-wrap{
+    background:linear-gradient(180deg, #0aa7a7, #24252b); border:1px solid rgba(255,255,255,.08);
+    border-radius:18px; padding:26px; color:#0a0d12;
+  }
+  .biz-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:18px; align-items:center}
+  .pills{display:flex; flex-wrap:wrap; gap:14px; justify-content:flex-end}
+  .pill{
+    display:flex; align-items:center; gap:10px; padding:14px 20px;
+    border:2px solid rgba(255,255,255,.6); border-radius:999px; color:#fff; text-decoration:none; font-weight:800;
+    background:rgba(255,255,255,.06)
+  }
+  .pill img{width:36px; height:36px; border-radius:999px; object-fit:cover; border:2px solid rgba(255,255,255,.7)}
+
+  .gradient-card{padding:60px 0 84px}
+  .gradient-card .container{
+    background:linear-gradient(135deg, rgba(140,247,226,.12), rgba(124,143,255,.10));
+    border:1px solid rgba(255,255,255,.08); border-radius:24px; text-align:center; padding:36px 22px
+  }
+
+  /* Modal */
+  .modal{position:fixed; inset:0; z-index:80; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.5); padding:20px}
+  .modal.open{display:flex}
+  .modal-card{width:min(720px,95vw); max-height:90vh; background:#121418; border:1px solid rgba(255,255,255,.08); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; position:relative}
+  .modal-header{display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#161920; border-bottom:1px solid rgba(255,255,255,.06)}
+  .modal-header h3{margin:0; font-size:18px}
+  .modal-close{background:transparent; border:0; color:#cfd8ff; font-size:20px; cursor:pointer}
+  .modal-body{padding:18px}
+  .biz-types{display:grid; grid-template-columns:repeat(2,1fr); gap:16px}
+  .biz-types a{display:flex; align-items:center; justify-content:center; text-decoration:none; color:#0b0e12; font-weight:800; padding:18px; border-radius:14px; background:linear-gradient(135deg,var(--brand-1),var(--brand-2))}
+  .biz-types a.alt{background:linear-gradient(135deg,var(--brand-3),var(--brand-2))}
+  .modal-actions{display:flex; justify-content:flex-end; gap:8px; padding:12px 16px; border-top:1px solid rgba(255,255,255,.06); background:#161920}
+
+  /* Reveal */
+  [data-animate]{opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease}
+  [data-animate].in{opacity:1; transform:none}
+
+  /* Responsive içerik */
+  @media (max-width: 1000px){
+    .hero .grid{grid-template-columns:1fr}
+    .add-users{grid-template-columns:1fr}
+    .boost{grid-template-columns:1fr}
+    .biz-grid{grid-template-columns:1fr}
+    .pills{justify-content:flex-start}
+  }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="sticky-nav">
+    <a class="logo" href="index.html">~arat</a>
+
+    <!-- hamburger (mobil) -->
+    <button class="menu-toggle" id="navToggle" aria-label="Menü">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- menü çekmece: masaüstünde satır, mobilde açılır -->
+    <div class="nav-drawer" id="navDrawer">
+      <div class="nav-center">
+        <a href="index.html" class="nav-btn">Ana Sayfa</a>
+        <button class="nav-btn" id="btnTypes">İşletme Türleri</button>
+        <!-- Aktif sayfa vurgusu -->
+        <a href="fiyat.html" class="nav-btn" style="border-color:rgba(255,255,255,.4)">Fiyatlandırma</a>
+      </div>
+      <div class="nav-right">
+        <a href="admin-register-login.html" class="list-btn">Ücretsiz Dene</a>
+        <a href="admin-register-login.html" class="nav-btn">Giriş Yap</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container grid" data-animate>
+      <div>
+        <h1>Her şey dahil <span style="opacity:.5">paket</span></h1>
+        <p class="price-line">Aylık <span class="num">₺999,9</span></p>
+        <p>Tek bir fiyatta; randevu, takvim, müşteri, ödeme ve pazarlama yönetimi. Gizli ücret yok, taahhüt yok.</p>
+        <div class="cta-row">
+          <a class="cta" href="admin-register-login.html">Hemen başla</a>
+          <a class="ghost" href="#icerik">Neler dahil?</a>
+        </div>
+        <div class="hero-bullets">
+          <div class="bullet"><i class="fa-regular fa-circle-check"></i> Tüm özellikler dahil</div>
+          <div class="bullet"><i class="fa-regular fa-circle-check"></i> Gizli/ek ücret yok</div>
+          <div class="bullet"><i class="fa-regular fa-circle-check"></i> Taahhüt yok</div>
+          <div class="bullet"><i class="fa-regular fa-circle-check"></i> İstediğin zaman iptal</div>
+        </div>
+      </div>
+      <div>
+        <div class="hero-card">
+          <i class="fa-solid fa-user-astronaut fa-4x" style="opacity:.2"></i>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Ek kullanıcılar -->
+  <section class="section" id="icerik">
+    <div class="container card add-users" data-animate>
+      <div>
+        <h3>Ek kullanıcı ekle</h3>
+        <p>İşletmen büyürken ek personel için ayrı hesaplar aç.</p>
+        <div class="feat-list">
+          <div class="feat"><i class="fa-regular fa-circle-check"></i> 7/24 çevrimiçi rezervasyon</div>
+          <div class="feat"><i class="fa-regular fa-circle-check"></i> Dahili pazarlama araçları</div>
+          <div class="feat"><i class="fa-regular fa-circle-check"></i> Müşteri ve takvim yönetimi</div>
+          <div class="feat"><i class="fa-regular fa-circle-check"></i> Detaylı istatistik ve raporlar</div>
+        </div>
+        <div class="cta-row" style="margin-top:18px">
+          <a href="admin-register-login.html" class="cta">Ücretsiz dene</a>
+        </div>
+      </div>
+      <div><div class="mock" aria-hidden="true"></div></div>
+    </div>
+  </section>
+
+  <!-- Boost -->
+  <section class="section">
+    <div class="container boost" data-animate>
+      <div><div class="mock alt" aria-hidden="true" style="height:260px"></div></div>
+      <div>
+        <h3>Arat ile daha görünür ol</h3>
+        <p>Daha fazla müşteri seni keşfetsin.</p>
+        <ul class="feat-list" style="margin:10px 0 0">
+          <li class="feat"><i class="fa-regular fa-circle-check"></i> Rezervasyonlarınızda artış sağlayın.</li>
+          <li class="feat"><i class="fa-regular fa-circle-check"></i> İptal oranlarında düşüş gözlemleyin.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- İşletme Türüne göre -->
+  <section class="section">
+    <div class="container biz-pill-wrap" data-animate>
+      <div class="biz-grid">
+        <div>
+          <h2 style="margin:0 0 8px;color:#fff">İşletmen için Arat</h2>
+          <p style="color:#e9fffa; opacity:.9; margin:0">Sadece ihtiyacın olanı seç: Kuaför veya Güzellik Salonu.</p>
+        </div>
+        <div class="pills">
+          <a class="pill" href="kuafor.html">
+            <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=300&auto=format&fit=crop" alt="">
+            <span>Kuaför</span>
+          </a>
+          <a class="pill" href="guzellik-salonu.html">
+            <img src="https://images.unsplash.com/photo-1511367461989-f85a21fda167?q=80&w=300&auto=format&fit=crop" alt="">
+            <span>Güzellik Salonu</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA footer -->
+  <section class="gradient-card">
+    <div class="container" data-animate>
+      <h2>Bugün başla</h2>
+      <p style="color:var(--muted);max-width:700px;margin:6px auto 16px">30 gün ücretsiz dene. Kart bilgisi gerekmez.</p>
+      <a href="admin-register-login.html" class="list-btn">Ücretsiz Başla</a>
+    </div>
+  </section>
+
+  <!-- İşletme Türleri Modal -->
+  <div class="modal" id="typesModal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="typesTitle">
+      <div class="modal-header">
+        <h3 id="typesTitle">İşletme Türünü Seç</h3>
+        <button class="modal-close" data-close="typesModal" aria-label="Kapat">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="biz-types">
+          <a href="kuafor.html">Kuaför</a>
+          <a href="guzellik-salonu.html" class="alt">Güzellik Salonu</a>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="nav-btn" data-close="typesModal">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  // Reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } })
+  },{ threshold: 0.15 });
+  document.querySelectorAll('[data-animate]').forEach(el=>io.observe(el));
+
+  // Navbar shadow
+  const nav = document.querySelector('.sticky-nav');
+  window.addEventListener('scroll',()=> nav?.classList.toggle('scrolled', window.scrollY > 6));
+
+  // Modal
+  const openModal = id => document.getElementById(id)?.classList.add('open');
+  const closeModal = id => document.getElementById(id)?.classList.remove('open');
+  document.getElementById('btnTypes')?.addEventListener('click',()=>openModal('typesModal'));
+  document.querySelectorAll('[data-close]').forEach(btn=>{
+    btn.addEventListener('click',()=> closeModal(btn.getAttribute('data-close')));
+  });
+  window.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.querySelectorAll('.modal.open').forEach(m=>m.classList.remove('open')); }});
+  window.addEventListener('click',e=>{ if(e.target.classList.contains('modal')) e.target.classList.remove('open'); });
+
+  // Hamburger
+  const navToggle = document.getElementById('navToggle');
+  const navDrawer = document.getElementById('navDrawer');
+  navToggle?.addEventListener('click', ()=> navDrawer.classList.toggle('open'));
+  window.addEventListener('click', (e)=>{
+    const insideNav = e.target.closest('.sticky-nav');
+    if(!insideNav && navDrawer?.classList.contains('open')) navDrawer.classList.remove('open');
+  });
+  window.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){ navDrawer?.classList.remove('open'); }
+  });
+  </script>
+</body>
+</html>

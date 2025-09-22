@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Personel • Çalışma Saatleri</title>
+  <link rel="stylesheet" href="css/staff.css">
+</head>
+<body class="has-rail">
+  <!-- Rail, bar-menu.html'den yüklenecek -->
+  <div id="rail-mount" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="page">
+      <!-- Sol kart: personel listesi -->
+      <aside class="staff-card">
+        <header>
+          <span>Personel</span>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <!-- Silme butonu -->
+            <button class="btn-icon" id="btnRemoveSmall" title="Personel Sil">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14"/>
+              </svg>
+            </button>
+            <!-- Ekleme butonu -->
+            <button class="btn-icon" id="btnAddSmall" title="Yeni Personel">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+        <ul class="staff-list" id="staffList"></ul>
+      </aside>
+
+      <!-- Sağ panel -->
+      <section class="panel">
+        <header>
+          <div class="panel-title" id="panelTitle">—</div>
+          <div style="display:flex; gap:8px;">
+            <!-- Dükkan saatleri: ayrı modal açan buton -->
+            <button class="btn" id="openBizHours">Dükkan Saatleri</button>
+            <a class="btn accent" id="showCalendarBtn" href="calendar.html">Takvimi Göster</a>
+          </div>
+        </header>
+
+        <!-- ÜST SEKME: Hizmetler / Çalışan Saatleri -->
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="services" aria-selected="true">Hizmetler</button>
+          <button class="tab" role="tab" data-tab="hours" aria-selected="false">Çalışan Saatleri</button>
+        </div>
+
+        <div class="panel-body">
+          <!-- HİZMETLER: Personel bazında atama -->
+          <div id="tab-services">
+            <!-- Başlık & Aksiyonlar -->
+            <div class="svc-bar" style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+              <div style="display:flex; flex-direction:column;">
+                <div style="font-weight:700;">Hizmet Atamaları • <span id="srvStaffName">—</span></div>
+                <div class="muted"><span id="srvAssignedCount">0</span> hizmet atanmış</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <label class="input-wrap" style="display:flex; gap:8px; align-items:center;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>
+                  </svg>
+                  <input id="srvSearch" class="input" type="search" placeholder="Hizmetlerde ara">
+                </label>
+                <select id="srvCatFilter" class="select" title="Kategori">
+                  <option value="">Tüm Kategoriler</option>
+                  <!-- JS ile kategori seçenekleri doldurulacak -->
+                </select>
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="checkbox" id="srvSelectAll">
+                  Tümünü Seç
+                </label>
+                <button class="btn" id="srvClear">Seçimleri Temizle</button>
+                <button class="btn primary" id="srvSave">Kaydet</button>
+              </div>
+            </div>
+
+            <!-- Liste -->
+            <div class="svc-wrap" style="margin-top:12px;">
+              <div id="srvEmpty" class="muted" style="display:none;">Henüz eklenmiş bir hizmet yok. Lütfen Ayarlar &gt; Hizmetler bölümünden hizmet ekleyin.</div>
+              <ul id="srvList" class="svc-list" aria-label="Hizmet listesi">
+                <!-- JS ile doldurulacak: her satırda checkbox + hizmet adı + (süre / fiyat) + kategori etiketi -->
+              </ul>
+            </div>
+
+            <!-- Alt çubuk -->
+            <div class="svc-foot" style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;">
+              <button class="btn" id="srvCancel">İptal</button>
+              <button class="btn primary" id="srvSaveBottom">Kaydet</button>
+            </div>
+          </div>
+
+          <!-- ÇALIŞAN SAATLERİ (personel başına) -->
+          <div id="tab-hours" hidden></div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Modal: Çalışan Saatlerini Düzenle -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modaltitle">
+      <header>
+        <span id="modaltitle">Çalışma Saatlerini Düzenle • <span id="staffName">—</span></span>
+        <button class="btn" id="closeModal">Kapat</button>
+      </header>
+      <div class="content">
+        <div class="grid" id="editGrid"></div>
+      </div>
+      <footer>
+        <button class="btn" id="cancelModal">İptal</button>
+        <button class="btn primary" id="saveModal">Kaydet</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Dükkan Saatlerini Düzenle (ayrı, başlıktaki butondan açılır) -->
+  <div class="modal-backdrop" id="bizModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bizTitle">
+      <header>
+        <span id="bizTitle">Dükkan Saatlerini Düzenle</span>
+        <button class="btn" id="bizClose">Kapat</button>
+      </header>
+      <div class="content">
+        <div class="grid" id="bizGrid"></div>
+      </div>
+      <footer>
+        <button class="btn" id="bizCancel">İptal</button>
+        <button class="btn primary" id="bizSave">Kaydet</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Yeni Personel (İsim + Pozisyon + Çalışma Saatleri) -->
+  <div class="modal-backdrop" id="addStaffModal">
+    <div class="modal modal-lg" role="dialog" aria-modal="true" aria-labelledby="addStaffTitle">
+      <!-- Üst bar -->
+      <div class="topbar">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button class="close-x" id="addStaffClose" title="Kapat">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 6 6 18M6 6l12 12"/>
+            </svg>
+          </button>
+          <div class="title" id="addStaffTitle">Yeni Personel Ekle</div>
+        </div>
+      </div>
+
+      <!-- İçerik -->
+      <div class="content">
+        <div class="addstaff-wrap">
+          <!-- SOL SÜTUN: Temel bilgiler -->
+          <div class="addstaff-left">
+            <div class="as-avatar">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M20 21a8 8 0 1 0-16 0"/>
+              </svg>
+            </div>
+
+            <div class="field">
+              <label for="asName"><b>İsim</b></label>
+              <input class="input" id="asName" placeholder="Ad Soyad" required/>
+            </div>
+
+            <div class="field">
+              <label for="asPos"><b>Pozisyon / Görev</b></label>
+              <select class="select" id="asPos">
+                <option value="Berber">Berber</option>
+                <option value="Stylist">Stylist</option>
+                <option value="Resepsiyonist">Resepsiyonist</option>
+                <option value="Yönetici">Yönetici</option>
+                <option value="Sahip">Sahip</option>
+                <option value="Stajyer">Stajyer</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+
+            <!-- İsteğe bağlı kısa not -->
+            <div class="field">
+              <label for="asDesc"><b>Not (isteğe bağlı)</b></label>
+              <textarea class="textarea" id="asDesc" placeholder="Kısa açıklama"></textarea>
+            </div>
+          </div>
+
+          <!-- SAĞ SÜTUN: Çalışma saatleri -->
+          <div class="addstaff-right">
+            <div class="pill-head" style="align-items:center;">
+              <div style="font-weight:700">Çalışma Saatleri</div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn" id="asAllOff" type="button" title="Tüm günleri kapat">Hepsini Kapat</button>
+                <button class="btn" id="asAllStd" type="button" title="Tüm günleri 09:00–18:00 aç">Hepsini 09–18 Aç</button>
+              </div>
+            </div>
+
+            <!-- JS ile 7 günün satırı burada üretilecek -->
+            <div class="grid" id="asHoursGrid" aria-label="Yeni personel çalışma saatleri"></div>
+
+            <!-- Küçük ipucu -->
+            <div class="muted" style="margin-top:8px">
+              Aç/kapat anahtarları ile günü aktif edin. Saatler 15 dakikalık adımlarla seçilir.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alt butonlar -->
+      <footer style="display:flex; justify-content:flex-end; gap:10px; padding:12px 16px; border-top:1px solid var(--line);">
+        <button class="btn" id="addStaffCancel">İptal</button>
+        <button class="btn primary" id="addStaffSave">Kaydet</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal: Personel Sil (çoklu seçim) -->
+  <div class="modal-backdrop" id="delStaffModal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delStaffTitle">
+      <header>
+        <span id="delStaffTitle">Personel Sil</span>
+        <button class="btn" id="delStaffClose">Kapat</button>
+      </header>
+      <div class="content">
+        <div class="muted" style="margin-bottom:10px">
+          Silinen personel geri alınamaz. <b>Sahip</b> kullanıcısı silinemez.
+        </div>
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <input type="checkbox" id="delSelectAll"> Tümünü Seç
+          </label>
+        </div>
+        <ul class="list" id="delStaffList" aria-label="Silinecek personel listesi"></ul>
+      </div>
+      <footer>
+        <button class="btn" id="delStaffCancel">İptal</button>
+        <button class="btn danger" id="delStaffConfirm" disabled>Seçilenleri Sil</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Profil/Business MODALI (rail ile uyumlu) -->
+  <div class="bm-overlay" id="bmOverlay"></div>
+  <div class="bm-modal" id="bmModal" aria-hidden="true">
+    <div class="bm-box" role="dialog" aria-modal="true" aria-labelledby="bmTitle">
+      <div class="bm-head">
+        <h3 id="bmTitle">Switch Business</h3>
+        <button class="bm-x" id="bmClose" title="Kapat">
+          <svg viewBox="0 0 24 24" fill="none" width="18" height="18"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="bm-body">
+        <div class="bm-search">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="bmQuery" type="text" placeholder="Search business..." />
+        </div>
+        <div class="bm-list" id="bmList">
+          <button class="bm-item" type="button">
+            <div class="left">
+              <span class="bm-dot" aria-hidden="true"></span>
+              <div>
+                <div style="font-weight:700">Abdullah Berber</div>
+                <div class="bm-meta">12, New York</div>
+              </div>
+            </div>
+            <div class="bm-status">• Currently using</div>
+          </button>
+        </div>
+      </div>
+      <div class="bm-foot">
+        <div class="bm-user">
+          <div class="avatar">A</div>
+          <div>
+            <div class="lbl">LOGGED AS</div>
+            <strong>Abdullah</strong>
+          </div>
+        </div>
+        <button class="bm-logout" id="bmLogout" type="button">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script type="module" src="js/staff.js?v=19"></script>
+</body>
+</html>

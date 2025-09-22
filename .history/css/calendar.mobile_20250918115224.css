@@ -1,0 +1,183 @@
+/* =============================
+📱 calendar.mobile.css (rev, tam sürüm)
+- Her kişi kolonu = ekranın (viewport) yarısı
+- İlk görünüşte 2 kişi; fazlası sağa kaydırma
+- Saat hücreleri mobilde daha uzun
+============================= */
+
+:root{
+  --border: var(--line);
+  --topbar-h: 56px;   /* JS ile dinamik güncelleniyor */
+  --cellH: 60px;      /* mobilde saat hücresi yüksekliği */
+}
+
+/**************
+ * ≤ 768px
+ **************/
+@media (max-width: 768px){
+
+  /* --- RAIL → Bottom Nav --- */
+  .rail{
+    position: fixed; inset: auto 0 0 0;
+    width: 100%; height: 64px; padding: 8px 10px;
+    display: flex; flex-direction: row; align-items: center; justify-content: space-around;
+    border-right: 0; border-top: 1px solid var(--rail-divider);
+    box-shadow: 0 -8px 22px rgba(15,17,21,.18); z-index: 1000;
+    background: var(--rail-bg);
+  }
+  .rail__list{ width:100%; flex-direction: row; justify-content: space-around; align-items:center; }
+  .rail__item{ flex: 1; }
+  .rail__bottom{ display:none; }
+  nav.rail .ico{ width:22px; height:22px; }
+  .rail__btn[aria-current="page"]::before{ display:none; }
+  .rail__btn[data-tip]::after{ display:none; }
+
+  /* İçerikten boşluk: rail altta */
+  .app{ padding-bottom: calc(70px + env(safe-area-inset-bottom)); }
+  .main{ padding-left: 0 !important; }
+
+  /* --- Topbar (sticky ve kompakt) --- */
+  .topbar{
+    position: sticky; top: 0; z-index: 900;
+    background: var(--panel); border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    display: grid; gap: 8px; padding: 8px 10px;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "date actions"
+      "view actions";
+  }
+  .date-nav{ grid-area: date; }
+  .view-select{ grid-area: view; }
+  .actions{ grid-area: actions; align-items:center; }
+  .actions .search{ display:none; }
+
+  .view-select .view-chip{
+    border-radius:999px; padding:8px 12px; font-weight:800;
+    border:1px solid var(--border); background:#fff;
+  }
+
+  /* --- Gün görünümü: header sticky, grid dikey scroll --- */
+  .calendar{
+    margin: 12px;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: min(
+      calc(100vh - var(--topbar-h,56px) - 24px - env(safe-area-inset-bottom)),
+      var(--calH, 9999px)
+    );
+    overflow-x: auto;       /* yatay scroll burada */
+    overflow-y: hidden;     /* dikey scroll sadece .grid’de */
+  }
+
+  /* header sticky kalsın */
+  .staff-row{
+    position: sticky; top: 0; z-index: 880;
+    background:#fcfdff;
+  }
+
+  /* Sadece içerik dikey kayar */
+  .grid{
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+
+  /* Sol zaman sütunu yatayda sabit kalsın */
+  .staff-row .time-head{
+    position: sticky; left: 0; z-index: 47; background: #fff;
+    box-shadow: 3px 0 0 0 var(--line);
+  }
+  .grid .time-col{
+    position: sticky; left: 0; z-index: 46; background: #fff;
+    box-shadow: 3px 0 0 0 var(--line);
+  }
+
+  /* ===========================
+     KOLON GENİŞLİK KURALLARI
+     - Saat sütunu: var(--timeW)
+     - Her personel: ekranın (viewport) yarısı
+     =========================== */
+
+  /* 2 kişi ekranda tam görünsün; fazlası yana kayar */
+  .staff-row,
+  .grid{
+    width: 100%;
+    grid-template-columns: var(--timeW) repeat(2, calc((100vw - var(--timeW)) / 2)) !important;
+    grid-auto-columns: calc((100vw - var(--timeW)) / 2) !important;
+    min-width: 0;
+  }
+
+  /* İç öğelerin sıkışmasını önle */
+  .staff-row > .staff-head,
+  .grid > .staff-col{
+    min-width: calc((100vw - var(--timeW)) / 2);
+  }
+
+  /* Saat hücresi mobilde biraz daha uzun olsun */
+  .time-cell, .hour-cell{ height: var(--cellH); }
+
+  .event, .reservation, .timeoff{
+    left:6px; right:6px;
+    padding:6px 8px; border-radius:8px; font-size:11px;
+  }
+
+  /* --- Hafta görünümü (daha kompakt) --- */
+  .week{ margin:10px; }
+  .wk-head{
+    position: sticky; top: 0; z-index: 870; background:#fff;
+    grid-template-columns: 120px repeat(7, minmax(120px,1fr));
+  }
+  .wk-grid{ grid-template-columns: 120px repeat(7, minmax(120px,1fr)); }
+  .wk-col-inner{ height: var(--wkRowH, 150px); }
+  .wk-day-btn{ padding: 6px 8px; }
+  .wk-staff{ gap: 8px; padding: 8px; }
+
+  /* Yan paneller tam ekran; z-index hiyerarşisi */
+  .drawer, .svc-panel, .notify{ width:100%; right:-100%; }
+  .notify{ z-index: 1100; } 
+  .drawer.open, .svc-panel.open, .notify.open{ right:0; }
+
+  /* Mini takvim (Tarih modalı) her şeyin üstünde */
+  .center-pop{
+    position: fixed;
+    z-index: 1300; /* notify (1100) ve staff-row (880) üstü */
+    width: calc(100vw - 24px);
+    top: 12px; left: 50%; transform: translateX(-50%);
+    padding: 12px var(--miniPad) 16px;
+    border-radius: 16px;
+  }
+  .calendar-grid{ gap: 8px; justify-items: center; }
+  .calendar-grid .cell{
+    width: 40px; height: 40px; border-radius: 12px; font-weight: 600;
+  }
+
+  /* Switch Business / Logout modal + overlay mobilde en önde */
+  .bm-overlay{ z-index: 1400; }
+  .bm-modal{ z-index: 1500; }
+}
+
+/**************
+ * ≤ 480px
+ **************/
+@media (max-width: 480px){
+  :root{ --wkRowH:130px; }
+  .topbar-inner{ padding:10px; }
+  .view-select .view-chip{ min-width:100px; }
+  .name{ font-size:12px; }
+  .sub, .muted{ font-size:11px; }
+  .time-cell, .hour-cell{ height: var(--cellH); }
+  .topbar .search{ display:none; }
+}
+
+/* 100dvh desteği varsa daha stabilize yükseklik */
+@supports (height: 100dvh){
+  @media (max-width: 768px){
+    .calendar{
+      height: min(
+        calc(100dvh - var(--topbar-h,56px) - 24px - env(safe-area-inset-bottom)),
+        var(--calH, 9999px)
+      );
+    }
+  }
+}

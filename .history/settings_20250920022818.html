@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ayarlar</title>
+
+  <!-- Ortak stiller -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/rail.css" />
+  <link rel="stylesheet" href="css/settings.css" />
+</head>
+<body>
+
+  <!-- ====== Üst bar ====== -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="logo" href="index.html">~arat</a>
+      <div class="spacer"></div>
+      <a id="viewProfileBtn" class="btn btn--ghost" href="profile.html">Profilimi Gör</a>
+      <button id="saveBtn" class="btn btn--success" disabled>Kaydet</button>
+    </div>
+  </header>
+
+  <!-- ====== Dinamik bar-menu mount noktası ====== -->
+  <div id="bar-menu"></div>
+
+  <!-- ====== SAYFA İÇERİĞİ ====== -->
+  <main class="page">
+    <h1 class="page__title">Ayarlar</h1>
+
+    <!-- İşletme Bilgileri -->
+    <section class="card">
+      <h2 class="card__title">İşletme Bilgileri</h2>
+
+      <div class="grid-3x2">
+        <label class="field">
+          <span>Salon adı (sitede görünen ad)</span>
+          <input id="bizName" class="input" placeholder="Örn. Barber Abdullah" />
+        </label>
+
+        <label class="field">
+          <span>Konum (Google Harita URL – opsiyonel)</span>
+          <input id="mapUrl" class="input" placeholder="https://maps.app.goo.gl/..." />
+        </label>
+
+        <label class="field">
+          <span>Bina No</span>
+          <input id="buildingNo" class="input" placeholder="Örn. 12" />
+        </label>
+
+        <label class="field">
+          <span>İl</span>
+          <select id="city" class="input"></select>
+        </label>
+
+        <label class="field">
+          <span>İlçe</span>
+          <select id="district" class="input" disabled></select>
+        </label>
+
+        <label class="field">
+          <span>Mahalle</span>
+          <select id="hood" class="input" disabled></select>
+        </label>
+      </div>
+    </section>
+
+    <!-- Hakkımızda & İletişim -->
+    <section class="card">
+      <h2 class="card__title">Hakkımızda & İletişim</h2>
+      <p class="muted">Profil sayfanızda görünecek kısa tanıtım metni ve müşterilerin sizi arayabileceği telefon numarası.</p>
+
+      <div class="grid-3x2">
+        <label class="field" style="grid-column: 1 / -1;">
+          <span>Hakkımızda</span>
+          <textarea id="aboutText" class="input" rows="5" maxlength="800" placeholder="Kendinizi ve dükkanınızı anlatın. Örn: 10 yıllık tecrübe, özel kesimler, steril ortam..."></textarea>
+          <div class="hint">En fazla 800 karakter.</div>
+        </label>
+
+        <label class="field">
+          <span>İletişim No</span>
+          <input id="contactPhone" class="input" inputmode="tel" placeholder="5xx xxx xx xx" />
+          <div class="hint">Müşteriler bu numaradan size ulaşır. 10 haneli telefon numaranızı giriniz.</div>
+        </label>
+
+        <div></div><div></div>
+      </div>
+    </section>
+
+    <!-- Dükkan Saatleri (buton + özet) -->
+    <section class="card" id="bizHoursCard">
+      <div class="card__titlebar">
+        <h2 class="card__title">Dükkan Saatleri</h2>
+        <div class="muted">Müşteriler bu saatler içinde randevu alabilir.</div>
+      </div>
+
+      <div class="grid" style="gap:10px;">
+        <div id="bhSummary" class="muted">
+          Hafta içi 10:00–19:00 • Cumartesi 10:00–19:00 • Pazar Kapalı
+        </div>
+        <div class="toolbar" style="display:flex;justify-content:flex-end">
+          <button id="openBhModal" class="btn primary" data-open="bh">Çalışma Saatlerini Ayarla</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Görseller -->
+    <section class="card">
+      <h2 class="card__title">Görseller</h2>
+      <p class="muted">Aşağıdaki üç alana <strong>birden fazla</strong> görsel ekleyebilirsiniz.</p>
+
+      <div class="grid3">
+        <!-- Kapak -->
+        <div class="uploader">
+          <div class="uploader__hd">
+            <div>
+              <strong>Kapak</strong>
+              <div class="muted">Anasayfa kartlarında görünen ana görseller</div>
+            </div>
+            <button class="btn" data-upload="cover">Yükle</button>
+          </div>
+          <input type="file" accept="image/*" hidden data-input="cover" multiple />
+          <div id="coverThumbs" class="thumbs"></div>
+        </div>
+
+        <!-- Salon & Profil -->
+        <div class="uploader">
+          <div class="uploader__hd">
+            <div>
+              <strong>Salon & Profil</strong>
+              <div class="muted">Dükkanınız, siz veya personeliniz</div>
+            </div>
+            <button class="btn" data-upload="salon">Yükle</button>
+          </div>
+          <input type="file" accept="image/*" hidden data-input="salon" multiple />
+          <div id="salonThumbs" class="thumbs"></div>
+        </div>
+
+        <!-- Servis & Model -->
+        <div class="uploader">
+          <div class="uploader__hd">
+            <div>
+              <strong>Servis & Model</strong>
+              <div class="muted">Hizmet örneği / saç modeli</div>
+            </div>
+            <button class="btn" data-upload="model">Yükle</button>
+          </div>
+          <input type="file" accept="image/*" hidden data-input="model" multiple />
+          <div id="modelThumbs" class="thumbs"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hizmetler -->
+    <section class="card">
+      <div class="card__titlebar">
+        <h2 class="card__title">Hizmetler & Ücretler</h2>
+        <button id="openPicker" class="btn">Hizmetleri Seç</button>
+      </div>
+
+      <div id="svcSuggest" class="svc-suggest"></div>
+
+      <div class="table table--compact">
+        <div class="thead">
+          <div class="th" style="width:36px">#</div>
+          <div class="th">Hizmet adı</div>
+          <div class="th" style="width:120px">Süre (dk)</div>
+          <div class="th" style="width:120px">Ücret (₺)</div>
+          <div class="th" style="width:160px">İşlem</div>
+        </div>
+        <div id="serviceList" class="tbody"></div>
+      </div>
+
+      <div class="toolbar">
+        <button id="addQuick" class="btn">+ Hızlı satır ekle</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====== HİZMET PICKER Modali ====== -->
+  <div id="picker" class="picker-ov" aria-hidden="true">
+    <div class="picker" role="dialog" aria-modal="true" aria-labelledby="pickerTtl">
+      <div class="picker__hd">
+        <div class="ttl" id="pickerTtl">Hizmet Kütüphanesi</div>
+        <button class="btn btn--ghost" data-close>✕</button>
+      </div>
+      <div class="picker__ct">
+        <input id="pickerSearch" class="input" placeholder="Hizmet ara..." />
+        <div id="pickedChips" class="chips"></div>
+        <div id="pickerList" class="pick-list"></div>
+      </div>
+      <div class="picker__ft">
+        <button id="savePicked" class="btn btn--primary">Seçilenleri Kaydet (0)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ÇALIŞMA SAATLERİ – ANA MODAL ====== -->
+  <div id="bhModal" class="picker-ov" aria-hidden="true" data-modal="bh">
+    <div class="picker" role="dialog" aria-modal="true" aria-labelledby="bhTtl">
+      <div class="picker__hd">
+        <div>
+          <div class="ttl" id="bhTtl">Çalışma Saatleriniz</div>
+          <div class="muted">Müşteriler ne zaman randevu alabilir?</div>
+        </div>
+        <button class="btn btn--ghost" data-close>✕</button>
+      </div>
+      <div class="picker__ct">
+        <div class="bh-list" id="bhList">
+          <!-- Satırlar – switch + gün adı + özet saat + chevron -->
+          <!-- data-day: mon,tue,wed,thu,fri,sat,sun -->
+          <div class="bh-item" data-day="sun">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Pazar</div>
+              <div class="bh-item__sub" data-summary>Kapalı</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="sun" aria-label="Pazar ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+
+          <div class="bh-item" data-day="mon">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" checked />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Pazartesi</div>
+              <div class="bh-item__sub" data-summary>10:00 – 19:00</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="mon" aria-label="Pazartesi ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+
+          <div class="bh-item" data-day="tue">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" checked />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Salı</div>
+              <div class="bh-item__sub" data-summary>10:00 – 19:00</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="tue" aria-label="Salı ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+
+          <div class="bh-item" data-day="wed">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" checked />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Çarşamba</div>
+              <div class="bh-item__sub" data-summary>10:00 – 19:00</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="wed" aria-label="Çarşamba ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+
+          <div class="bh-item" data-day="thu">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" checked />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Perşembe</div>
+              <div class="bh-item__sub" data-summary>10:00 – 19:00</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="thu" aria-label="Perşembe ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+
+          <div class="bh-item" data-day="fri">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" checked />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Cuma</div>
+              <div class="bh-item__sub" data-summary>10:00 – 19:00</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="fri" aria-label="Cuma ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+
+          <div class="bh-item" data-day="sat">
+            <label class="switch">
+              <input type="checkbox" data-toggle="open" />
+            </label>
+            <div class="bh-item__txt">
+              <div class="bh-item__day">Cumartesi</div>
+              <div class="bh-item__sub" data-summary>Kapalı</div>
+            </div>
+            <button class="bh-item__open btn btn--ghost" data-open-day="sat" aria-label="Cumartesi ayrıntılarını aç">
+              <svg class="ico" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="picker__ft" style="justify-content:space-between">
+        <button class="btn" data-open="bh-copy">Saatleri Kopyala</button>
+        <button class="btn primary" data-close>Devam</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== GÜN DETAYI MODALI ====== -->
+  <div id="bhDayModal" class="picker-ov" aria-hidden="true" data-modal="bh-day">
+    <div class="picker" role="dialog" aria-modal="true" aria-labelledby="bhDayTtl">
+      <div class="picker__hd">
+        <div>
+          <div class="ttl" id="bhDayTtl">Pazartesi</div>
+          <div class="muted">Genel çalışma saatlerini burada ayarlayın. (Tek günlük özel durumlar için takvimi kullanın.)</div>
+        </div>
+        <button class="btn btn--ghost" data-close>✕</button>
+      </div>
+      <div class="picker__ct">
+        <label class="field" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <span style="grid-column:1/-1">Açılış &amp; Kapanış</span>
+          <input class="input" type="time" value="10:00" data-day-open />
+          <input class="input" type="time" value="19:00" data-day-close />
+        </label>
+
+        <div class="grid" style="margin-top:12px;">
+          <button class="btn" type="button" data-add-break>+ Mola ekle</button>
+        </div>
+      </div>
+      <div class="picker__ft" style="justify-content:flex-end; gap:8px;">
+        <button class="btn" data-close>Vazgeç</button>
+        <button class="btn primary" data-save-day>Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== SAATLERİ KOPYALA MODALI ====== -->
+  <div id="bhCopyModal" class="picker-ov" aria-hidden="true" data-modal="bh-copy">
+    <div class="picker" role="dialog" aria-modal="true" aria-labelledby="bhCopyTtl">
+      <div class="picker__hd">
+        <div class="ttl" id="bhCopyTtl">Saatleri kopyala?</div>
+        <button class="btn btn--ghost" data-close>✕</button>
+      </div>
+      <div class="picker__ct">
+        <p class="muted" style="margin-top:0">Bir gün için belirlediğiniz çalışma saatlerini başka günlere uygulamak ister misiniz?</p>
+        <div class="pick-list" id="bhCopyList">
+          <!-- Checkbox listesi -->
+          <label class="pick item"><span>Pazar</span><input type="checkbox" value="sun"/></label>
+          <label class="pick item"><span>Pazartesi</span><input type="checkbox" value="mon"/></label>
+          <label class="pick item"><span>Salı</span><input type="checkbox" value="tue"/></label>
+          <label class="pick item"><span>Çarşamba</span><input type="checkbox" value="wed"/></label>
+          <label class="pick item"><span>Perşembe</span><input type="checkbox" value="thu"/></label>
+          <label class="pick item"><span>Cuma</span><input type="checkbox" value="fri"/></label>
+          <label class="pick item"><span>Cumartesi</span><input type="checkbox" value="sat"/></label>
+        </div>
+      </div>
+      <div class="picker__ft" style="justify-content:space-between">
+        <button class="btn" data-close>Hayır, teşekkürler</button>
+        <button class="btn primary" data-apply-copy>Devam</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== Toast ====== -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ====== Scriptler ====== -->
+
+  <!-- bar-menu mount: bar-menu.html içeriğini yükle -->
+  <script>
+    (async () => {
+      try {
+        const res = await fetch("bar-menu.html", { cache: "no-store" });
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+
+        const style = doc.querySelector("#bar-menu-css");
+        if (style && !document.getElementById("bar-menu-css")) {
+          document.head.appendChild(style.cloneNode(true));
+        }
+        const nav = doc.querySelector("nav.rail");
+        if (nav) document.getElementById("bar-menu").appendChild(nav.cloneNode(true));
+        const sbOverlay = doc.querySelector("#sbOverlay");
+        if (sbOverlay && !document.getElementById("sbOverlay")) {
+          document.body.appendChild(sbOverlay.cloneNode(true));
+        }
+      } catch (e) {
+        console.warn("bar-menu mount hatası:", e);
+      }
+    })();
+  </script>
+
+  <!-- rail davranışları (aktif menü, modal, logout) -->
+  <script type="module" src="js/rail-mount.js"></script>
+
+  <!-- Sayfa js (Firestore vs.) -->
+  <script type="module" src="js/settings.js?v=7"></script>
+
+</body>
+</html>
