@@ -11,6 +11,7 @@
     --bg:#f6f6f6; --card:#ffffff; --ink:#0b0b0b; --muted:#6b6b6b;
     --border:#e9e9e9; --shadow:0 10px 30px rgba(0,0,0,.08); --radius:16px;
     --btn:#111111; --btn-ink:#ffffff; --btn-muted:#1f1f1f;
+    --ok:#0aa36b; --ok-ink:#f6fff9; --primary:#19a0b6;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Inter",system-ui,-apple-system,Segoe UI,Roboto}
@@ -18,7 +19,7 @@
   img{display:block;max-width:100%}
   .container{max-width:1200px;margin:0 auto;padding:0 20px}
 
-  /* Topbar */
+  /* === ÜST NAV (birebir) === */
   .topbar{position:sticky;top:0;z-index:50;background:#0e0e0e;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18);transition:transform .25s ease}
   .topbar.hide{transform:translateY(-120%)}
   .topline{display:flex;align-items:center;gap:16px;padding:12px 20px}
@@ -32,7 +33,7 @@
   .catbar{display:flex;gap:22px;padding:10px 20px;border-top:1px solid #1d1d1d;border-bottom:1px solid #1d1d1d}
   .catbar a{color:#eaeaea;white-space:nowrap;font-weight:700;opacity:.95}
 
-  /* Sticky info bar */
+  /* Kısa nav (scroll’da görünen) */
   .top-info-bar{position:fixed;top:0;left:0;right:0;transform:translateY(-120%);background:#fff;border-bottom:1px solid var(--border);box-shadow:0 10px 24px rgba(0,0,0,.07);transition:transform .25s ease;z-index:60}
   .top-info-bar.show{transform:translateY(0)}
   .ti-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
@@ -41,13 +42,14 @@
   .ti-title{font-weight:700}
   .ti-sub{font-size:13px;color:var(--muted)}
   .ti-book{background:var(--btn);color:var(--btn-ink);border-radius:10px;padding:10px 14px;font-weight:700}
+  .ti-book:hover{background:var(--btn-muted)}
 
   /* Layout */
   .detail-wrap{max-width:1200px;margin:22px auto;display:grid;grid-template-columns:2fr 1fr;gap:20px;padding:0 20px}
   @media (max-width:980px){.detail-wrap{grid-template-columns:1fr}}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
 
-  /* Gallery */
+  /* Galeri */
   .gallery-card{overflow:hidden}
   .gallery{position:relative;border-radius:var(--radius);overflow:hidden}
   .gallery img{width:100%;height:520px;object-fit:cover}
@@ -71,7 +73,7 @@
   .service-row .meta{color:var(--muted);font-size:14px}
   .price{font-weight:800}
   .book{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
-  .book:hover{background:#1f1f1f}
+  .book:hover{background:var(--btn-muted)}
   .all-btn{display:inline-block;margin-top:8px;font-weight:800;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;cursor:pointer}
   .all-btn:hover{background:#f4f4f4}
 
@@ -101,40 +103,75 @@
   .week .row{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-top:1px solid #efefef}
   .note{margin-top:12px;border-left:3px solid #e5e5e5;padding:12px 12px;color:var(--muted);background:#fafafa;border-radius:8px}
 
-  /* ===== Ekibimiz ===== */
-  .staff-list{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-  @media (max-width:980px){.staff-list{grid-template-columns:repeat(2,1fr)}}
-  @media (max-width:640px){.staff-list{grid-template-columns:1fr}}
-  .staff-card{display:flex;align-items:center;gap:12px;border:1px solid var(--border);border-radius:12px;padding:12px}
-  .avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;flex:0 0 42px}
-  .staff-meta{line-height:1.25}
-  .staff-name{font-weight:800}
-  .staff-pos{font-size:12px;color:var(--muted)}
-  .staff-right{margin-left:auto;text-align:right}
-  .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:4px 8px;font-weight:700;font-size:12px}
-  .dot{width:8px;height:8px;border-radius:50%}
+  /* ==== Global modallar ==== */
+  .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:90}
+  .modal-ov.show{display:flex}
+  .modal{background:#fff;border-radius:16px;box-shadow:0 30px 60px rgba(0,0,0,.25);max-width:860px;width:92%}
+  .modal .hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}
+  .modal .hd .ttl{font-weight:800}
+  .modal .hd .x{background:#f1f1f1;border:0;border-radius:10px;padding:8px 10px;cursor:pointer}
+  .modal .ct{padding:18px;max-height:72vh;overflow:auto}
+  .btn-primary{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer}
+  .btn-primary:hover{background:var(--btn-muted)}
+  .footerbar{border-top:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+  .link{color:#111;cursor:pointer;text-decoration:underline}
+
+  .slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px;padding:4px 2px}
+  .slot{position:relative;border:1px solid var(--border);border-radius:14px;padding:12px 10px;background:#fff;text-align:center;font-weight:800;letter-spacing:.2px;cursor:pointer;transition:.15s;user-select:none}
+  .slot:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(0,0,0,.08)}
+  .slot:focus-visible{outline:3px solid #cde6ff;outline-offset:2px}
+  .slot.active{background:#111;color:#fff;border-color:#111;box-shadow:0 12px 22px rgba(0,0,0,.22)}
+  .slot[disabled]{opacity:.45;cursor:not-allowed;background:#fafafa}
+
+  .summary{border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:14px;background:#fafafa}
+  .cart-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #eee}
+  .cart-row:first-child{border-top:0}
+
+  .finput{border:1px solid var(--border);border-radius:12px;padding:12px;width:100%;margin:10px 0}
+  .svc-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--border)}
+  .svc-item .meta{color:var(--muted);font-size:13px}
+  .btn-mini{background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+  .btn-mini:hover{background:var(--btn-muted)}
 
   /* Auth modal */
-  .modal-overlay{position:fixed; inset:0; display:none; place-items:center;background:rgba(15, 23, 42, .45);backdrop-filter: blur(8px) saturate(1.1);padding:20px; z-index:9999;}
+  .modal-overlay{position:fixed; inset:0; display:none; place-items:center;
+    background:rgba(15, 23, 42, .45);backdrop-filter: blur(8px) saturate(1.1);-webkit-backdrop-filter: blur(8px) saturate(1.1);
+    padding:20px; z-index:9999;}
   .modal-overlay.active{ display:grid; }
-  .auth-box{width:min(520px, 92vw); background:linear-gradient(180deg,#ffffff, #f9fafb); color:#0f172a; border:1px solid rgba(2,6,23,.06);border-radius:20px; box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset; position:relative; overflow:hidden; animation:pop .2s ease-out;}
-  .modal-close{position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:12px; border:1px solid rgba(2,6,23,.08); background:#fff; display:grid; place-items:center; cursor:pointer; color:#0f172a; z-index:2;}
+  .auth-box{width:min(520px, 92vw); background:linear-gradient(180deg,#ffffff, #f9fafb); color:#0f172a; border:1px solid rgba(2,6,23,.06);
+    border-radius:20px; box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset; position:relative; overflow:hidden; animation:pop .2s ease-out;}
+  @keyframes pop{ from{ transform:translateY(8px) scale(.985); opacity:0 } to{ transform:none; opacity:1 } }
+  .modal-close{position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:12px; border:1px solid rgba(2,6,23,.08); background:#fff; display:grid; place-items:center; cursor:pointer; color:#0f172a; z-index:2; transition:all .15s ease;}
+  .modal-close:hover{ background:#f3f4f6; transform:translateY(-1px); }
   .auth-container{ padding:22px 20px 24px; display:grid; gap:16px; }
   .auth-tabs{ display:flex; gap:8px; justify-content:center; }
-  .auth-tab{padding:8px 14px; border-radius:999px; border:1px solid rgba(2,6,23,.08); background:#f8fafc; cursor:pointer; font-weight:700; color:#0f172a;}
+  .auth-tab{padding:8px 14px; border-radius:999px; border:1px solid rgba(2,6,23,.08); background:#f8fafc; cursor:pointer; font-weight:700; color:#0f172a; transition:all .15s ease;}
   .auth-tab.active{ background:#111827; color:#fff; border-color:#111827; }
   .auth-form{ display:none; max-width:380px; margin:0 auto; }
   .auth-form.active{ display:block; }
-  .auth-input{width:100%; padding:13px 14px; border:1px solid #e5e7eb; border-radius:12px; font-size:15px; background:#fff; margin-bottom:10px;}
-  .auth-btn{width:100%; padding:13px; border:none; border-radius:12px; font-weight:800; background:#0b6ef4; color:#fff; cursor:pointer;}
+  .auth-input{width:100%; padding:13px 14px; border:1px solid #e5e7eb; border-radius:12px; font-size:15px; background:#fff; transition:border .12s, box-shadow .12s; margin-bottom:10px;}
+  .auth-input:focus{ outline:none; border-color:#93c5fd; box-shadow:0 0 0 4px rgba(59,130,246,.15); }
+  .auth-btn{width:100%; padding:13px; border:none; border-radius:12px; font-weight:800; background:#0b6ef4; color:#fff; cursor:pointer; letter-spacing:.2px; transition:transform .06s ease, filter .15s ease;}
+  .auth-btn:active{ transform:translateY(1px); }
+  .auth-btn:disabled{ filter:grayscale(.2) opacity(.7); cursor:not-allowed; }
   .error{ color:#dc2626; font-size:13px; min-height:18px; margin:8px 0 4px; }
+  .oauth-stack{ display:grid; gap:10px; max-width:380px; margin:0 auto; }
+  .google-btn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:12px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; color:#0f172a; font-weight:700; cursor:pointer; transition:.15s;}
+  .google-btn:hover{ background:#f8fafc; border-color:#d1d5db; }
+  .google-btn img{ width:18px; height:18px }
 
-  .toast{position: fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-16px);background:#16a34a; color:#fff; padding:10px 14px; border-radius:999px; font:600 14px/1 'Inter', sans-serif; opacity:0; pointer-events:none;transition:transform .25s, opacity .25s, box-shadow .25s; z-index:3000; box-shadow:0 8px 20px rgba(0,0,0,.18);} 
+  .divider{ display:flex; align-items:center; gap:10px; color:#6b7280; font-size:12px; margin:6px auto 2px; }
+  .divider::before, .divider::after{ content:""; flex:1; height:1px; background:#e5e7eb; }
+
+  .toast{position: fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-16px);
+    background:#16a34a; color:#fff; padding:10px 14px; border-radius:999px; font:600 14px/1 'Inter', sans-serif; opacity:0; pointer-events:none;
+    transition:transform .25s, opacity .25s, box-shadow .25s; z-index:3000; box-shadow:0 8px 20px rgba(0,0,0,.18);}
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
 <body>
 
+<!-- === NAVBAR (birebir) === -->
 <header class="topbar" id="mainTopbar">
   <div class="topline container">
     <a class="logo" href="index.html">~arat</a>
@@ -157,6 +194,7 @@
   </nav>
 </header>
 
+<!-- Scroll’da görünen kısa bilgi barı -->
 <div id="topInfoBar" class="top-info-bar" aria-hidden="true">
   <div class="ti-inner">
     <div class="ti-left">
@@ -200,11 +238,6 @@
         <img src="img/berber7.jpeg" alt=""><img src="img/berber8.jpeg" alt=""><img src="img/berber9.jpeg" alt="">
       </div>
     </section>
-
-    <section class="section card" id="staffSection">
-      <h2>Ekibimiz</h2>
-      <div id="staffList" class="staff-list"></div>
-    </section>
   </div>
 
   <aside class="sidebar">
@@ -245,7 +278,7 @@
   </aside>
 </main>
 
-<!-- Modallar -->
+<!-- ====== RANDEVU MODALI ====== -->
 <div class="modal-ov" id="bookOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookTtl">
     <div class="hd">
@@ -267,13 +300,16 @@
   </div>
 </div>
 
+<!-- ====== SAAT MODALI ====== -->
 <div class="modal-ov" id="timeOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="timeTtl">
     <div class="hd">
       <div class="ttl" id="timeTtl"><span id="timeDateLabel">—</span> • Saat seç</div>
       <button class="x" onclick="closeOv('timeOv')">✕</button>
     </div>
-    <div class="ct"><div class="slots" id="timeSlotWrap"></div></div>
+    <div class="ct">
+      <div class="slots" id="timeSlotWrap"></div>
+    </div>
     <div class="footerbar">
       <div class="small" style="color:var(--muted)">08:00 – 23:00 arası 15 dk’lık aralıklar</div>
       <button class="btn-primary" id="timeDone">Seçimi uygula</button>
@@ -281,6 +317,7 @@
   </div>
 </div>
 
+<!-- ====== TÜM HİZMETLER MODALI ====== -->
 <div class="modal-ov" id="svcOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="svcTtl">
     <div class="hd"><div class="ttl" id="svcTtl">Tüm hizmetler</div><button class="x" onclick="closeOv('svcOv')">✕</button></div>
@@ -291,6 +328,7 @@
   </div>
 </div>
 
+<!-- ====== GÖZDEN GEÇİR & ONAYLA ====== -->
 <div class="modal-ov" id="reviewOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="revTtl">
     <div class="hd"><div class="ttl" id="revTtl">Gözden geçir ve onayla</div><button class="x" onclick="closeOv('reviewOv')">✕</button></div>
@@ -305,6 +343,7 @@
   </div>
 </div>
 
+<!-- ====== Auth Modal ====== -->
 <div id="authModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginRegisterTitle">
   <div class="auth-box">
     <button class="modal-close" aria-label="Kapat"><i class="fas fa-times" aria-hidden="true"></i></button>
@@ -312,6 +351,12 @@
       <div class="auth-tabs">
         <button class="auth-tab active" data-tab="login">Giriş Yap</button>
         <button class="auth-tab" data-tab="signup">Kayıt Ol</button>
+      </div>
+      <div class="oauth-stack">
+        <button type="button" class="google-btn" id="googleSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" aria-hidden="true"> Google ile devam et
+        </button>
+        <div class="divider">veya e-posta ile</div>
       </div>
       <form id="loginForm" class="auth-form active" data-form="login">
         <h2>Giriş Yap</h2>
@@ -332,166 +377,26 @@
   </div>
 </div>
 
+<!-- Toast -->
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
-<!-- ========= UI ETKİLEŞİMLER (non-module) ========= -->
-<script>
-  // Global helpers – isim ÇATIŞMASI OLMASIN diye window.* ve farklı isimler
-  window.TL = window.TL || (v => '₺' + Number(v||0).toLocaleString('tr-TR') + (Number(v)>=1?'+':''));
-  window.showOv   = id => document.getElementById(id)?.classList.add('show');
-  window.closeOv  = id => document.getElementById(id)?.classList.remove('show');
-  const padZ = n => n.toString().padStart(2,'0');
-  const MONTHS_TR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-  const fmtDateZ = d => `${padZ(d.getDate())} ${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}`;
-  window.showToast = function(msg){
-    const wrap=document.getElementById('toastWrap'); if(!wrap) return;
-    const t=document.createElement('div'); t.className='toast'; t.textContent=msg; wrap.appendChild(t);
-    requestAnimationFrame(()=>t.classList.add('show'));
-    setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(6px)';},2200);
-    setTimeout(()=>wrap.removeChild(t),2600);
-  };
-
-  // Slider
-  (function(){
-    const slides=[...document.querySelectorAll('[data-slide]')];
-    const dots=[...document.querySelectorAll('.dotbar .dot')];
-    const btn=document.getElementById('nextSlide');
-    if(!slides.length||!btn) return;
-    let i=0; const show=n=>{slides.forEach((im,k)=>im.style.display=(k===n?'block':'none'));dots.forEach((d,k)=>d.classList.toggle('active',k===n));};
-    btn.addEventListener('click',()=>{i=(i+1)%slides.length;show(i);}); show(0);
-  })();
-
-  // Scroll bar
-  (function(){
-    const bar=document.getElementById('topInfoBar');
-    const topbar=document.getElementById('mainTopbar');
-    const sentinel=document.querySelector('[data-gallery-sentinel]');
-    if(!bar||!sentinel||!topbar) return;
-    const io=new IntersectionObserver((entries)=>entries.forEach(e=>{
-      if(e.isIntersecting){bar.classList.remove('show');bar.setAttribute('aria-hidden','true');topbar.classList.remove('hide');}
-      else{bar.classList.add('show');bar.setAttribute('aria-hidden','false');topbar.classList.add('hide');}
-    }),{rootMargin:'-80px 0px 0px 0px',threshold:0.01});
-    io.observe(sentinel);
-  })();
-
-  // Haftayı gizle/göster
-  (function(){
-    const toggle=document.getElementById('toggleWeek');
-    const block=document.getElementById('weekBlock');
-    const tText=document.getElementById('toggleText');
-    if(!toggle||!block) return;
-    toggle.addEventListener('click',(e)=>{
-      e.preventDefault();
-      const open=block.classList.toggle('show');
-      block.setAttribute('aria-hidden', String(!open));
-      tText.textContent = open ? 'Gizle' : 'Tüm haftayı göster';
-    });
-  })();
-
-  // Booking saatleri
-  let selectedDate=new Date(); window.selectedTime='08:00';
-  const isToday=d=>{const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate();};
-  const toTimeStr=m=>`${padZ(Math.floor(m/60))}:${padZ(m%60)}`;
-  function generateTimes(startHour=8,endHour=23,stepMin=15){const times=[]; for(let m=startHour*60;m<=endHour*60-stepMin;m+=stepMin) times.push(toTimeStr(m)); return times;}
-  const timeSlotWrap=document.getElementById('timeSlotWrap');
-  function renderTimeSlots(){
-    if(!timeSlotWrap) return;
-    const allTimes=generateTimes(8,23,15); timeSlotWrap.innerHTML='';
-    const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
-    allTimes.forEach(t=>{
-      const b=document.createElement('button'); b.type='button'; b.className='slot'+(t===window.selectedTime?' active':''); b.textContent=t;
-      if(isToday(selectedDate)){ const [hh,mm]=t.split(':').map(Number); const m=hh*60+mm; if(m<=nowMin) b.disabled=true; }
-      b.onclick=()=>{ if(b.disabled) return; window.selectedTime=t; timeSlotWrap.querySelectorAll('.slot').forEach(s=>s.classList.remove('active')); b.classList.add('active'); };
-      timeSlotWrap.appendChild(b);
-    });
-    const first=timeSlotWrap.querySelector('.slot:not([disabled])'); if(first) first.focus();
-  }
-  document.getElementById('openTime')?.addEventListener('click',()=>{renderTimeSlots(); document.getElementById('timeDateLabel').textContent=fmtDateZ(selectedDate); showOv('timeOv');});
-  document.getElementById('timeDone')?.addEventListener('click',()=>{ closeOv('timeOv'); const ct=document.getElementById('chosenTime'); if(ct) ct.textContent='• '+window.selectedTime; });
-
-  // Sepet
-  window.cart = window.cart || [];
-  window.renderCart=function(){
-    const box=document.getElementById('cartBox'); if(!box) return;
-    if(window.cart.length===0){ box.innerHTML='<div class="muted">Sepet boş. Bir hizmet seçin.</div>'; const tot=document.getElementById('cartTotal'); if(tot) tot.textContent='₺0'; return; }
-    box.innerHTML=window.cart.map(it=>`<div class="cart-row"><div><strong>${it.name}</strong><div class="small">${it.duration||it.min||30}dk</div></div><div>${window.TL(it.price||0)}</div></div>`).join('');
-    const tot=document.getElementById('cartTotal'); if(tot) tot.textContent = window.TL(window.cart.reduce((s,i)=>s+Number(i.price||0),0));
-  };
-  document.getElementById('openAdd')?.addEventListener('click',()=>showOv('svcOv'));
-  document.getElementById('goReview')?.addEventListener('click',()=>{
-    const rev=document.getElementById('reviewBody'); if(!rev) return;
-    const total=window.cart.reduce((s,i)=>s+Number(i.price||0),0);
-    const totalMin=window.cart.reduce((m,i)=>m+(i.duration||i.min||30),0);
-    document.getElementById('bookDateLabel').textContent=fmtDateZ(selectedDate);
-    rev.innerHTML=`<div style="text-align:center;font-weight:800">${fmtDateZ(selectedDate)}<br><span class="muted" style="font-weight:700">${window.selectedTime} • ${totalMin}dk toplam</span><br><span class="small" id="revBizName"></span></div>
-      ${window.cart.map(i=>`<div style="display:flex;justify-content:space-between;font-weight:700;padding:8px 0;border-top:1px solid #eee"><span>${i.name}<br><span class="small">${i.duration||i.min||30}dk</span></span><span>${window.TL(i.price||0)}</span></div>`).join('')}
-      <div style="display:flex;justify-content:space-between;font-weight:800;padding-top:10px;border-top:1px solid #eee"><span>Toplam</span><span>${window.TL(total)}</span></div>`;
-    document.getElementById('reviewTotal').textContent=window.TL(total);
-    document.getElementById('revBizName').textContent=document.getElementById('bizName').textContent||'';
-    showOv('reviewOv');
-  });
-  function persistBookingAndGo(){
-    const name=(document.getElementById('bizName')?.textContent||'İşletme').trim();
-    const total = window.cart.reduce((s,i)=>s+Number(i.price||0),0);
-    const totalMin = window.cart.reduce((m,i)=>m+(Number(i.duration||i.min||30)),0);
-    const [hh,mm] = (window.selectedTime||'08:00').split(':').map(Number);
-    const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), hh||8, mm||0, 0, 0);
-    const end   = new Date(start.getTime()+totalMin*60000);
-    const booking = { id: 'bk_' + Date.now(), businessName: name, services: window.cart.slice(), total, startISO: start.toISOString(), endISO: end.toISOString(), createdAt: Date.now() };
-    const pushToKey = (key)=>{ try{ const arr = JSON.parse(localStorage.getItem(key) || '[]'); arr.push(booking); localStorage.setItem(key, JSON.stringify(arr)); }catch(_){} };
-    pushToKey('arat_calendar_events'); pushToKey('aratCalendar');
-    ['bookOv','svcOv','reviewOv','timeOv'].forEach(id=>{document.getElementById(id)?.classList.remove('show');});
-    location.href='calendar.html#my';
-  }
-  document.getElementById('confirmBook')?.addEventListener('click', persistBookingAndGo);
-
-  // Auth modal (isteğe bağlı)
-  (function(){
-    const overlay=document.getElementById("authModal"); if(!overlay) return;
-    document.querySelectorAll(".open-auth").forEach(el=> el.addEventListener("click",(e)=>{e.preventDefault(); overlay.classList.add("active");}));
-    overlay.querySelector(".modal-close").addEventListener("click", ()=> overlay.classList.remove("active"));
-    overlay.addEventListener("click",(e)=>{ if(e.target===overlay) overlay.classList.remove("active"); });
-    document.querySelectorAll(".auth-tab").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
-        const tab=btn.dataset.tab;
-        document.querySelectorAll(".auth-tab").forEach(b=>b.classList.toggle("active", b===btn));
-        document.querySelectorAll(".auth-form").forEach(f=>f.classList.toggle("active", f.dataset.form===tab));
-      });
-    });
-  })();
-
-  // “Randevu al” butonları
-  window.bindOpenBookButtons=function(){
-    document.querySelectorAll('.open-book').forEach(b=>{
-      b.addEventListener('click',()=>{
-        const svc={name:b.dataset.name,price:Number(b.dataset.price||0),duration:Number(b.dataset.duration||b.dataset.min||0)};
-        window.cart=[svc]; window.renderCart();
-        const ct=document.getElementById('chosenTime'); if(ct && window.selectedTime) ct.textContent='• '+window.selectedTime;
-        window.showOv('bookOv');
-      });
-    });
-  };
-
-  // Güvenli bağlama (elem varsa)
-  document.getElementById('btnOpenBook')?.addEventListener('click', ()=> window.showOv('bookOv'));
-  document.getElementById('stickyBook')?.addEventListener('click', (e)=>{ e.preventDefault(); window.showOv('bookOv'); });
-</script>
-
-<!-- ========= Firestore’dan GERÇEK VERİ (module) ========= -->
 <script type="module">
   import { db } from "./js/firebase.js";
-  import { doc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+  import {
+    doc, onSnapshot, collection, query, onSnapshot as watchCol
+  } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
   const $ = s => document.querySelector(s);
-  const TLx = (window.TL) ? window.TL : (v => '₺' + Number(v||0).toLocaleString('tr-TR') + (Number(v)>=1?'+':''));
-  const escapeHTML = (s="") => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-  const padM = n => n.toString().padStart(2,'0'); // module içi benzersiz isim
+  const escapeHTML = (s="") => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const TL = v => '₺' + Number(v||0).toLocaleString('tr-TR') + (Number(v)>=1?'+':'');
+  const pad = n => n.toString().padStart(2,'0');
   const TR_DAYS = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 
+  /* ---- UI yardımcıları (mevcut fonksiyonlarınızı kullanıyoruz) ---- */
   function setImages(imgs={}){
     const pick = v => Array.isArray(v) ? v[0] : v;
-    const cover = pick(imgs.cover);
+    const cover = pick(imgs.cover);   // dizi ya da string olabilir
     const salon = pick(imgs.salon);
     const model = pick(imgs.model);
     if(cover) $("#gal1").src = cover;
@@ -512,7 +417,6 @@
 
   function renderServices(list=[]){
     const box=$("#svcRows");
-    if(!box) return;
     if(!list.length){ box.innerHTML='<div class="muted">Henüz hizmet eklenmemiş.</div>'; return; }
     const first=list.slice(0,3);
     box.innerHTML = first.map(s=>`
@@ -521,27 +425,27 @@
           <div class="name">${escapeHTML(s.name||"Hizmet")}</div>
           <div class="meta">${escapeHTML(String(s.min ?? s.duration ?? 30))}dk</div>
         </div>
-        <div class="price">${TLx(s.price ?? 0)}</div>
+        <div class="price">${TL(s.price ?? 0)}</div>
         <button class="book open-book"
           data-name="${escapeHTML(s.name||'Hizmet')}"
           data-price="${Number(s.price||0)}"
           data-duration="${Number(s.min ?? s.duration ?? 30)}">Randevu al</button>
       </div>`).join("");
 
+    // “Tüm hizmetler” modalı için
     const container=$("#svcList"), search=$("#svcSearch");
     const paint=(q="")=>{
       const f=list.filter(s=>s.name?.toLowerCase().includes(q.toLowerCase()));
       container.innerHTML=f.map(s=>`
         <div class="svc-item">
           <div><div>${escapeHTML(s.name||"Hizmet")}</div><div class="meta">${escapeHTML(String(s.min ?? s.duration ?? 30))}dk</div></div>
-          <div style="font-weight:800">${TLx(s.price ?? 0)}</div>
+          <div style="font-weight:800">${TL(s.price ?? 0)}</div>
           <button class="btn-mini" data-add="${escapeHTML(s.name||'Hizmet')}">Ekle</button>
         </div>`).join("");
       container.querySelectorAll('[data-add]').forEach(btn=>{
         btn.onclick=()=>{ const nm=btn.getAttribute('data-add');
           const svc=list.find(x=>x.name===nm); window.cart = (window.cart||[]).concat({...svc});
-          document.getElementById('svcOv')?.classList.remove('show');
-          document.getElementById('bookOv')?.classList.add('show');
+          document.getElementById('svcOv').classList.remove('show'); document.getElementById('bookOv').classList.add('show');
           (window.renderCart||(()=>{}))();
         };
       });
@@ -549,11 +453,15 @@
     search?.addEventListener('input', e=>paint(e.target.value));
     paint();
 
-    document.getElementById('openAllServices')?.addEventListener('click', ()=>{ paint(''); document.getElementById('svcOv')?.classList.add('show'); });
+    // “Tüm hizmetler” düğmesi
+    $("#openAllServices").onclick=()=>{ paint(''); document.getElementById('svcOv').classList.add('show'); };
+
+    // Sayfadaki “Randevu al” butonlarını sepete bağla (mevcut fonksiyonlarınızı kullanır)
     (window.bindOpenBookButtons||(()=>{}))();
   }
 
-  const toHM = m => `${padM(Math.floor((m||0)/60))}:${padM((m||0)%60)}`;
+  // defaultHours (0..6 -> {open, ranges:[{startMin,endMin}]}) → normalize
+  const toHM = m => `${pad(Math.floor((m||0)/60))}:${pad((m||0)%60)}`;
   function fromDefaultHours(h={}) {
     const out={};
     for(let i=0;i<7;i++){
@@ -566,7 +474,9 @@
   function renderHours(hours){
     const weekEl=$("#weekBlock"), todayEl=$("#todayTimes"), note=$("#hoursNote");
     let norm=null;
+    // defaultHours yapısı mı?
     if(hours && (hours[0]?.ranges || hours["0"]?.ranges)) norm = fromDefaultHours(hours);
+    // başka bir custom yapıysa (eski onb yapınız), “Kapalı” gösterelim:
     if(!norm){ note.style.display="block"; todayEl.textContent="—"; weekEl.innerHTML=""; return; }
     note.style.display="none";
     const t=new Date().getDay(); todayEl.textContent = norm[t]?.length ? norm[t].join(" • ") : "Kapalı";
@@ -581,74 +491,73 @@
     }
   }
 
-  const fmtPhoneTR = (p="") => { const n=(p||"").replace(/\D/g,""); const nat=n.startsWith("90")?n.slice(2):n.slice(-10); return nat.length===10?`(${nat.slice(0,3)}) ${nat.slice(3,6)}-${nat.slice(6,8)}-${nat.slice(8)}`:"-"; };
-  function initialsOf(name=""){ return name.trim().split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||"").join("") || "•"; }
-  function renderStaff(list=[]){
-    const wrap = document.getElementById('staffList');
-    if(!wrap) return;
-    if(!list.length){ wrap.innerHTML = '<div class="muted">Henüz çalışan eklenmemiş.</div>'; return; }
-    wrap.innerHTML = list.map(p=>{
-      const color = p.color || "#111827";
-      const phone = p.phoneE164 || p.phone || "";
-      const pos   = p.position || (p.role==="admin" ? "İşletme Sahibi" : "Personel");
-      const active = p.active!==false;
-      const ini = p.initials || initialsOf(p.name||"");
-      return `
-        <div class="staff-card" title="${escapeHTML(p.name||'')}">
-          <div class="avatar" style="background:${color}">${escapeHTML(ini)}</div>
-          <div class="staff-meta">
-            <div class="staff-name">${escapeHTML(p.name||"—")}</div>
-            <div class="staff-pos">${escapeHTML(pos)}</div>
-          </div>
-          <div class="staff-right">
-            <div class="badge"><span class="dot" style="background:${active?'#22c55e':'#9ca3af'}"></span>${active?'Aktif':'Pasif'}</div>
-            <div style="margin-top:6px;font-weight:700">${phone ? `<a href="tel:${phone}">${escapeHTML(fmtPhoneTR(phone))}</a>` : '-'}</div>
-          </div>
-        </div>`;
-    }).join("");
-  }
-
+  /* ------- GERÇEK VERİ: businesses/<ownerId> ------- */
   const params = new URLSearchParams(location.search);
+  // URL'de ?uid=ownerId (ör: profile.html?uid=63DMIR... ) bekliyoruz
   const OWNER_ID = params.get("uid") || localStorage.getItem("arat_owner_id") || "";
-  if(!OWNER_ID){ window.showToast?.("Geçersiz bağlantı: uid yok"); }
 
-  let _ownerAsStaff=null; let _staffFromCol=[];
-  function updateStaffUI(){ const all=[]; if(_ownerAsStaff) all.push(_ownerAsStaff); if(_staffFromCol?.length) all.push(..._staffFromCol); renderStaff(all); }
+  async function loadBusinessRealtime(ownerId){
+    if(!ownerId){ console.warn("ownerId yok"); return; }
 
-  function loadBusinessRealtime(ownerId){
-    if(!ownerId) return;
+    // İşletme dokümanı
     const ref = doc(db, "businesses", ownerId);
     onSnapshot(ref, (snap)=>{
-      if(!snap.exists()) return;
+      if(!snap.exists()){ console.warn("İşletme bulunamadı"); return; }
       const d = snap.data()||{};
+
+      // İsim / başlık
       const name = d.business?.name || d.name || "İşletmeniz";
       $("#bizName").textContent = name; $("#tiTitle").textContent = name; $("#infoName").textContent = name; document.title = `${name} – Arat`;
+
+      // Hakkımızda
       $("#aboutText").textContent = (d.business?.about || d.about || "—").trim() || "—";
+
+      // Telefon
       const phoneRaw = d.owner?.phoneE164 || d.phoneE164 || d.owner?.phone || d.phone || "";
-      document.getElementById('phoneText').textContent = phoneRaw ? fmtPhoneTR(phoneRaw) : "-";
-      document.getElementById('callBtn').setAttribute("href", phoneRaw ? `tel:${phoneRaw}` : "#");
+      const fmtPhoneTR = (p="") => { const n=(p||"").replace(/\D/g,""); const nat=n.startsWith("90")?n.slice(2):n.slice(-10); return nat.length===10?`(${nat.slice(0,3)}) ${nat.slice(3,6)}-${nat.slice(6,8)}-${nat.slice(8)}`:"-"; };
+      $("#phoneText").textContent = phoneRaw ? fmtPhoneTR(phoneRaw) : "-";
+      $("#callBtn").setAttribute("href", phoneRaw ? `tel:${phoneRaw}` : "#");
+
+      // Adres
       const loc = d.businessLocation || d.business?.location || {};
-      renderAddress({ province: loc.province, district: loc.district, neighborhood: loc.neighborhood, street: loc.street, building: loc.building });
+      renderAddress({
+        province: loc.province, district: loc.district,
+        neighborhood: loc.neighborhood, street: loc.street, building: loc.building
+      });
+
+      // Görseller
       setImages(d.images||{});
-      const services = Array.isArray(d.services) ? d.services : Array.isArray(d.catalog?.services) ? d.catalog.services : [];
+
+      // Hizmetler (top-level services tercih)
+      const services = Array.isArray(d.services) ? d.services
+                     : Array.isArray(d.catalog?.services) ? d.catalog.services
+                     : [];
       renderServices(services);
+
+      // Çalışma saatleri (defaultHours)
       renderHours(d.defaultHours || d.business?.hours || null);
-      const pics=[].concat(d.images?.cover||[], d.images?.salon||[], d.images?.model||[]).filter(Boolean).slice(0,5);
-      if(pics.length){ document.getElementById('worksGrid').innerHTML=pics.map(u=>`<img src="${u}" alt="">`).join(""); }
-      const ownerName = d.owner?.name || d.business?.ownerName || d.name || "Yönetici";
-      const ownerPhone = d.owner?.phoneE164 || d.phoneE164 || "";
-      const brandColor = d.color || "#7c3aed";
-      _ownerAsStaff = { id: "owner", role: "admin", name: ownerName, phoneE164: ownerPhone, position: "İşletme Sahibi", color: brandColor, initials: ownerName ? ownerName.trim().split(/\s+/).map(s=>s[0]).slice(0,2).join('').toUpperCase() : '•', active: true };
-      updateStaffUI();
+
+      // Çalışmalar grid’i: resimler varsa güncelle
+      const pics=[].concat(d.images?.cover||[], d.images?.salon||[], d.images?.model||[])
+                   .filter(Boolean).slice(0,5);
+      if(pics.length){ $("#worksGrid").innerHTML=pics.map(u=>`<img src="${u}" alt="">`).join(""); }
     });
 
+    // (Opsiyonel) Personel anlık dinleme örneği
     const staffQ = query(collection(db,"businesses", ownerId, "staff"));
-    onSnapshot(staffQ, (qs)=>{ _staffFromCol = qs.docs.map(x=>({id:x.id, ...x.data()})); updateStaffUI(); });
+    watchCol(staffQ, (qs)=>{
+      const staff = qs.docs.map(x=>({id:x.id, ...x.data()}));
+      // İstediğiniz yerde staff bilgisini kullanabilirsiniz:
+      window._aratStaff = staff;
+      // Örn: console.log("staff", staff);
+    });
   }
 
   loadBusinessRealtime(OWNER_ID);
 </script>
 
+
+<!-- Firebase auth akışı + UI güncelle -->
 <script type="module" src="js/auth.js"></script>
 </body>
 </html>

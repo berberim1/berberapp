@@ -1,4 +1,4 @@
-// js/firebase.js  (v5.1 — App Check kapalı, doğru Storage bucket, emulator opsiyonları korunuyor)
+// js/firebase.js  (v5.0 — App Check aktif, doğru Storage bucket, emulator opsiyonları korunuyor)
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getFunctions, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-functions.js";
@@ -23,12 +23,17 @@ import {
   connectStorageEmulator,
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-storage.js";
 
+import {
+  initializeAppCheck,
+  ReCaptchaV3Provider,
+} from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app-check.js";
+
 /* ========= Firebase Config ========= */
 const firebaseConfig = {
   apiKey: "AIzaSyBLzbyeKVCvKGtXlOOJI_Ki1dQeIFiiVNo",
   authDomain: "my-barber-system.firebaseapp.com",
   projectId: "my-barber-system",
-  // DOĞRU BUCKET (appspot.com)
+  // BUCKET ADI DÜZELTİLDİ: appspot.com olmalı
   storageBucket: "my-barber-system.appspot.com",
   messagingSenderId: "1042627764617",
   appId: "1:1042627764617:web:9dfb36d8f2a0443e1a4158",
@@ -43,14 +48,37 @@ if (typeof window !== "undefined" && !window.process) {
   window.process = { env: {} };
 }
 
-/* ========= App Check =========
-   İSTENMEDİĞİ için tamamen devre dışı.
-   (Projede referans varsa kırılmasın diye null export bırakıyoruz.) */
-export const appCheck = null;
-
 /* ========= URL parametreleri ========= */
 const params = new URLSearchParams((typeof location !== "undefined" ? location.search : "") || "");
 const useEmulators = params.get("emu") === "1";
+
+/* ========= App Check (reCAPTCHA v3) =========
+   - App Check 'Enforce' açık ise 401 hatalarını bu çözer.
+   - Geliştirmede (localhost veya ?acdebug=1) debug token otomatik açılır.
+*/
+const APP_CHECK_SITE_KEY = "RECAPTCHA_V3_SITE_KEY_DEGIS"; // <-- kendi anahtarınızı koyun
+let appCheckTmp = null;
+try {
+  const host = (typeof location !== "undefined" ? location.hostname : "");
+  const isLocal =
+    host === "localhost" || host === "127.0.0.1" || host.endsWith(".local");
+  if (isLocal || params.get("acdebug") === "1") {
+    // Debug token: App Check konsolunda otomatik görünür
+    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  }
+  if (APP_CHECK_SITE_KEY && !/DEGIS$/i.test(APP_CHECK_SITE_KEY)) {
+    appCheckTmp = initializeAppCheck(app, {
+      provider: new ReCaptchaV3Provider(APP_CHECK_SITE_KEY),
+      isTokenAutoRefreshEnabled: true,
+    });
+  } else {
+    console.warn("[app-check] Site key tanımlı değil; App Check başlatılmadı.");
+  }
+} catch (e) {
+  console.warn("[app-check] initialize error:", e?.message || e);
+}
+// Geriye dönük uyumluluk için export’u koruyoruz
+export const appCheck = appCheckTmp || null;
 
 /* ========= Auth ========= */
 export const auth = getAuth(app);
@@ -70,7 +98,7 @@ if (params.get("forceLP") === "1") {
 export const db = initializeFirestore(app, firestoreOptions);
 
 /* ========= Storage =========
-   SDK config’teki bucket + explicit gs:// ile çalışıyoruz.
+   Bucket explicit verildi (doğru gs:// URL ile).
 */
 export const storage = getStorage(app, "gs://my-barber-system.appspot.com");
 

@@ -17,10 +17,9 @@ body{
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
 }
-/* Rail alanı kadar gövdeyi yana kaydır */
 body.has-rail{ margin-left: var(--rail-width); }
 
-/* Sayfa yerleşimi (desktop/base) */
+/* Sayfa yerleşimi */
 .container{
   max-width:1200px;
   margin:0 auto;
@@ -42,36 +41,46 @@ body.has-rail{ margin-left: var(--rail-width); }
   box-shadow:var(--shadow);
   display:flex;
   flex-direction:column;
-  justify-content:flex-start;   /* ⬅️ üstten başlat */
-  align-items:stretch;          /* ⬅️ genişliği doldur */
   height:calc(100vh - 140px);
+  align-items:stretch;      /* 🔧 */
+  min-height:0;             /* 🔧 flex altındaki scroller'ın taşmasına izin ver */
 }
 .staff-card header{
   padding:16px 16px 8px;
   border-bottom:1px solid var(--line);
   font-weight:600;
   display:flex; align-items:center; justify-content:space-between;
+  flex:0 0 auto;            /* 🔧 */
 }
 
-/* 🔧 Listeyi kesin olarak ÜSTTEN başlat */
-.staff-list{
+/* 🔧 LİSTE: üstten başla, fantom boşlukları ez */
+.staff-card .staff-list{
   list-style:none;
   margin:0 !important;
-  padding:8px !important;
-  flex:1 1 auto;          /* kart içinde büyüsün */
-  overflow:auto;          /* scroll */
-  display:block !important;     /* ⬅️ flex/gridden çıkar, ortalama engellenir */
-}
-/* satırlar arası aralık */
-.staff-list > li{ margin:0; }
-.staff-list > li + li{ margin-top:8px; }
+  padding:8px 8px 8px !important;
+  flex:1 1 auto;
+  min-height:0;             /* 🔧 */
+  overflow:auto;
 
+  /* başka css’lerin ortalama/izgara ayarlarını iptal et */
+  display:block !important;
+  justify-content:flex-start !important;
+  align-items:stretch !important;
+  align-content:flex-start !important;
+}
+.staff-card .staff-list::before,
+.staff-card .staff-list::after{ content:none !important; display:none !important; }
+
+/* satırlar */
 .staff-item{
   display:flex; align-items:center; gap:12px;
   padding:10px 8px; border-radius:10px; cursor:pointer;
+  margin:0 0 8px 0 !important;        /* 🔧 üst boşa izin verme */
 }
+.staff-item:last-child{ margin-bottom:0 !important; }
 .staff-item:hover{ background:#f8fafc; }
 .staff-item[aria-current="true"]{ background:#eef2ff; }
+
 .avatar{
   width:36px; height:36px; border-radius:50%;
   background:#e2e8f0; display:grid; place-items:center;
@@ -212,7 +221,7 @@ body.has-rail{ margin-left: var(--rail-width); }
   gap:10px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:10px;
 }
 
-/* Toggle (switch) */
+/* Toggle */
 .switch{
   appearance:none; width:42px; height:24px; background:#e5e7eb;
   border-radius:999px; position:relative; cursor:pointer; outline:none;
@@ -262,7 +271,7 @@ body.has-rail{ margin-left: var(--rail-width); }
   .row{ grid-template-columns:110px 1fr 90px; }
 }
 
-/* 🔹 Profil/Business modalı */
+/* Profil/Business modalı */
 .bm-overlay{
   position:fixed; inset:0; background:rgba(17,19,24,.45);
   z-index:1400; opacity:0; pointer-events:none; transition:.18s;
@@ -323,8 +332,6 @@ body.has-rail{ margin-left: var(--rail-width); }
   background:#fff; cursor:pointer; font-weight:700;
 }
 
-/* ----- Bar-menu ikon izolasyonu ----- */
+/* Bar-menu ikon izolasyonu */
 nav.rail .ico{ width:22px; height:22px; stroke:currentColor !important; fill:none; stroke-width:1.9; }
 nav.rail .rail__btn[aria-current="page"] .ico{ stroke:#fff !important; }
-
-/* (Mobil düzen ve alt rail davranışı mobil_staff.css içinde) */

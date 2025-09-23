@@ -1,11 +1,11 @@
 /* eslint-disable no-console */
 /*
-  [staff] v41.0 — owner (admin) first + robust selection + services render
+  [staff] v41.0 — owner (admin) always listed on top
   - Business hours: defaultHours (0..6 → {open:boolean, ranges:[{startMin,endMin}]})
   - UI hours: mon..sun → {enabled, start, end}
   - Staff: businesses/{businessId}/staff/{id}
       { name, role, position, phoneE164, active, showInCalendar, services: [id], hoursOverride: {0..6} }
-  - Admin (owner) UI'da da listelenir (id: "__owner__"). Yoksa subcollection'da oluşturulur (upsert).
+  - Owner: ensured at staff/{OWNER_UID}
 */
 
 import { auth, db } from "./firebase.js";
@@ -17,7 +17,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 import {
   doc, getDoc, setDoc, updateDoc, serverTimestamp, onSnapshot,
-  collection, addDoc, writeBatch, deleteDoc
+  collection, addDoc, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 /* ------------------------- Helpers + rail ------------------------- */
@@ -91,7 +91,7 @@ function defaultHoursToUI(defaultHoursObj){
     if (!dayData.open || !Array.isArray(dayData.ranges) || !dayData.ranges.length){
       ui[uiKey] = { enabled:false, start:'10:00', end:'19:00' };
     } else {
-      const r = dayData.ranges[0]; // UI tek aralık gösteriyor
+      const r = dayData.ranges[0]; // UI tek aralık
       ui[uiKey] = { enabled:true, start: m2t(r.startMin), end: m2t(r.endMin) };
     }
   }
@@ -162,8 +162,8 @@ function toE164TR(raw=""){
 let UID = null;
 let BUSINESS_ID = null;
 let OWNER_UID = null;
-let OWNER_NAME = "Admin";
-const OWNER_DOC_ID = "__owner__";
+
+let ADMIN_NAME = "Admin";
 
 let AO_REF = null;   // mirror (optional)
 let BIZ_REF = null;  // canonical
@@ -214,65 +214,24 @@ function denormalizeHours(model){ // TR keys for AO mirror
   return out;
 }
 
-/* ------------------------- Staff list rendering + selection ------------------------- */
+/* ------------------------- UI Rendering ------------------------- */
 function getDisplayName(s){ return s?.isOwner ? `${s.name} (Admin)` : (s?.name || '—'); }
-
-function ensureSelection(){
-  // Geçerli currentId varsa ve listede ise bırak
-  if (currentId && staff.some(s=>s.id===currentId)) return;
-  // Yoksa ilk elemanı (admin en üstte) seç
-  if (staff[0]) currentId = staff[0].id;
-}
-
-function injectOwnerRowIfMissing(){
-  // staffDocs içinde owner zaten varsa tekrar eklemeyelim
-  const hasOwnerDoc = staffDocs.some(rec=>{
-    const d = rec.data || {};
-    return rec.id===OWNER_DOC_ID || rec.id===OWNER_UID || d.uid===OWNER_UID || (String(d.position||'').toLowerCase()==='sahip');
-  });
-  if (hasOwnerDoc) return;
-
-  // owner için etkin saatler: işyeri varsayılanı
-  const eff = defaultWeek || {};
-  staffDocs.unshift({
-    id: OWNER_DOC_ID,
-    data: {
-      uid: OWNER_UID,
-      name: OWNER_NAME || "Admin",
-      position: "Sahip",
-      role: "Sahip",
-      active: true,
-      showInCalendar: true,
-      hoursOverride: null, // defaultWeek kullan
-      services: []
-    }
-  });
-}
 
 function rebuildStaffFromDocsPreserveSelection(){
   const keepId = currentId;
 
-  // Admin satırını en üste garanti et
-  injectOwnerRowIfMissing();
-
-  // Map → UI modeli
   staff = staffDocs.map(rec=>{
     const data = rec.data || {};
     const myOverride = data.hoursOverride || null;
     const eff = mergeEffective(defaultWeek, myOverride);
     const norm = defaultHoursToUI(eff);
 
-    const isOwner =
-      rec.id === OWNER_DOC_ID ||
-      rec.id === OWNER_UID ||
-      (!!data.uid && OWNER_UID && data.uid === OWNER_UID) ||
-      String(data.position||'').toLowerCase()==='sahip';
-
+    const isOwner = !!(data.uid && OWNER_UID && data.uid === OWNER_UID) || (!!OWNER_UID && rec.id === OWNER_UID);
     return {
       id: rec.id,
       name: data.name || "Çalışan",
       isOwner,
-      role: data.position || data.role || (isOwner ? 'Sahip' : 'Personel'),
+      role: data.position || data.role || (isOwner ? "Sahip" : "Personel"),
       phoneE164: data.phoneE164 || null,
       hours: norm,
       services: new Set(Array.isArray(data.services) ? data.services : []),
@@ -280,21 +239,19 @@ function rebuildStaffFromDocsPreserveSelection(){
     };
   });
 
-  // Sıra: Önce admin, sonra ada göre
-  staff.sort((a,b)=>{
-    if (a.isOwner && !b.isOwner) return -1;
-    if (!a.isOwner && b.isOwner) return 1;
-    return (a.name||'').localeCompare(b.name||'', 'tr');
-  });
+  // Admin yoksa currentId fallback'ı önce admin, sonra ilk çalışan olarak seç
+  const ownerFirst = staff.find(s=>s.isOwner)?.id;
+  currentId = staff.some(s=>s.id===keepId) ? keepId : (ownerFirst || staff[0]?.id || null);
 
-  currentId = staff.some(s=>s.id===keepId) ? keepId : (staff[0]?.id || null);
-  renderStaffList();
-  renderTabs(); // içeride ensureSelection() çağrılıyor
+  renderStaffLists();
+  renderTabs();
 }
 
-function renderStaffList(){
-  const ul = $('#staffList'); if(!ul) return;
-  ul.innerHTML='';
+function renderStaffLists(){
+  const ownerUL = $('#ownerList');
+  const staffUL = $('#staffList');
+  if (ownerUL) ownerUL.innerHTML = '';
+  if (staffUL) staffUL.innerHTML = '';
 
   staff.forEach(s=>{
     const li=document.createElement('li');
@@ -310,11 +267,12 @@ function renderStaffList(){
       $('#staffName').textContent=getDisplayName(s);
       $('#srvStaffName') && ($('#srvStaffName').textContent = getDisplayName(s));
       snapshotAssignedToTemp();
-      renderTabs(); renderStaffList();
+      renderTabs(); renderStaffLists();
     });
-    ul.appendChild(li);
+
+    if (s.isOwner && ownerUL) ownerUL.appendChild(li);
+    else if (staffUL) staffUL.appendChild(li);
   });
-  ul.scrollTop = 0;
 }
 
 function bindTabs(){
@@ -324,7 +282,6 @@ function bindTabs(){
 }
 function currentStaff(){ return staff.find(s => s.id === currentId); }
 function renderTabs(){
-  ensureSelection();
   $$('.tab').forEach(tb=>tb.setAttribute('aria-selected', tb.dataset.tab===activeTab));
   $('#tab-services').hidden = activeTab!=='services';
   $('#tab-hours').hidden    = activeTab!=='hours';
@@ -407,17 +364,18 @@ function filterServices(list){
     return true;
   });
 }
-function formatPriceTry(v){ if (!Number.isFinite(v) || v<=0) return ''; return `₺${v.toFixed(0)}`; }
+function formatPriceTry(v){ if (!Number.isFinite(v)) return ''; return `₺${v.toFixed(0)}`; }
 function formatDuration(v){ if (!Number.isFinite(v) || v<=0) return ''; return `${v} dk`; }
 
 function renderServicesTab(){
-  ensureSelection();
   const wrap = $('#tab-services'); if(!wrap) return;
 
+  if(!currentId && staff[0]) currentId = staff[0].id;
   const who = currentStaff();
   if (!who){ wrap.innerHTML = `<div class="muted">Önce bir personel seçin.</div>`; return; }
 
   $('#srvStaffName') && ($('#srvStaffName').textContent = getDisplayName(who));
+
   buildCategoryOptions();
 
   const listEl = $('#srvList');
@@ -523,15 +481,11 @@ async function saveServiceAssignments(){
 
   try{
     await upsert(doc(BIZ_REF, "staff", who.id), {
-      // owner için de aynı path (id: "__owner__") yazılır; yoksa oluşur
-      name: who.name,
-      position: who.role,
       services: assigned,
-      active: true,
-      showInCalendar: true,
       updatedAt: serverTimestamp()
     });
 
+    // UI state
     who.services = new Set(assigned);
     $('#srvAssignedCount') && ($('#srvAssignedCount').textContent = String(srvTempAssigned.size));
 
@@ -625,12 +579,10 @@ function enforceBusinessBoundsForRow(row){
 /* ------------------------- UI: Çalışan saatleri ------------------------- */
 function getCurrentStaff(){ return staff.find(s=>s.id===currentId); }
 function renderStaffHoursView(){
-  ensureSelection();
+  if(!currentId && staff[0]) currentId = staff[0].id;
   const wrap = $('#tab-hours'); if(!wrap) return;
   const who = getCurrentStaff();
   wrap.innerHTML='';
-
-  if (!who){ wrap.innerHTML='<div class="muted">Önce bir personel seçin.</div>'; return; }
 
   const model = who?.hours || {};
   const box = document.createElement('div'); box.className='hours';
@@ -723,12 +675,10 @@ $('#saveModal')?.addEventListener('click', async ()=>{
     const override = computeHoursOverride(defaultWeek, updated);
     await upsert(doc(BIZ_REF, "staff", who.id), {
       hoursOverride: override ?? null,
-      name: who.name,
-      position: who.role,
-      active: true, showInCalendar: true,
       updatedAt: serverTimestamp()
     });
 
+    // UI state
     who.hours = updated;
 
     // (Optional) AO mirror refresh
@@ -1063,6 +1013,39 @@ async function clampAllStaffToBusinessHours(newBH){
   );
 }
 
+/* ------------------------- OWNER ensure ------------------------- */
+async function ensureOwnerStaffDoc(bizData={}, aoData={}){
+  if (!BIZ_REF || !OWNER_UID) return;
+  const ownerRef = doc(BIZ_REF, "staff", OWNER_UID);
+  const snap = await getDoc(ownerRef).catch(()=>null);
+  if (snap && snap.exists()) return;
+
+  const phoneE164 =
+    bizData?.owner?.phoneE164 ||
+    toE164TR(bizData?.owner?.phoneNational) ||
+    aoData?.owner?.phoneE164 ||
+    null;
+
+  const payload = {
+    name: ADMIN_NAME || "Admin",
+    role: "Sahip",
+    position: "Sahip",
+    phoneE164: phoneE164 || null,
+    active: true,
+    showInCalendar: true,
+    services: [],
+    hoursOverride: null,
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+    uid: OWNER_UID
+  };
+  try{
+    await setDoc(ownerRef, payload, { merge:true });
+  }catch(e){
+    console.warn("[owner ensure] yazılamadı:", e?.message||e);
+  }
+}
+
 /* ------------------------- AUTH → resolve businessId + load + realtime ------------------------- */
 setPersistence(auth, browserLocalPersistence).catch(()=>{});
 
@@ -1090,7 +1073,7 @@ onAuthStateChanged(auth, async (user)=>{
     const root = aoSnap.exists() ? aoSnap.data() : {};
 
     OWNER_UID  = biz?.ownerUid || UID;
-    OWNER_NAME = (biz?.owner?.name || root?.owner?.name || root?.step2?.adminName || "Admin").trim();
+    ADMIN_NAME = (biz?.owner?.name || root?.owner?.name || root?.step2?.adminName || "Admin").trim();
 
     // services
     servicesAll = extractServicesFromBusiness(biz);
@@ -1101,6 +1084,9 @@ onAuthStateChanged(auth, async (user)=>{
     defaultWeek = biz?.defaultHours || {};
     bizHours = defaultHoursToUI(defaultWeek);
     lastDefaultWeekJSON = JSON.stringify(defaultWeek||{});
+
+    // Owner doc garanti
+    await ensureOwnerStaffDoc(biz, root);
 
     // realtime: business (defaultHours + services)
     onSnapshot(BIZ_REF, (snap) => {
@@ -1140,7 +1126,7 @@ onAuthStateChanged(auth, async (user)=>{
     mountRail();
     bindTabs();
     bindServicesEvents();
-    rebuildStaffFromDocsPreserveSelection(); // admin injection + first select
+    rebuildStaffFromDocsPreserveSelection();
 
   }catch(e){
     console.warn("[auth load] hata:", e?.message || e);
@@ -1150,6 +1136,6 @@ onAuthStateChanged(auth, async (user)=>{
     bizHours   = defaultHoursToUI(defaultWeek);
     staffDocs = [];
     staff = [];
-    mountRail(); bindTabs(); bindServicesEvents(); renderStaffList(); renderTabs();
+    mountRail(); bindTabs(); bindServicesEvents(); renderStaffLists(); renderTabs();
   }
 });

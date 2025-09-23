@@ -8,14 +8,7 @@
       "https://my-barber-system.web.app",
       "https://my-barber-system.firebaseapp.com"
     ],
-    "method": [
-      "GET",
-      "POST",
-      "PUT",
-      "DELETE",
-      "HEAD",
-      "OPTIONS"
-    ],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD"],
     "responseHeader": [
       "Content-Type",
       "Authorization",

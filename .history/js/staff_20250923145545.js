@@ -314,7 +314,6 @@ function renderStaffList(){
     });
     ul.appendChild(li);
   });
-  ul.scrollTop = 0;
 }
 
 function bindTabs(){

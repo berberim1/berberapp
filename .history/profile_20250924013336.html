@@ -114,10 +114,13 @@
   .badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:999px;padding:4px 8px;font-weight:700;font-size:12px}
   .dot{width:8px;height:8px;border-radius:50%}
 
-  /* Auth modal */
-  .modal-overlay{position:fixed; inset:0; display:none; place-items:center;background:rgba(15, 23, 42, .45);backdrop-filter: blur(8px) saturate(1.1);padding:20px; z-index:9999;}
+  /* Auth modal (isteğe bağlı) */
+  .modal-overlay{position:fixed; inset:0; display:none; place-items:center;
+    background:rgba(15, 23, 42, .45);backdrop-filter: blur(8px) saturate(1.1);
+    padding:20px; z-index:9999;}
   .modal-overlay.active{ display:grid; }
-  .auth-box{width:min(520px, 92vw); background:linear-gradient(180deg,#ffffff, #f9fafb); color:#0f172a; border:1px solid rgba(2,6,23,.06);border-radius:20px; box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset; position:relative; overflow:hidden; animation:pop .2s ease-out;}
+  .auth-box{width:min(520px, 92vw); background:linear-gradient(180deg,#ffffff, #f9fafb); color:#0f172a; border:1px solid rgba(2,6,23,.06);
+    border-radius:20px; box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset; position:relative; overflow:hidden; animation:pop .2s ease-out;}
   .modal-close{position:absolute; top:10px; right:10px; width:36px; height:36px; border-radius:12px; border:1px solid rgba(2,6,23,.08); background:#fff; display:grid; place-items:center; cursor:pointer; color:#0f172a; z-index:2;}
   .auth-container{ padding:22px 20px 24px; display:grid; gap:16px; }
   .auth-tabs{ display:flex; gap:8px; justify-content:center; }
@@ -129,7 +132,9 @@
   .auth-btn{width:100%; padding:13px; border:none; border-radius:12px; font-weight:800; background:#0b6ef4; color:#fff; cursor:pointer;}
   .error{ color:#dc2626; font-size:13px; min-height:18px; margin:8px 0 4px; }
 
-  .toast{position: fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-16px);background:#16a34a; color:#fff; padding:10px 14px; border-radius:999px; font:600 14px/1 'Inter', sans-serif; opacity:0; pointer-events:none;transition:transform .25s, opacity .25s, box-shadow .25s; z-index:3000; box-shadow:0 8px 20px rgba(0,0,0,.18);} 
+  .toast{position: fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-16px);
+    background:#16a34a; color:#fff; padding:10px 14px; border-radius:999px; font:600 14px/1 'Inter', sans-serif; opacity:0; pointer-events:none;
+    transition:transform .25s, opacity .25s, box-shadow .25s; z-index:3000; box-shadow:0 8px 20px rgba(0,0,0,.18);}
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 </head>
@@ -157,6 +162,7 @@
   </nav>
 </header>
 
+<!-- Scroll’da görünen kısa bilgi barı -->
 <div id="topInfoBar" class="top-info-bar" aria-hidden="true">
   <div class="ti-inner">
     <div class="ti-left">
@@ -201,9 +207,10 @@
       </div>
     </section>
 
+    <!-- YENİ: Ekibimiz -->
     <section class="section card" id="staffSection">
       <h2>Ekibimiz</h2>
-      <div id="staffList" class="staff-list"></div>
+      <div id="staffList" class="staff-list"><!-- JS doldurur --></div>
     </section>
   </div>
 
@@ -245,7 +252,7 @@
   </aside>
 </main>
 
-<!-- Modallar -->
+<!-- ====== RANDEVU MODALI ====== -->
 <div class="modal-ov" id="bookOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookTtl">
     <div class="hd">
@@ -267,13 +274,16 @@
   </div>
 </div>
 
+<!-- ====== SAAT MODALI ====== -->
 <div class="modal-ov" id="timeOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="timeTtl">
     <div class="hd">
       <div class="ttl" id="timeTtl"><span id="timeDateLabel">—</span> • Saat seç</div>
       <button class="x" onclick="closeOv('timeOv')">✕</button>
     </div>
-    <div class="ct"><div class="slots" id="timeSlotWrap"></div></div>
+    <div class="ct">
+      <div class="slots" id="timeSlotWrap"></div>
+    </div>
     <div class="footerbar">
       <div class="small" style="color:var(--muted)">08:00 – 23:00 arası 15 dk’lık aralıklar</div>
       <button class="btn-primary" id="timeDone">Seçimi uygula</button>
@@ -281,6 +291,7 @@
   </div>
 </div>
 
+<!-- ====== TÜM HİZMETLER MODALI ====== -->
 <div class="modal-ov" id="svcOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="svcTtl">
     <div class="hd"><div class="ttl" id="svcTtl">Tüm hizmetler</div><button class="x" onclick="closeOv('svcOv')">✕</button></div>
@@ -291,6 +302,7 @@
   </div>
 </div>
 
+<!-- ====== GÖZDEN GEÇİR & ONAYLA ====== -->
 <div class="modal-ov" id="reviewOv">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="revTtl">
     <div class="hd"><div class="ttl" id="revTtl">Gözden geçir ve onayla</div><button class="x" onclick="closeOv('reviewOv')">✕</button></div>
@@ -305,6 +317,7 @@
   </div>
 </div>
 
+<!-- Auth Modal (isteğe bağlı) -->
 <div id="authModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginRegisterTitle">
   <div class="auth-box">
     <button class="modal-close" aria-label="Kapat"><i class="fas fa-times" aria-hidden="true"></i></button>
@@ -332,18 +345,18 @@
   </div>
 </div>
 
+<!-- Toast -->
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
 <!-- ========= UI ETKİLEŞİMLER (non-module) ========= -->
 <script>
-  // Global helpers – isim ÇATIŞMASI OLMASIN diye window.* ve farklı isimler
+  /* Global yardımcılar (çakışma yok) */
   window.TL = window.TL || (v => '₺' + Number(v||0).toLocaleString('tr-TR') + (Number(v)>=1?'+':''));
   window.showOv   = id => document.getElementById(id)?.classList.add('show');
   window.closeOv  = id => document.getElementById(id)?.classList.remove('show');
-  const padZ = n => n.toString().padStart(2,'0');
-  const MONTHS_TR = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-  const fmtDateZ = d => `${padZ(d.getDate())} ${MONTHS_TR[d.getMonth()]} ${d.getFullYear()}`;
+  const pad=n=>n.toString().padStart(2,'0');
+  const fmtDate = d => `${pad(d.getDate())} ${['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'][d.getMonth()]} ${d.getFullYear()}`;
   window.showToast = function(msg){
     const wrap=document.getElementById('toastWrap'); if(!wrap) return;
     const t=document.createElement('div'); t.className='toast'; t.textContent=msg; wrap.appendChild(t);
@@ -352,7 +365,7 @@
     setTimeout(()=>wrap.removeChild(t),2600);
   };
 
-  // Slider
+  /* Slider */
   (function(){
     const slides=[...document.querySelectorAll('[data-slide]')];
     const dots=[...document.querySelectorAll('.dotbar .dot')];
@@ -362,7 +375,7 @@
     btn.addEventListener('click',()=>{i=(i+1)%slides.length;show(i);}); show(0);
   })();
 
-  // Scroll bar
+  /* Scroll bar */
   (function(){
     const bar=document.getElementById('topInfoBar');
     const topbar=document.getElementById('mainTopbar');
@@ -375,7 +388,7 @@
     io.observe(sentinel);
   })();
 
-  // Haftayı gizle/göster
+  /* Haftayı gizle/göster */
   (function(){
     const toggle=document.getElementById('toggleWeek');
     const block=document.getElementById('weekBlock');
@@ -389,14 +402,13 @@
     });
   })();
 
-  // Booking saatleri
+  /* Booking saatleri */
   let selectedDate=new Date(); window.selectedTime='08:00';
   const isToday=d=>{const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate();};
-  const toTimeStr=m=>`${padZ(Math.floor(m/60))}:${padZ(m%60)}`;
+  const toTimeStr=m=>`${pad(Math.floor(m/60))}:${pad(m%60)}`;
   function generateTimes(startHour=8,endHour=23,stepMin=15){const times=[]; for(let m=startHour*60;m<=endHour*60-stepMin;m+=stepMin) times.push(toTimeStr(m)); return times;}
   const timeSlotWrap=document.getElementById('timeSlotWrap');
   function renderTimeSlots(){
-    if(!timeSlotWrap) return;
     const allTimes=generateTimes(8,23,15); timeSlotWrap.innerHTML='';
     const now=new Date(); const nowMin=now.getHours()*60+now.getMinutes();
     allTimes.forEach(t=>{
@@ -407,30 +419,36 @@
     });
     const first=timeSlotWrap.querySelector('.slot:not([disabled])'); if(first) first.focus();
   }
-  document.getElementById('openTime')?.addEventListener('click',()=>{renderTimeSlots(); document.getElementById('timeDateLabel').textContent=fmtDateZ(selectedDate); showOv('timeOv');});
-  document.getElementById('timeDone')?.addEventListener('click',()=>{ closeOv('timeOv'); const ct=document.getElementById('chosenTime'); if(ct) ct.textContent='• '+window.selectedTime; });
+  document.getElementById('openTime')?.addEventListener('click',()=>{renderTimeSlots(); document.getElementById('timeDateLabel').textContent=fmtDate(selectedDate); showOv('timeOv');});
+  document.getElementById('timeDone')?.addEventListener('click',()=>{ closeOv('timeOv'); document.getElementById('chosenTime').textContent='• '+window.selectedTime; });
 
-  // Sepet
+  /* Sepet */
   window.cart = window.cart || [];
   window.renderCart=function(){
-    const box=document.getElementById('cartBox'); if(!box) return;
-    if(window.cart.length===0){ box.innerHTML='<div class="muted">Sepet boş. Bir hizmet seçin.</div>'; const tot=document.getElementById('cartTotal'); if(tot) tot.textContent='₺0'; return; }
+    const box=document.getElementById('cartBox');
+    if(!box){ return; }
+    if(window.cart.length===0){
+      box.innerHTML='<div class="muted">Sepet boş. Bir hizmet seçin.</div>';
+      const tot=document.getElementById('cartTotal'); if(tot) tot.textContent='₺0';
+      return;
+    }
     box.innerHTML=window.cart.map(it=>`<div class="cart-row"><div><strong>${it.name}</strong><div class="small">${it.duration||it.min||30}dk</div></div><div>${window.TL(it.price||0)}</div></div>`).join('');
     const tot=document.getElementById('cartTotal'); if(tot) tot.textContent = window.TL(window.cart.reduce((s,i)=>s+Number(i.price||0),0));
   };
   document.getElementById('openAdd')?.addEventListener('click',()=>showOv('svcOv'));
   document.getElementById('goReview')?.addEventListener('click',()=>{
-    const rev=document.getElementById('reviewBody'); if(!rev) return;
+    const rev=document.getElementById('reviewBody');
     const total=window.cart.reduce((s,i)=>s+Number(i.price||0),0);
     const totalMin=window.cart.reduce((m,i)=>m+(i.duration||i.min||30),0);
-    document.getElementById('bookDateLabel').textContent=fmtDateZ(selectedDate);
-    rev.innerHTML=`<div style="text-align:center;font-weight:800">${fmtDateZ(selectedDate)}<br><span class="muted" style="font-weight:700">${window.selectedTime} • ${totalMin}dk toplam</span><br><span class="small" id="revBizName"></span></div>
+    document.getElementById('bookDateLabel').textContent=fmtDate(selectedDate);
+    rev.innerHTML=`<div style="text-align:center;font-weight:800">${fmtDate(selectedDate)}<br><span class="muted" style="font-weight:700">${window.selectedTime} • ${totalMin}dk toplam</span><br><span class="small" id="revBizName"></span></div>
       ${window.cart.map(i=>`<div style="display:flex;justify-content:space-between;font-weight:700;padding:8px 0;border-top:1px solid #eee"><span>${i.name}<br><span class="small">${i.duration||i.min||30}dk</span></span><span>${window.TL(i.price||0)}</span></div>`).join('')}
       <div style="display:flex;justify-content:space-between;font-weight:800;padding-top:10px;border-top:1px solid #eee"><span>Toplam</span><span>${window.TL(total)}</span></div>`;
     document.getElementById('reviewTotal').textContent=window.TL(total);
     document.getElementById('revBizName').textContent=document.getElementById('bizName').textContent||'';
     showOv('reviewOv');
   });
+
   function persistBookingAndGo(){
     const name=(document.getElementById('bizName')?.textContent||'İşletme').trim();
     const total = window.cart.reduce((s,i)=>s+Number(i.price||0),0);
@@ -446,7 +464,7 @@
   }
   document.getElementById('confirmBook')?.addEventListener('click', persistBookingAndGo);
 
-  // Auth modal (isteğe bağlı)
+  /* Auth modal kısa akışı */
   (function(){
     const overlay=document.getElementById("authModal"); if(!overlay) return;
     document.querySelectorAll(".open-auth").forEach(el=> el.addEventListener("click",(e)=>{e.preventDefault(); overlay.classList.add("active");}));
@@ -461,13 +479,14 @@
     });
   })();
 
-  // “Randevu al” butonları
+  /* “Randevu al” butonlarını bağla (global) */
   window.bindOpenBookButtons=function(){
     document.querySelectorAll('.open-book').forEach(b=>{
       b.addEventListener('click',()=>{
         const svc={name:b.dataset.name,price:Number(b.dataset.price||0),duration:Number(b.dataset.duration||b.dataset.min||0)};
         window.cart=[svc]; window.renderCart();
-        const ct=document.getElementById('chosenTime'); if(ct && window.selectedTime) ct.textContent='• '+window.selectedTime;
+        const ct=document.getElementById('chosenTime');
+        if(ct && window.selectedTime) ct.textContent='• '+window.selectedTime;
         window.showOv('bookOv');
       });
     });
@@ -484,11 +503,13 @@
   import { doc, onSnapshot, collection, query } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
   const $ = s => document.querySelector(s);
+  // Global TL varsa onu kullan, yoksa fallback:
   const TLx = (window.TL) ? window.TL : (v => '₺' + Number(v||0).toLocaleString('tr-TR') + (Number(v)>=1?'+':''));
-  const escapeHTML = (s="") => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-  const padM = n => n.toString().padStart(2,'0'); // module içi benzersiz isim
+  const escapeHTML = (s="") => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const pad = n => n.toString().padStart(2,'0');
   const TR_DAYS = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
 
+  /* Görseller */
   function setImages(imgs={}){
     const pick = v => Array.isArray(v) ? v[0] : v;
     const cover = pick(imgs.cover);
@@ -501,6 +522,7 @@
     $("#tiLogo").src = logo; $("#addrLogo").src = logo;
   }
 
+  /* Adres */
   function renderAddress(loc={}){
     const subTop = [loc.district, loc.province].filter(Boolean).join(" • ") || "—";
     $("#bizAddrTop").textContent = subTop;
@@ -510,6 +532,7 @@
     $("#infoAddr").textContent = [line1, line2].filter(Boolean).join(" • ") || "—";
   }
 
+  /* Hizmetler */
   function renderServices(list=[]){
     const box=$("#svcRows");
     if(!box) return;
@@ -528,6 +551,7 @@
           data-duration="${Number(s.min ?? s.duration ?? 30)}">Randevu al</button>
       </div>`).join("");
 
+    // Tüm hizmetler modalı
     const container=$("#svcList"), search=$("#svcSearch");
     const paint=(q="")=>{
       const f=list.filter(s=>s.name?.toLowerCase().includes(q.toLowerCase()));
@@ -553,7 +577,8 @@
     (window.bindOpenBookButtons||(()=>{}))();
   }
 
-  const toHM = m => `${padM(Math.floor((m||0)/60))}:${padM((m||0)%60)}`;
+  /* Saatler */
+  const toHM = m => `${pad(Math.floor((m||0)/60))}:${pad((m||0)%60)}`;
   function fromDefaultHours(h={}) {
     const out={};
     for(let i=0;i<7;i++){
@@ -581,6 +606,7 @@
     }
   }
 
+  /* Ekibimiz (staff + admin) */
   const fmtPhoneTR = (p="") => { const n=(p||"").replace(/\D/g,""); const nat=n.startsWith("90")?n.slice(2):n.slice(-10); return nat.length===10?`(${nat.slice(0,3)}) ${nat.slice(3,6)}-${nat.slice(6,8)}-${nat.slice(8)}`:"-"; };
   function initialsOf(name=""){ return name.trim().split(/\s+/).slice(0,2).map(s=>s[0]?.toUpperCase()||"").join("") || "•"; }
   function renderStaff(list=[]){
@@ -608,47 +634,91 @@
     }).join("");
   }
 
+  // realtime bağlama
   const params = new URLSearchParams(location.search);
   const OWNER_ID = params.get("uid") || localStorage.getItem("arat_owner_id") || "";
   if(!OWNER_ID){ window.showToast?.("Geçersiz bağlantı: uid yok"); }
 
-  let _ownerAsStaff=null; let _staffFromCol=[];
-  function updateStaffUI(){ const all=[]; if(_ownerAsStaff) all.push(_ownerAsStaff); if(_staffFromCol?.length) all.push(..._staffFromCol); renderStaff(all); }
+  let _ownerAsStaff=null;
+  let _staffFromCol=[];
+
+  function updateStaffUI(){
+    const all=[];
+    if(_ownerAsStaff) all.push(_ownerAsStaff);
+    if(_staffFromCol?.length) all.push(..._staffFromCol);
+    renderStaff(all);
+  }
 
   function loadBusinessRealtime(ownerId){
     if(!ownerId) return;
+
+    // İşletme dokümanı
     const ref = doc(db, "businesses", ownerId);
     onSnapshot(ref, (snap)=>{
       if(!snap.exists()) return;
       const d = snap.data()||{};
+
+      // İsimler
       const name = d.business?.name || d.name || "İşletmeniz";
       $("#bizName").textContent = name; $("#tiTitle").textContent = name; $("#infoName").textContent = name; document.title = `${name} – Arat`;
+
+      // Hakkımızda
       $("#aboutText").textContent = (d.business?.about || d.about || "—").trim() || "—";
+
+      // Telefon (genel)
       const phoneRaw = d.owner?.phoneE164 || d.phoneE164 || d.owner?.phone || d.phone || "";
       document.getElementById('phoneText').textContent = phoneRaw ? fmtPhoneTR(phoneRaw) : "-";
       document.getElementById('callBtn').setAttribute("href", phoneRaw ? `tel:${phoneRaw}` : "#");
+
+      // Adres
       const loc = d.businessLocation || d.business?.location || {};
       renderAddress({ province: loc.province, district: loc.district, neighborhood: loc.neighborhood, street: loc.street, building: loc.building });
+
+      // Görseller
       setImages(d.images||{});
-      const services = Array.isArray(d.services) ? d.services : Array.isArray(d.catalog?.services) ? d.catalog.services : [];
+
+      // Hizmetler
+      const services = Array.isArray(d.services) ? d.services
+                     : Array.isArray(d.catalog?.services) ? d.catalog.services
+                     : [];
       renderServices(services);
+
+      // Çalışma saatleri
       renderHours(d.defaultHours || d.business?.hours || null);
+
+      // Çalışmalar grid
       const pics=[].concat(d.images?.cover||[], d.images?.salon||[], d.images?.model||[]).filter(Boolean).slice(0,5);
       if(pics.length){ document.getElementById('worksGrid').innerHTML=pics.map(u=>`<img src="${u}" alt="">`).join(""); }
+
+      // Admin'i personel gibi hazırla
       const ownerName = d.owner?.name || d.business?.ownerName || d.name || "Yönetici";
       const ownerPhone = d.owner?.phoneE164 || d.phoneE164 || "";
       const brandColor = d.color || "#7c3aed";
-      _ownerAsStaff = { id: "owner", role: "admin", name: ownerName, phoneE164: ownerPhone, position: "İşletme Sahibi", color: brandColor, initials: ownerName ? ownerName.trim().split(/\s+/).map(s=>s[0]).slice(0,2).join('').toUpperCase() : '•', active: true };
+      _ownerAsStaff = {
+        id: "owner",
+        role: "admin",
+        name: ownerName,
+        phoneE164: ownerPhone,
+        position: "İşletme Sahibi",
+        color: brandColor,
+        initials: ownerName ? ownerName.trim().split(/\s+/).map(s=>s[0]).slice(0,2).join('').toUpperCase() : '•',
+        active: true
+      };
       updateStaffUI();
     });
 
+    // Personel alt koleksiyonu
     const staffQ = query(collection(db,"businesses", ownerId, "staff"));
-    onSnapshot(staffQ, (qs)=>{ _staffFromCol = qs.docs.map(x=>({id:x.id, ...x.data()})); updateStaffUI(); });
+    onSnapshot(staffQ, (qs)=>{
+      _staffFromCol = qs.docs.map(x=>({id:x.id, ...x.data()}));
+      updateStaffUI();
+    });
   }
 
   loadBusinessRealtime(OWNER_ID);
 </script>
 
+<!-- Firebase auth akışı + UI -->
 <script type="module" src="js/auth.js"></script>
 </body>
 </html>
