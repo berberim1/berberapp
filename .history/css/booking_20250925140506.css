@@ -1,0 +1,349 @@
+/* ================= BASE / HTML <style> İÇERİĞİ ================= */
+:root{
+  --bg:#f6f6f6; --card:#ffffff; --ink:#0b0b0b; --muted:#6b6b6b;
+  --border:#e9e9e9; --shadow:0 10px 30px rgba(0,0,0,.08); --radius:16px;
+  --btn:#111111; --btn-ink:#ffffff; --btn-muted:#1f1f1f;
+  --ok:#0aa36b; --ok-ink:#f6fff9;
+  --primary:#19a0b6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:16px/1.45 "Inter",system-ui,-apple-system,Segoe UI,Roboto}
+a{color:#111;text-decoration:none}
+img{display:block;max-width:100%}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* Üst nav */
+.topbar{position:sticky;top:0;z-index:50;background:#0e0e0e;color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.18);transition:transform .25s ease}
+.topbar.hide{transform:translateY(-120%)}
+.topline{display:flex;align-items:center;gap:16px;padding:12px 20px}
+.logo{font-weight:800;font-size:22px;color:#fff}
+.searchwrap{display:flex;align-items:center;gap:10px;flex:1}
+.chip{display:flex;align-items:center;background:#151515;border:1px solid #232323;border-radius:12px;padding:10px 12px;gap:10px;min-width:220px}
+.chip input{background:transparent;border:0;outline:0;color:#ededed;width:100%}
+.top-actions{display:flex;align-items:center;gap:14px}
+.pilllink{color:#e5e5e5;opacity:.9}
+.pillbtn{background:#151515;border:1px solid #232323;border-radius:12px;color:#fff;padding:8px 12px;font-weight:600}
+.catbar{display:flex;gap:22px;padding:10px 20px;border-top:1px solid #1d1d1d;border-bottom:1px solid #1d1d1d}
+.catbar a{color:#eaeaea;white-space:nowrap;font-weight:700;opacity:.95}
+
+/* Kısa nav */
+.top-info-bar{position:fixed;top:0;left:0;right:0;transform:translateY(-120%);background:#fff;border-bottom:1px solid var(--border);box-shadow:0 10px 24px rgba(0,0,0,.07);transition:transform .25s ease;z-index:60}
+.top-info-bar.show{transform:translateY(0)}
+.ti-inner{max-width:1200px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;justify-content:space-between}
+.ti-left{display:flex;align-items:center;gap:12px}
+.ti-logo{width:40px;height:40px;object-fit:cover;border-radius:10px}
+.ti-title{font-weight:700}
+.ti-sub{font-size:13px;color:var(--muted)}
+.ti-book{background:var(--btn);color:var(--btn-ink);border-radius:10px;padding:10px 14px;font-weight:700}
+.ti-book:hover{background:var(--btn-muted)}
+
+/* Layout */
+.detail-wrap{max-width:1200px;margin:22px auto;display:grid;grid-template-columns:2fr 1fr;gap:20px;padding:0 20px}
+@media (max-width:980px){.detail-wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* Galeri */
+.gallery-card{overflow:hidden}
+.gallery{position:relative;border-radius:var(--radius);overflow:hidden}
+.gallery img{width:100%;height:520px;object-fit:cover}
+.rating-badge{display:none}
+.next{position:absolute;right:16px;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 8px 18px rgba(0,0,0,.2);cursor:pointer;font-size:18px}
+.dotbar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#c9c9c9;opacity:.9}
+.dot.active{background:#fff}
+
+/* Başlık/adres */
+.biz-header{padding:18px 6px}
+.biz-header h1{margin:0 0 6px 0;font-size:28px}
+.small{color:var(--muted);font-size:14px}
+
+/* Bölümler */
+.section{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin:14px 0}
+.section h2{margin:0 0 14px 0;font-size:22px}
+
+/* Hizmet satırı */
+.service-row{display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px}
+.service-row .name{font-weight:700}
+.service-row .meta{color:var(--muted);font-size:14px}
+.price{font-weight:800}
+.book{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+.book:hover{background:var(--btn-muted)}
+.all-btn{display:inline-block;margin-top:8px;font-weight:800;padding:10px 14px;border:1px solid var(--border);border-radius:12px;background:#fff;cursor:pointer}
+.all-btn:hover{background:#f4f4f4}
+
+/* Çalışmalar grid */
+.grid-works{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.grid-works img{border-radius:10px;height:160px;object-fit:cover}
+@media (max-width:980px){.grid-works{grid-template-columns:repeat(3,1fr)}}
+
+/* Sidebar */
+.sidebar{display:flex;flex-direction:column;gap:16px}
+.sticky-book{position:sticky;top:84px;padding:12px}
+.sidebar .card{padding:16px}
+
+/* Bilgi kartı */
+.info-card .map{height:180px;border-radius:12px;background:linear-gradient(135deg,#ececec,#dcdcdc);margin-bottom:12px}
+.info-card .addr{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin-top:-46px;box-shadow:0 10px 20px rgba(0,0,0,.08);max-width:90%}
+.info-card .addr img{width:28px;height:28px;border-radius:50%;object-fit:cover}
+.info-card h4{margin:12px 0 6px 0}
+.hr{height:1px;background:var(--border);margin:14px 0}
+.callline{display:flex;align-items:center;gap:10px;border:1px solid var(--border);border-radius:12px;padding:10px 12px;margin:10px 0}
+.callline .callbtn{margin-left:auto;background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:8px 14px;font-weight:700}
+.today{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.muted{color:var(--muted)}
+.toggle-link{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.week{display:none;margin-top:6px}
+.week.show{display:block}
+.week .row{display:flex;align-items:flex-start;justify-content:space-between;padding:8px 0;border-top:1px solid #efefef}
+.note{margin-top:12px;border-left:3px solid #e5e5e5;padding:12px 12px;color:var(--muted);background:#fafafa;border-radius:8px}
+
+/* ==== SİTE MODALLARI ==== */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:90}
+.modal-ov.show{display:flex}
+.modal{background:#fff;border-radius:16px;box-shadow:0 30px 60px rgba(0,0,0,.25);max-width:860px;width:92%}
+.modal .hd{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--border)}
+.modal .hd .ttl{font-weight:800}
+.modal .hd .x{background:#f1f1f1;border:0;border-radius:10px;padding:8px 10px;cursor:pointer}
+.modal .ct{padding:18px;max-height:72vh;overflow:auto}
+.btn-primary{background:var(--btn);color:var(--btn-ink);border:0;border-radius:12px;padding:12px 18px;font-weight:800;cursor:pointer}
+.btn-primary:hover{background:var(--btn-muted)}
+.footerbar{border-top:1px solid var(--border);padding:14px 18px;display:flex;align-items:center;justify-content:space-between}
+.link{color:#111;cursor:pointer;text-decoration:underline}
+
+/* Saat modalı */
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px;padding:4px 2px}
+.slot{position:relative;border:1px solid var(--border);border-radius:14px;padding:12px 10px;background:#fff;text-align:center;font-weight:800;letter-spacing:.2px;cursor:pointer;transition:.15s;user-select:none}
+.slot:hover{transform:translateY(-1px);box-shadow:0 10px 18px rgba(0,0,0,.08)}
+.slot:focus-visible{outline:3px solid #cde6ff;outline-offset:2px}
+.slot.active{background:#111;color:#fff;border-color:#111;box-shadow:0 12px 22px rgba(0,0,0,.22)}
+.slot[disabled]{opacity:.45;cursor:not-allowed;background:#fafafa}
+
+.summary{border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:14px;background:#fafafa}
+.cart-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid #eee}
+.cart-row:first-child{border-top:0}
+
+/* Tüm hizmetler modalı */
+.finput{border:1px solid var(--border);border-radius:12px;padding:12px;width:100%;margin:10px 0}
+.svc-item{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:12px 0;border-top:1px solid var(--border)}
+.svc-item .meta{color:var(--muted);font-size:13px}
+.btn-mini{background:var(--btn);color:var(--btn-ink);border:0;border-radius:10px;padding:8px 12px;font-weight:700;cursor:pointer}
+.btn-mini:hover{background:var(--btn-muted)}
+
+/* ====== YENİ LOGIN MODALI (sekme + blur) ====== */
+.modal-overlay{
+  position:fixed; inset:0; display:none; place-items:center;
+  background:rgba(15, 23, 42, .45);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+  padding:20px; z-index:9999;
+}
+.modal-overlay.active{ display:grid; }
+
+.auth-box{
+  width:min(520px, 92vw);
+  background:linear-gradient(180deg,#ffffff, #f9fafb);
+  color:#0f172a; border:1px solid rgba(2,6,23,.06);
+  border-radius:20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset;
+  position:relative; overflow:hidden; animation:pop .2s ease-out;
+}
+@keyframes pop{ from{ transform:translateY(8px) scale(.985); opacity:0 } to{ transform:none; opacity:1 } }
+
+.modal-close{
+  position:absolute; top:10px; right:10px; width:36px; height:36px;
+  border-radius:12px; border:1px solid rgba(2,6,23,.08);
+  background:#fff; display:grid; place-items:center; cursor:pointer;
+  color:#0f172a; z-index:2; transition:all .15s ease;
+}
+.modal-close:hover{ background:#f3f4f6; transform:translateY(-1px); }
+
+.auth-container{ padding:22px 20px 24px; display:grid; gap:16px; }
+.auth-tabs{ display:flex; gap:8px; justify-content:center; }
+.auth-tab{
+  padding:8px 14px; border-radius:999px; border:1px solid rgba(2,6,23,.08);
+  background:#f8fafc; cursor:pointer; font-weight:700; color:#0f172a; transition:all .15s ease;
+}
+.auth-tab.active{ background:#111827; color:#fff; border-color:#111827; }
+
+.auth-form{ display:none; max-width:380px; margin:0 auto; }
+.auth-form.active{ display:block; }
+.auth-form h2{ text-align:center; margin:6px 0 12px; }
+
+.auth-input{
+  width:100%; padding:13px 14px; border:1px solid #e5e7eb; border-radius:12px;
+  font-size:15px; background:#fff; transition:border .12s, box-shadow .12s; margin-bottom:10px;
+}
+.auth-input:focus{ outline:none; border-color:#93c5fd; box-shadow:0 0 0 4px rgba(59,130,246,.15); }
+
+.auth-btn{
+  width:100%; padding:13px; border:none; border-radius:12px; font-weight:800;
+  background:#0b6ef4; color:#fff; cursor:pointer; letter-spacing:.2px; transition:transform .06s ease, filter .15s ease;
+}
+.auth-btn:active{ transform:translateY(1px); }
+.auth-btn:disabled{ filter:grayscale(.2) opacity(.7); cursor:not-allowed; }
+
+.error{ color:#dc2626; font-size:13px; min-height:18px; margin:8px 0 4px; }
+
+.oauth-stack{ display:grid; gap:10px; max-width:380px; margin:0 auto; }
+.google-btn{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:12px; border-radius:12px; border:1px solid #e5e7eb;
+  background:#fff; color:#0f172a; font-weight:700; cursor:pointer; transition:transform .06s ease, background .15s ease, border .15s ease;
+}
+.google-btn:hover{ background:#f8fafc; border-color:#d1d5db; }
+.google-btn img{ width:18px; height:18px }
+
+.divider{ display:flex; align-items:center; gap:10px; color:#6b7280; font-size:12px; margin:6px auto 2px; }
+.divider::before, .divider::after{ content:""; flex:1; height:1px; background:#e5e7eb; }
+
+/* Toast (auth.js kullanıyor) */
+.toast{
+  position: fixed; top:18px; left:50%; transform:translateX(-50%) translateY(-16px);
+  background:#16a34a; color:#fff; padding:10px 14px; border-radius:999px;
+  font:600 14px/1 'Inter', sans-serif; opacity:0; pointer-events:none;
+  transition:transform .25s, opacity .25s, box-shadow .25s; z-index:3000;
+  box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* — Ay seçimi custom dropdown — */
+#dateOv .date-selects{ position:relative; }
+#dateOv #monthSel{ position:absolute; inset:0; width:100%; height:100%; opacity:0; pointer-events:none; } /* erişilebilirlik için durur, ama görünmez */
+
+#dateOv .month-trigger{
+  display:inline-flex; align-items:center; gap:8px;
+  height:36px; padding:6px 14px; border:1px solid #111; border-radius:14px;
+  background:#fff; color:#111; font-weight:800; cursor:pointer;
+}
+#dateOv .month-trigger:after{ content:"▾"; font-weight:900; }
+
+#dateOv .month-menu{
+  position:absolute; top:110%; left:0; min-width:140px; z-index:20;
+  background:#fff; border:1px solid var(--border); border-radius:12px;
+  box-shadow:0 20px 40px rgba(0,0,0,.15); padding:6px; display:none;
+}
+#dateOv .month-menu.show{ display:block; }
+#dateOv .month-item{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:8px 10px; border-radius:10px; cursor:pointer; font-weight:700;
+}
+#dateOv .month-item:hover{ background:#111; color:#fff; }
+#dateOv .month-item.active{ background:#111; color:#fff; }
+
+/* — Tarih gridindeki gün kutuları — */
+#dateOv .grid-days{ display:grid; grid-template-columns:repeat(7,1fr); gap:12px; padding:10px 2px 4px; }
+#dateOv .dcell{
+  display:flex; align-items:center; justify-content:center;
+  height:44px; border:1px solid var(--border); border-radius:14px;
+  background:#fff; font-weight:800; text-align:center;
+  transition:background .15s, color .15s, transform .08s, box-shadow .15s;
+}
+#dateOv .dcell:hover{ background:#111; color:#fff; transform:translateY(-1px); box-shadow:0 10px 18px rgba(0,0,0,.12); }
+#dateOv .dcell.blank{ visibility:hidden; }
+#dateOv .dcell.disabled{ opacity:.45; cursor:not-allowed; background:#fafafa; }
+#dateOv .dcell.today{ box-shadow:0 8px 18px rgba(0,0,0,.12); border-color:#111; }
+#dateOv .dcell.active{ background:#111; color:#fff; border-color:#111; box-shadow:0 12px 22px rgba(0,0,0,.22); }
+
+/* ================= /BASE ================= */
+
+
+/* ================= EKLEMELER / booking.css (OVERRIDE İÇİN SONDA) ================= */
+
+/* Sadece randevu modali içinde linkleri buton/pil yap */
+#bookOv .link{
+  display:inline-block;
+  text-decoration:none !important;
+  color:#111 !important;
+  background:#f5f5f5;
+  border-radius:8px;
+  padding:6px 10px;
+  font-weight:600;
+  transition:background .2s ease, color .2s ease, transform .1s ease;
+}
+#bookOv .link:hover{
+  background:#111;
+  color:#fff !important;
+  transform:translateY(-1px);
+}
+
+/* Header içindeki küçük piller (Tarih & Saat) biraz daha kompakt olsun */
+#bookOv .hd .ttl .link{ padding:4px 8px; border-radius:6px; }
+
+/* “+ Hizmet ekle” daha belirgin görünsün */
+#bookOv #openAdd.link{ margin-top:10px; padding:8px 12px; border-radius:10px; }
+
+/* ===== TARİH MODALI – #dateOv ===== */
+
+/* Üst şerit (oklar + ay) */
+#dateOv .date-toolbar{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:12px;
+}
+#dateOv .navgroup{ display:flex; align-items:center; gap:8px; }
+#dateOv .btn-icon{
+  width:36px; height:36px; display:grid; place-items:center;
+  border:1px solid var(--border); background:#f5f5f5; color:#111;
+  border-radius:10px; cursor:pointer; font-weight:800;
+  transition:background .2s, color .2s, border-color .2s, transform .1s;
+}
+#dateOv .btn-icon:hover{ background:#111; color:#fff; border-color:#111; transform:translateY(-1px); }
+/* Oklar disabled iken */
+#dateOv .btn-icon[disabled]{
+  opacity:.45; cursor:not-allowed;
+  background:#f0f0f0; color:#777; border-color:#eee;
+}
+
+#dateOv .date-selects{ display:flex; gap:8px; }
+#dateOv .date-selects select{
+  appearance:none; -webkit-appearance:none;
+  border:1.5px solid var(--border); background:#fff; color:#111;
+  border-radius:10px; padding:8px 10px; font-weight:700; cursor:pointer;
+}
+#dateOv #yearSel{ display:none !important; } /* yanlışlıkla kalırsa gizle */
+#dateOv #monthSummary{ font-weight:800; color:#111; }
+
+/* Hafta başlıkları + günler: 7 sütun grid (override garanti) */
+#dateOv .week-head,
+#dateOv .grid-days{
+  display:grid !important;
+  grid-template-columns:repeat(7, 1fr) !important;
+  gap:8px !important;
+}
+#dateOv .week-head{ margin:8px 0 6px; }
+#dateOv .week-head .wday{
+  text-align:center; font-weight:700; color:var(--muted); font-size:12px; padding:4px 0;
+}
+
+/* Gün hücreleri */
+#dateOv .grid-days .dcell{
+  height:44px; background:#fff; color:#111;
+  border:1px solid var(--border); border-radius:10px;
+  display:grid; place-items:center; user-select:none; cursor:pointer;
+  transition:transform .12s, box-shadow .2s, background .2s, color .2s, border-color .2s;
+}
+#dateOv .grid-days .dcell:hover{
+  transform:translateY(-1px); box-shadow:0 10px 20px rgba(0,0,0,.08);
+}
+#dateOv .grid-days .dcell.active{
+  background:#111; color:#fff; border-color:#111; box-shadow:0 12px 22px rgba(0,0,0,.25);
+}
+#dateOv .grid-days .dcell.today{ outline:2px solid #111; outline-offset:-2px; }
+
+/* Geçmiş günler: gri, tıklanamaz, hover yok */
+#dateOv .grid-days .dcell.disabled,
+#dateOv .grid-days .dcell.disabled:hover{
+  background:#f2f2f2 !important;
+  color:#777 !important;
+  box-shadow:none !important;
+  transform:none !important;
+  cursor:not-allowed !important;
+  pointer-events:none; /* JS zaten onclick vermiyor; görsel hover da kapanır */
+}
+
+/* Boş doldurma hücresi */
+#dateOv .grid-days .dcell.blank{ visibility:hidden; pointer-events:none; }
+
+@media (max-width:420px){
+  #dateOv .grid-days .dcell{ height:40px; font-size:14px; }
+  #dateOv .week-head, #dateOv .grid-days{ gap:6px; }
+}
