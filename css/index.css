@@ -1,0 +1,169 @@
+
+    /* --- mevcut stillerin (masaüstü) aynen kalıyor --- */
+    .city-section h2{ text-align:center; font-size:clamp(26px,5vw,44px); margin-bottom:10px }
+    .city-hint{ text-align:center;color:#666;margin-bottom:24px }
+    .districts-wrap{ max-width:1200px; margin:0 auto 40px; padding:0 16px; }
+    .districts-grid{ display:grid; gap:8px 64px; grid-template-columns:repeat(4,minmax(220px,1fr)); }
+    @media (max-width:1100px){ .districts-grid{ grid-template-columns:repeat(3,minmax(220px,1fr)); } }
+    @media (max-width:800px){ .districts-grid{ grid-template-columns:repeat(2,minmax(200px,1fr)); } }
+    @media (max-width:560px){ .districts-grid{ grid-template-columns:1fr; } }
+    .district-col{ list-style:none; margin:0; padding:0; }
+    .district-item{ border-bottom:1px solid #eee; }
+    .district-toggle{ width:100%; display:flex; align-items:center; gap:10px; background:transparent; border:0; padding:12px 0; cursor:pointer; font-size:18px; color:#222; text-align:left; }
+    .district-toggle i{ color:#138e9b; width:18px; text-align:center; transition:transform .12s ease; }
+    .district-toggle[aria-expanded="true"] i{ transform:rotate(90deg); }
+    .district-panel{ display:none; padding:0 0 12px 28px; }
+    .district-panel[data-open="true"]{ display:block; }
+    .district-actions{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .district-actions a{ padding:0; border:none; background:transparent; color:#0b6ef4; font-weight:700; text-decoration:none; }
+    .district-actions a:hover{ text-decoration:underline; }
+    .list-btn{ text-decoration:none !important; } .list-btn:hover{ text-decoration:none !important; }
+    .recommended-section{ margin-top:60px; }
+
+    body.no-scroll { overflow: hidden; }
+
+    /* === MODAL === */
+    .modal-overlay{ position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(15, 23, 42, .45); backdrop-filter: blur(8px) saturate(1.1);
+      -webkit-backdrop-filter: blur(8px) saturate(1.1); padding:20px; z-index:1000; }
+    .modal-overlay.active{ display:grid; }
+    .modal-box{ width:min(520px, 92vw); background:linear-gradient(180deg,#ffffff,#f9fafb);
+      color:#0f172a; border:1px solid rgba(2,6,23,.06); border-radius:20px;
+      box-shadow:0 20px 60px rgba(0,0,0,.25), 0 1px 0 rgba(255,255,255,.4) inset;
+      position:relative; overflow:hidden; animation:pop .2s ease-out; }
+    @keyframes pop{ from{ transform:translateY(8px) scale(.985); opacity:0 } to{ transform:none; opacity:1 } }
+    .modal-close{ position:absolute; top:10px; right:10px; width:36px; height:36px;
+      border-radius:12px; border:1px solid rgba(2,6,23,.08); background:#fff; display:grid; place-items:center; cursor:pointer; color:#0f172a; z-index:2; transition:all .15s ease; }
+    .modal-close:hover{ background:#f3f4f6; transform:translateY(-1px); }
+    .auth-container{ padding:22px 20px 24px; display:grid; gap:16px; }
+    .auth-tabs{ display:flex; gap:8px; justify-content:center; }
+    .auth-tab{ padding:8px 14px; border-radius:999px; border:1px solid rgba(2,6,23,.08);
+      background:#f8fafc; cursor:pointer; font-weight:700; color:#0f172a; transition:all .15s ease; }
+    .auth-tab.active{ background:#111827; color:#fff; border-color:#111827; }
+    .auth-form{ display:none; max-width:380px; margin:0 auto; }
+    .auth-form.active{ display:block; }
+    .auth-form h2{ text-align:center; margin:6px 0 12px; }
+    .auth-input{ width:100%; padding:13px 14px; border:1px solid #e5e7eb; border-radius:12px;
+      font-size:15px; background:#fff; transition:border .12s, box-shadow .12s; margin-bottom:10px; }
+    .auth-input:focus{ outline:none; border-color:#93c5fd; box-shadow:0 0 0 4px rgba(59,130,246,.15); }
+    .auth-btn{ width:100%; padding:13px; border:none; border-radius:12px; font-weight:800;
+      background:#0b6ef4; color:#fff; cursor:pointer; letter-spacing:.2px; transition:transform .06s ease, filter .15s ease; }
+    .auth-btn:active{ transform:translateY(1px); }
+    .auth-btn:disabled{ filter:grayscale(.2) opacity(.7); cursor:not-allowed; }
+    .error{ color:#dc2626; font-size:13px; min-height:18px; margin:8px 0 4px; }
+    .oauth-stack{ display:grid; gap:10px; max-width:380px; margin:0 auto; }
+    .google-btn{ display:flex; align-items:center; justify-content:center; gap:10px;
+      width:100%; padding:12px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; color:#0f172a; font-weight:700; cursor:pointer;
+      transition:transform .06s ease, background .15s ease, border .15s ease; }
+    .google-btn:hover{ background:#f8fafc; border-color:#d1d5db; }
+    .google-btn img{ width:18px; height:18px }
+    .divider{ display:flex; align-items:center; gap:10px; color:#6b7280; font-size:12px; margin:6px auto 2px; }
+    .divider::before, .divider::after{ content:""; flex:1; height:1px; background:#e5e7eb; }
+
+    .navbar .right-section .profile,
+    .navbar .right-section .to-profile { display:inline-flex; align-items:center; gap:6px;
+      padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; white-space:nowrap;
+      text-decoration:none; background:#fff; color:#111; border:1px solid #e5e7eb; }
+    .navbar .right-section .profile:hover,
+    .navbar .right-section .to-profile:hover { background:#f5f5f5; }
+    .hero-navbar-right .profile,
+    .hero-navbar-right .to-profile { text-decoration:none; }
+    .navbar .right-section .profile i,
+    .navbar .right-section .to-profile i,
+    .hero-navbar-right .profile i,
+    .hero-navbar-right .to-profile i { font-size:16px; }
+
+    @media (max-width:420px){
+      .auth-container{ padding:18px 14px 20px; }
+      .modal-box{ border-radius:16px; }
+    }
+
+    /* =========================
+       SADECE MOBİL OVERRIDE
+       ========================= */
+
+    /* 1) Video üzerindeki koyu katmanı tamamen kaldır */
+    .hero-section::before,
+    .hero-section::after,
+    .hero-overlay::before{
+      content:none !important;
+      background:transparent !important;
+      box-shadow:none !important;
+    }
+    /* Bazı temalarda overlay'e yarısaydam zemin verilebiliyor; sıfırla */
+    .hero-overlay{ background:transparent !important; }
+
+    /* 2) Navbar: başlangıçta gizli, scroll ile gelsin (yalnız mobilde) */
+    @media (max-width: 860px){
+      .navbar{
+        position:fixed; top:0; left:0; right:0; width:100%;
+        transform:translateY(-100%); opacity:0; pointer-events:none;
+        transition:transform .2s ease, opacity .2s ease;
+        z-index:50; /* video üstüne çıksın */
+        background: rgba(255,255,255,.92);
+        backdrop-filter: blur(8px);
+      }
+      /* Kaydırınca görünür */
+      body.scrolled .navbar{
+        transform:translateY(0);
+        opacity:1; pointer-events:auto;
+      }
+
+      /* Body üst padding'i olmasın; video tam ekran görünsün */
+      body{ padding-top:0 !important; }
+
+      /* Hero tam ekran oynasın */
+      .hero-section{
+        min-height: 100vh;
+        padding-top: 16px;      /* içerik nefes alsın */
+        padding-bottom: 16px;
+      }
+
+      /* Hero üst butonlar ortalansın */
+      .hero-navbar-right{ display:flex; justify-content:center; gap:.5rem;
+      margin-top: calc(env(safe-area-inset-top) + 56px);  }
+
+      /* Önerilenler oklarını mobilde gizle – parmakla kaydırma */
+      .rec-viewport .scroll-btn{ display:none; }
+      .rec-track{ overflow-x:auto; -webkit-overflow-scrolling:touch; scroll-snap-type:x mandatory; }
+      .rec-track > *{ scroll-snap-align:start; }
+
+      /* Footer mobilde merkezli */
+      .foot-bottom{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:.6rem; }
+
+      /* Navbar içindeki logo ve yazı renkleri */
+.navbar .logo-text {
+  font-weight: 700;
+  font-size: 20px;
+  color: #111; /* scroll sonrası koyu görünsün */
+}
+
+/* Hero bölümünde, videonun üzerinde görünen logo */
+.hero-logo {
+  font-weight: 700;
+  font-size: 24px;
+  color: #fff; /* video üzerinde beyaz olsun */
+}
+
+    }
+    .district-actions a {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;       /* oval */
+  background: #fff;           /* beyaz arka plan */
+  color: #111;                /* siyah yazı */
+  font-weight: 600;
+  text-decoration: none;      /* alt çizgi yok */
+  transition: all 0.2s ease;
+  border: 1px solid #111;     /* ince siyah çerçeve */
+}
+
+.district-actions a:hover {
+  background: #111;   /* hover'da siyah */
+  color: #fff;        /* yazı beyaz */
+  border-color: #111;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+
+
