@@ -9,3 +9,4 @@ git push
 
 
 git pull origin main
+oku
