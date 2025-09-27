@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MJ&C Studio – Arat</title>
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Dış CSS -->
+  <link rel="stylesheet" href="css/booking.css" />
+</head>
+<body>
+
+<header class="topbar" id="mainTopbar">
+  <div class="topline container">
+    <a class="logo" href="index.html">~arat</a>
+    <div class="searchwrap">
+      <div class="chip"><i>🔎</i><input placeholder="Hizmet veya işletme ara" /></div>
+      <div class="chip"><i>📍</i><input placeholder="San Diego, CA" /></div>
+      <div class="chip"><i>🕑</i><input placeholder="Ne zaman?" /></div>
+    </div>
+    <div class="top-actions">
+      <a class="pillbtn" href="isletmeni-listele.html">İşletmeni listele</a>
+      <a class="pilllink open-auth" href="#">Giriş / Kayıt</a>
+      <span class="pilllink">TR</span>
+    </div>
+  </div>
+  <nav class="catbar">
+    <div class="container" style="display:flex;gap:22px">
+      <a href="kuafor.html">Kuaför</a>
+    </div>
+  </nav>
+</header>
+
+<div id="topInfoBar" class="top-info-bar" aria-hidden="true">
+  <div class="ti-inner">
+    <div class="ti-left">
+      <img class="ti-logo" src="img/berber1.jpeg" alt="Logo">
+      <div class="ti-meta">
+        <div class="ti-title">MJ&amp;C Studio</div>
+        <div class="ti-sub">142 W University Ave, San Diego</div>
+      </div>
+    </div>
+    <a class="ti-book" href="#" id="stickyBook">Randevu al</a>
+  </div>
+</div>
+
+<main class="detail-wrap">
+  <div>
+    <div class="gallery-card card" data-gallery-sentinel>
+      <div class="gallery">
+        <img data-slide src="img/berber2.jpeg" alt="kuaför 1">
+        <img data-slide src="img/berber3.jpeg" alt="kuaför 2" style="display:none">
+        <img data-slide src="img/berber4.jpeg" alt="kuaför 3" style="display:none">
+        <div class="next" id="nextSlide" title="Sonraki">➜</div>
+        <div class="dotbar"><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+    </div>
+
+    <div class="biz-header">
+      <h1>MJ&amp;C Studio</h1>
+      <div class="small">142 W University Ave, San Diego</div>
+    </div>
+
+    <section class="section card" id="servicesSection">
+      <h2>Hizmetler</h2>
+
+      <div class="service-row">
+        <div>
+          <div class="name">Erkek Saç Kesimi</div>
+          <div class="meta">Saç kesimi &amp; şekillendirme — 40dk</div>
+        </div>
+        <div class="price">₺800+</div>
+        <button class="book open-book" data-name="Erkek Saç Kesimi" data-price="800" data-duration="40">Randevu al</button>
+      </div>
+
+      <div class="service-row">
+        <div>
+          <div class="name">Sakal Tıraşı</div>
+          <div class="meta">Klasik veya modern — 30dk</div>
+        </div>
+        <div class="price">₺500+</div>
+        <button class="book open-book" data-name="Sakal Tıraşı" data-price="500" data-duration="30">Randevu al</button>
+      </div>
+
+      <div class="service-row">
+        <div>
+          <div class="name">Saç &amp; Sakal Paket</div>
+          <div class="meta">Komple bakım — 60dk</div>
+        </div>
+        <div class="price">₺1200+</div>
+        <button class="book open-book" data-name="Saç & Sakal Paket" data-price="1200" data-duration="60">Randevu al</button>
+      </div>
+
+      <button class="all-btn" id="openAllServices">Tüm hizmetler</button>
+    </section>
+
+    <section class="section card">
+      <h2>Çalışmalarımız</h2>
+      <div class="grid-works">
+        <img src="img/berber5.jpeg" alt="">
+        <img src="img/berber6.jpeg" alt="">
+        <img src="img/berber7.jpeg" alt="">
+        <img src="img/berber8.jpeg" alt="">
+        <img src="img/berber9.jpeg" alt="">
+      </div>
+    </section>
+  </div>
+
+  <aside class="sidebar">
+    <div class="card sticky-book">
+      <button class="book" style="width:100%;padding:12px 16px;border-radius:12px;font-weight:800" id="btnOpenBook">Randevu al</button>
+    </div>
+
+    <div class="card info-card" id="infoCard">
+      <div class="map"></div>
+      <div class="addr">
+        <img src="img/berber1.jpeg" alt="logo">
+        <div>
+          <div style="font-weight:700">MJ&amp;C Studio</div>
+          <div class="small">142 W University Ave, San Diego</div>
+        </div>
+      </div>
+
+      <h4>HAKKIMIZDA</h4>
+      <p class="small">Sadece bir saç kesimi değil, bir deneyim. Gelmeyen randevular için ₺600 ceza ücreti uygulanır.</p>
+      <div class="hr"></div>
+
+      <h4>İLETİŞİM & ÇALIŞMA SAATLERİ</h4>
+      <div class="callline"><span>📱 (215) 760-3911</span><button class="callbtn">Ara</button></div>
+
+      <div class="today"><div><strong>Bugün</strong></div><div class="muted" id="todayTimes">08:00 - 13:00<br>14:00 - 20:00</div></div>
+
+      <a href="#" class="toggle-link" id="toggleWeek"><span id="toggleText">Tüm haftayı göster</span> ▾</a>
+
+      <div class="week" id="weekBlock" aria-hidden="true">
+        <div class="row"><span>Pazar</span><span class="muted">11:00 - 14:00</span></div>
+        <div class="row"><span>Pazartesi</span><span class="muted">10:00 - 14:00<br>15:00 - 19:00</span></div>
+        <div class="row"><span>Salı</span><span class="muted">08:30 - 13:00<br>14:00 - 20:00</span></div>
+        <div class="row"><span><strong>Çarşamba</strong></span><span class="muted"><strong>08:00 - 13:00</strong><br><strong>14:00 - 20:00</strong></span></div>
+        <div class="row"><span>Perşembe</span><span class="muted">07:00 - 13:00<br>14:00 - 19:00</span></div>
+        <div class="row"><span>Cuma</span><span class="muted">07:30 - 13:00<br>15:30 - 20:00</span></div>
+        <div class="row"><span>Cumartesi</span><span class="muted">07:15 - 13:00<br>14:00 - 21:00</span></div>
+        <div class="note">Gelmeyen randevular için ₺600 ceza ücreti uygulanır.</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<!-- ====== RANDEVU MODALI (SEPET/ÖZET) ====== -->
+<div class="modal-ov" id="bookOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bookTtl">
+    <div class="hd">
+      <div class="ttl">
+        <span id="bookDateLabel" class="link">27 Ağu 2025</span> •
+        <span id="openTime" class="link" style="font-weight:800">Saat seç</span>
+        <span id="chosenTime" class="small" style="margin-left:8px;color:var(--muted)"></span>
+      </div>
+      <button class="x" onclick="closeOv('bookOv')">✕</button>
+    </div>
+    <div class="ct">
+      <div class="summary" id="cartBox"></div>
+      <div class="link" id="openAdd">+ Hizmet ekle</div>
+    </div>
+    <div class="footerbar">
+      <div style="font-weight:800">Toplam: <span id="cartTotal">₺0</span></div>
+      <button class="btn-primary" id="goReview">Devam et</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== SAAT MODALI ====== -->
+<div class="modal-ov" id="timeOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="timeTtl">
+    <div class="hd">
+      <div class="ttl" id="timeTtl"><span id="timeDateLabel">27 Ağu 2025</span> • Saat seç</div>
+      <button class="x" onclick="closeOv('timeOv')">✕</button>
+    </div>
+    <div class="ct">
+      <div class="slots" id="timeSlotWrap"></div>
+    </div>
+    <div class="footerbar">
+      <div class="small" style="color:var(--muted)">08:00 – 23:00 arası 15 dk’lık aralıklar</div>
+      <button class="btn-primary" id="timeDone">Seçimi uygula</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TÜM HİZMETLER MODALI ====== -->
+<div class="modal-ov" id="svcOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="svcTtl">
+    <div class="hd"><div class="ttl" id="svcTtl">Tüm hizmetler</div><button class="x" onclick="closeOv('svcOv')">✕</button></div>
+    <div class="ct">
+      <input id="svcSearch" class="finput" placeholder="Hizmet ara" />
+      <div id="svcList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== TARİH MODALI ====== -->
+<div class="modal-ov" id="dateOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="dateTtl">
+    <div class="hd"><div class="ttl" id="dateTtl">Tarih seç</div><button class="x" onclick="closeOv('dateOv')">✕</button></div>
+    <div class="ct">
+      <div class="date-toolbar">
+        <div class="navgroup">
+          <button class="btn-icon" id="prevMonth" aria-label="Önceki ay">‹</button>
+          <div class="date-selects">
+            <select id="monthSel"></select>
+          </div>
+          <button class="btn-icon" id="nextMonth" aria-label="Sonraki ay">›</button>
+        </div>
+        <div class="small" style="color:var(--muted);font-weight:700" id="monthSummary"></div>
+      </div>
+      <div class="week-head" id="weekHead"></div>
+      <div class="grid-days" id="daysGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== GÖZDEN GEÇİR & ONAYLA ====== -->
+<div class="modal-ov" id="reviewOv">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="revTtl">
+    <div class="hd"><div class="ttl" id="revTtl">Gözden geçir ve onayla</div><button class="x" onclick="closeOv('reviewOv')">✕</button></div>
+    <div class="ct" id="reviewBody"></div>
+    <div class="footerbar">
+      <div class="muted">Ödenecek tutar</div>
+      <div style="display:flex;align-items:center;gap:14px">
+        <div style="font-weight:800" id="reviewTotal">₺0</div>
+        <button class="btn-primary" id="confirmBook">Onayla ve randevu al</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== Soru/başarılı ====== -->
+<div class="modal-ov" id="qOv">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="ok">❓</div>
+    <div class="ttl">Bu salondan daha önce randevu aldınız mı?</div>
+    <p>Size daha iyi hizmet sunabilmek için soruyoruz.</p>
+    <button class="rowbtn" id="qYes">Evet, daha önce aldım</button>
+    <button class="rowbtn" id="qNo">Hayır, ilk kez alıyorum</button>
+  </div>
+</div>
+
+<div class="modal-ov" id="doneOv">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="ok">✓</div>
+    <div class="ttl">Randevunuz oluşturuldu</div>
+    <p id="doneInfo">27 Ağu 2025 • 08:00</p>
+    <button class="donebtn" id="doneBtn">Tamam</button>
+  </div>
+</div>
+
+<!-- ====== YENİ LOGIN MODAL ====== -->
+<div id="authModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="loginRegisterTitle">
+  <div class="auth-box">
+    <button class="modal-close" aria-label="Kapat">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+
+    <div class="auth-container">
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Giriş Yap</button>
+        <button class="auth-tab" data-tab="signup">Kayıt Ol</button>
+      </div>
+
+      <!-- Google ile -->
+      <div class="oauth-stack">
+        <button type="button" class="google-btn" id="googleSignIn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="" aria-hidden="true">
+          Google ile devam et
+        </button>
+        <div class="divider">veya e-posta ile</div>
+      </div>
+
+      <!-- Giriş -->
+      <form id="loginForm" class="auth-form active" data-form="login">
+        <h2>Giriş Yap</h2>
+        <input class="auth-input" type="email" name="email" placeholder="E-posta" required />
+        <input class="auth-input" type="password" name="password" placeholder="Şifre" required />
+        <div id="loginError" class="error"></div>
+        <button type="submit" class="auth-btn">Giriş Yap</button>
+      </form>
+
+      <!-- Kayıt -->
+      <form id="signupForm" class="auth-form" data-form="signup">
+        <h2>Kayıt Ol</h2>
+        <input class="auth-input" type="email" name="email" placeholder="E-posta" required />
+        <input class="auth-input" type="password" name="password" placeholder="Şifre" minlength="6" required />
+        <input class="auth-input" type="password" name="confirm" placeholder="Şifre Tekrar" required />
+        <div id="signupError" class="error"></div>
+        <button type="submit" class="auth-btn">Kayıt Ol</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Toast (auth.js kullanıyor) -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<!-- Dış JS -->
+<script src="js/booking.js" defer></script>
+<script type="module" src="js/auth.js"></script>
+</body>
+</html>
