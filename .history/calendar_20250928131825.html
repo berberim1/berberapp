@@ -15,7 +15,6 @@
   <!-- Mobil stilleri (@media max-width:900px içeride) -->
   <link rel="stylesheet" href="css/mobil_calendar.css">
 
-
   <style>
     /* Sadece masaüstü sabitle (mobilde devre dışı) */
     @media (min-width: 1200px) {
@@ -43,10 +42,10 @@
             </button>
             <div class="view-pop" id="viewPop" role="listbox" aria-labelledby="viewChip">
               <button class="view-item selected" role="option" data-view="Gün">
-                <span>Gün</span>
+                <span>Gün</span><span class="right">✓</span>
               </button>
               <button class="view-item" role="option" data-view="Hafta">
-                <span>Hafta</span>
+                <span>Hafta</span><span class="right">✓</span>
               </button>
             </div>
           </div>
@@ -75,43 +74,41 @@
               </svg>
             </button>
 
-            <button class="icon-btn" id="todayBtn" title="Bugün">
-              <svg viewBox="0 0 24 24" fill="none">
-                <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2" />
-                <circle cx="12" cy="12" r="2" fill="currentColor" />
-              </svg>
-            </button>
+            
+             
+
+            
           </div>
 
           <!-- Personel ve Kaynaklar -->
           <div class="staff-wrap">
             <button class="pill" id="staffBtn" type="button">
-              Personeller
+              Personel ve Kaynaklar
               <svg class="chev" viewBox="0 0 24 24" fill="none">
                 <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               </svg>
             </button>
 
-                  <div class="staff-pop" id="staffPop" role="dialog" aria-labelledby="spTitle">
-          <div class="sp-title" id="spTitle">Personeller</div>
+            <div class="staff-pop" id="staffPop" role="dialog" aria-labelledby="spTitle" aria-modal="false">
+              <div class="sp-title" id="spTitle">
+                Personel ve Kaynaklar
+                <svg class="chev" viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                </svg>
+              </div>
 
-          <div class="sp-sec">
-          
+              <div class="sp-sec" id="scopeSec">
+                <label class="radio"><input type="radio" name="scope" value="only"><span>Yalnızca ben</span></label>
+                <label class="radio"><input type="radio" name="scope" value="working" checked><span>Çalışan Personel</span></label>
+              </div>
 
-            <div id="staffChkWrap">
-              <!-- JS; mevcut kullanıcı için -->
-              <label class="chk">
-                <input type="checkbox" data-staff-id="me" checked>
-                <span>Ben</span>
-              </label>
-              <!-- JS; diğer personeller dinamik eklenecek -->
-              <!-- <label class="chk"><input type="checkbox" data-staff-id="isa"><span>isa acer</span></label> -->
+              <div class="sp-sep"></div>
+
+              <div class="sp-sec">
+                <div id="staffChkWrap"></div>
+                <button class="apply" id="applyStaff">UYGULA</button>
+              </div>
             </div>
-
-            <button class="apply" id="applyStaff">UYGULA</button>
-          </div>
-        </div>
-
           </div>
 
           <!-- Sağ aksiyonlar -->
@@ -383,7 +380,5 @@
       }
     });
   </script>
-
-
 </body>
 </html>

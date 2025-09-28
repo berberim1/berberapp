@@ -142,7 +142,7 @@ body.has-rail{ margin-left: var(--rail-width); }
   background:var(--danger); border-color:var(--danger); color:#fff;
   box-shadow:0 6px 16px rgba(239,68,68,.28);
 }
-.btn.ghost{ background:#fff; border-color:var(--line); color:#0f172a; }
+.btn.ghost{ background:#fff; border-color:#var(--line); color:#0f172a; }
 .btn-icon{
   width:36px; height:36px; display:grid; place-items:center;
   border-radius:50%; border:1px solid var(--line);
@@ -327,3 +327,41 @@ body.has-rail{ margin-left: var(--rail-width); }
 nav.rail .ico{ width:22px; height:22px; stroke:currentColor !important; fill:none; stroke-width:1.9; }
 nav.rail .rail__btn[aria-current="page"] .ico{ stroke:#fff !important; }
 
+/* ===============================
+   ✨ Desktop Guard (yalnızca staff için)
+   - Mobil CSS’in olası taşmalarını masaüstünde bastırır
+   - Admin + diğer personel listeleri dikey ve üstten aşağı akar
+   =============================== */
+@media (min-width: 1025px){
+  /* Sayfa 2 sütun kalsın */
+  .page{
+    display:grid !important;
+    grid-template-columns:320px 1fr !important;
+    gap:24px !important;
+  }
+
+  /* Sol kart düzenini kilitle */
+  .staff-card{
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:flex-start !important;
+    align-items:stretch !important;
+  }
+
+  /* Personel listeleri mutlaka dikey akışta olsun */
+  #ownerList,
+  #staffList{
+    display:block !important;
+    overflow:auto !important;
+    margin:0 !important;
+    padding:8px !important;
+  }
+
+  /* Admin listesi aşağıdaki listeyle bitişik olsun */
+  #ownerList + #staffList{
+    margin-top:6px !important;
+  }
+
+  /* Satırlar arası aralık korunur */
+  .staff-list > li + li{ margin-top:8px !important; }
+}

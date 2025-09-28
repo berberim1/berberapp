@@ -9,7 +9,8 @@
   <link rel="stylesheet" href="css/rail_mobile.css">
   <!-- Bu sayfanın mobil ekleri -->
   <link rel="stylesheet" href="css/mobil_staff.css">
-  
+  <link rel="prefetch" href="bar-menu.html">
+
 </head>
 <body class="has-rail">
   <!-- Rail, bar-menu.html'den yüklenecek -->
@@ -48,7 +49,9 @@
       <section class="panel">
         <header>
           <div class="panel-title" id="panelTitle">—</div>
-         
+          <div style="display:flex; gap:8px;">
+            <a class="btn accent" id="showCalendarBtn" href="calendar.html">Takvimi Göster</a>
+          </div>
         </header>
 
         <!-- ÜST SEKME: Hizmetler / Çalışan Saatleri -->
@@ -276,7 +279,7 @@
   <script type="module" src="js/staff.js?v=19"></script>
   <!-- Bu sayfanın mobil JS’i -->
   <script src="js/mobil_staff.js"></script>
-  
+  <script src="js/rail.js" defer></script>
 
 </body>
 </html>
