@@ -31,137 +31,78 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* ======================= TOPBAR (kompakt • tek satır • ikonlar ortalı) ======================= */
-
-  /* Tek satırda kalsın; taşma yönetimini ortadaki grupta yapacağız */
+  /* ======================= TOPBAR (kompakt & taşma yok) ======================= */
   .topbar-inner{
-    display:flex;
-    align-items:center;
-    gap: 6px;
-    padding: 8px 10px;
-    flex-wrap: nowrap;                   /* <-- tek satır */
-    min-width: 0;                        /* ellipsis/scroll için gerekli */
+    display:flex; align-items:center;
+    gap: 6px; padding: 8px 10px;
+    flex-wrap: wrap;                      /* dar ekranda alt satıra iner */
   }
 
-  /* Gruplar */
+  /* Gruplar (taşma ve üst üste binmeyi engelle) */
   .view-select, .date-nav, .staff-wrap, .actions{
-    display:flex;
-    align-items:center;
-    gap:6px;
-    min-width: 0;
+    display:flex; align-items:center; gap:6px;
+    flex: 0 1 auto;                      /* küçülüp büyüyebilir */
   }
-  /* Orta grup esnek; sığmazsa kendi içinde kaydırır */
-  .date-nav{
-    flex: 1 1 auto;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .date-nav::-webkit-scrollbar{ display: none; }
 
-  /* Ortak küçük ikon-butonlar — KUSURSUZ ORTALAMA */
+  /* Ortak küçük ikon-buton (oklar, bugün, çan vs.) — merkezde */
   .icon-btn,
   #viewChip,
   #staffBtn{
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    box-sizing: border-box;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    width: 28px; height: 28px; min-width:28px;
+    display:grid !important; place-items:center !important;
     border-radius: 10px;
-    background:#fff;
-    border:1px solid #e6e7eb;
-    padding:0 !important;
-    margin:0 !important;
-    line-height:0 !important;            /* SVG baseline boşluğu yok */
-    vertical-align: middle;
-    overflow: hidden;
+    background:#fff; border:1px solid #e6e7eb;
+    padding:0 !important; line-height:0 !important;
   }
-  .icon-btn > svg,
-  #viewChip > svg,
-  #staffBtn > svg{
-    width:18px !important;
-    height:18px !important;
-    display:block !important;            /* inline boşluklarını kaldır */
-    margin:0 !important;
-    transform:none !important;
+  .icon-btn svg,
+  #viewChip svg,
+  #staffBtn svg{
+    width:16px !important; height:16px !important;
+    display:block !important; margin:0 !important;
   }
 
-  /* Görünüm seçici (#viewChip) → ikon-buton (metin gizli) */
+  /* Görünüm seçici (#viewChip) → ikon-buton (metin gizle) */
   #viewChip .chev, #viewChip span{ display:none !important; }
   #viewChip::before{
-    content:"";
-    width:18px; height:18px; display:block; background:#111;
-    background-position: 50% 50%; background-repeat:no-repeat; background-size:18px 18px;
+    content:""; width:16px; height:16px; background:#111; display:block;
+    background-position:center; background-repeat:no-repeat; background-size:16px 16px;
     -webkit-mask: url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='4' width='8' height='16' rx='2'/><rect x='13' y='4' width='8' height='16' rx='2'/></svg>") center/contain no-repeat;
             mask: url("data:image/svg+xml;utf8,\
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect x='3' y='4' width='8' height='16' rx='2'/><rect x='13' y='4' width='8' height='16' rx='2'/></svg>") center/contain no-repeat;
   }
 
-  /* Personel butonu (#staffBtn) → ikon-buton (metin gizli) + YENİ "users" ikonu */
+  /* Tarih butonu (#dateLabelWrap): yazılı, küçük & taşma yok */
+  .date-chip{
+    height: 30px;
+    min-width: 150px;
+    max-width: 55vw;                      /* taşmayı engelle */
+    padding: 4px 8px;
+    font-size: 12px;
+    border-radius:10px; border:1px solid #e6e7eb; background:#fff;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .date-chip .date-main strong{ font-weight: 600; }
+  .date-chip .date-range{ display:none; } /* ikinci satırı gizle */
+  .date-chip .chev{ width:12px; height:12px; }
+
+  /* Personel butonu (#staffBtn) → ikon-buton (metin gizle) */
   .pill#staffBtn{ font-size:0; }
   #staffBtn .chev{ display:none !important; }
-  #staffBtn{ color:#111; } /* ikon rengi currentColor */
   #staffBtn::before{
-    content:"";
-    width:18px; height:18px; display:block; background: currentColor;
-    background-position: 50% 50%; background-repeat:no-repeat; background-size:18px 18px;
-    /* Yeni iki kişi ikonu (fill şekilli, mask ile) */
+    content:""; width:16px; height:16px; background:#111; display:block;
+    background-position:center; background-repeat:no-repeat; background-size:16px 16px;
     -webkit-mask: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'>\
-<path d='M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zM8 11c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.76 0-5 1.79-5 4v1h10v-1c0-2.21-2.24-4-5-4zm8 0c-.67 0-1.3.1-1.89.28C15.61 14.3 17 15.54 17 17v1h6v-1c0-2.21-2.24-4-5-4z'/>\
-</svg>") center/contain no-repeat !important;
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='9' cy='8' r='3'/><path d='M3 18c0-3 3-5 6-5' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/><circle cx='17' cy='9' r='2.5'/><path d='M13 18c.5-2.2 2.8-3.7 5-3.7' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/></svg>") center/contain no-repeat;
             mask: url("data:image/svg+xml;utf8,\
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black'>\
-<path d='M16 11c1.66 0 3-1.57 3-3.5S17.66 4 16 4s-3 1.57-3 3.5S14.34 11 16 11zM8 11c1.66 0 3-1.57 3-3.5S9.66 4 8 4 5 5.57 5 7.5 6.34 11 8 11zm0 2c-2.76 0-5 1.79-5 4v1h10v-1c0-2.21-2.24-4-5-4zm8 0c-.67 0-1.3.1-1.89.28C15.61 14.3 17 15.54 17 17v1h6v-1c0-2.21-2.24-4-5-4z'/>\
-</svg>") center/contain no-repeat !important;
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><circle cx='9' cy='8' r='3'/><path d='M3 18c0-3 3-5 6-5' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/><circle cx='17' cy='9' r='2.5'/><path d='M13 18c.5-2.2 2.8-3.7 5-3.7' stroke-width='2' fill='none' stroke='black' stroke-linecap='round'/></svg>") center/contain no-repeat;
   }
 
-  /* *** TARİH BUTONU (date-chip) — Enine küçülebilir, ellipsis ile kısalır *** */
-  .date-chip{
-    flex: 1 1 0;                          /* esneyip daralabilsin */
-    min-width: 0 !important;              /* sabit min-g genişlik yok */
-    max-width: 100%;
-    height: 32px;
-    padding: 5px 8px;
-    font-size: 12.5px;
-    line-height: 1;
-    border-radius:10px;
-    border:1px solid #e6e7eb;
-    background:#fff;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .date-chip .date-range{ display:none !important; } /* ikinci satırı gizle */
-  .date-chip .chev{ display:none !important; }       /* ok simgesini gizle */
-  .date-chip .date-main #dateLabel{
-    display:inline-block;
-    max-width: 100%;
-    font-weight: 700;
-    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-
-  /* “Bugün” butonu (yazılı) — kompakt */
-  #todayBtn{
-    height: 32px !important;
-    padding: 0 10px !important;
-    font-size: 12px !important;
-    font-weight: 700 !important;
-    line-height: 1 !important;
-    border-radius: 10px !important;
-  }
-
-  /* Sağ aksiyonlar: arama gizli */
+  /* Arama: mobilde gizle (istersen ikonla açılır yapılabilir) */
   .topbar .search{ display:none !important; }
 
-  /* ======================= TARİH POPOVER (mini takvim) ======================= */
+  /* ======================= TARİH (mini takvim) ======================= */
+  /* popover: kayma/scroll olmasın */
   #calendarPopover.center-pop{
     position: fixed;                      /* sayfayı oynatmaz */
     inset: 8px auto auto 50%;
@@ -303,20 +244,118 @@
   /* FAB alt bara çarpmasın */
   .fab{ bottom: 86px; }
 }
-
-/* ==== Daha kompakt kırılımlar (≤600px & ≤360px) ==== */
+/* ==== Mobil üst bar: tarih butonunu enine küçült ==== */
 @media (max-width: 600px){
-  .topbar .topbar-inner{ gap: 4px; }
-  .date-nav{ gap:4px; }
-  .date-nav .icon-btn{ width:30px; height:30px; min-width:30px; }
-  .date-nav .date-chip{ height:30px; padding:4px 8px; font-size:12px; }
-  #todayBtn{ height:30px !important; font-size:12px !important; padding:0 8px !important; }
-  .view-select .view-chip{ height:30px; padding:4px 8px; font-size:12px; }
-  .actions .icon-btn{ width:30px; height:30px; }
+  .topbar .topbar-inner{
+    gap: 4px;                   /* genel boşlukları azalt */
+  }
+
+  /* Orta grup esnek olsun */
+  .topbar .date-nav{
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Önce/sonra okları kompaktla */
+  .topbar .date-nav .icon-btn{
+    width: 30px;
+    height: 32px;
+    min-width: 30px;
+  }
+
+  /* *** TARİH BUTONU (date-chip) ***  */
+  .topbar .date-nav .date-chip{
+    flex: 1 1 0;                /* genişlikten kısmayı kabul etsin */
+    min-width: 0 !important;    /* sabit min genişlikleri ez */
+    max-width: 100%;
+    height: 32px;
+    padding: 5px 8px;
+    font-size: 12.5px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;     /* sığmazsa … */
+  }
+  .topbar .date-nav .date-chip .chev,
+  .topbar .date-nav .date-chip .date-range{ display: none !important; }
+  .topbar .date-nav .date-chip #dateLabel{
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* “Bugün” butonu da kompakt */
+  .topbar .date-nav #todayBtn{
+    height: 32px !important;
+    padding: 0 8px !important;
+    font-size: 12px !important;
+    flex: 0 0 auto;
+  }
+
+  /* Soldaki görünüm çipi (Gün/Hafta) kompakt */
+  .topbar .view-select .view-chip{
+    height: 32px;
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+
+  /* Sağ aksiyonlar (zil vb.) kompakt */
+  .topbar .actions .icon-btn{ width: 32px; height: 32px; }
+  .topbar .actions .search{ display: none !important; }
 }
+
+/* Ekstra dar cihazlar */
 @media (max-width: 360px){
-  .date-nav .icon-btn{ width:28px; height:28px; min-width:28px; }
-  .date-nav .date-chip{ height:28px; padding:4px 7px; font-size:11.5px; }
-  #todayBtn{ height:28px !important; padding:0 7px !important; font-size:11.5px !important; }
-  .view-select .view-chip{ height:28px; padding:4px 7px; font-size:11.5px; }
+  .topbar .date-nav .icon-btn{ width: 28px; height: 30px; min-width: 28px; }
+  .topbar .date-nav .date-chip{ height: 30px; padding: 4px 7px; font-size: 12px; }
+  .topbar .date-nav #todayBtn{ height: 30px !important; padding: 0 7px !important; font-size: 11.5px !important; }
+  .topbar .view-select .view-chip{ height: 30px; padding: 4px 7px; font-size: 11.5px; }
+}
+/* === Üst bardaki ikon butonlarını kusursuz ortala === */
+.topbar .icon-btn{
+  display: inline-flex;             /* merkezleme */
+  align-items: center;
+  justify-content: center;
+  width: 36px;                      /* tek tip kutu */
+  height: 36px;
+  padding: 0;
+  line-height: 0;                   /* inline-SVG baseline ofsetini iptal */
+  vertical-align: middle;
+}
+
+.topbar .icon-btn > svg{
+  width: 18px;                      /* ikon boyutu */
+  height: 18px;
+  display: block;                   /* baseline boşluğu olmasın */
+  margin: 0;
+}
+
+/* Personel/diğer chip'lerdeki minik ikonlar da ortalansın */
+.topbar .pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.topbar .pill > svg{
+  width: 16px;
+  height: 16px;
+  display: block;
+  margin: 0;
+}
+
+/* (İsteğe bağlı) Retina keskinliği için stroke ölçeklenmesin */
+.topbar .icon-btn > svg *, 
+.topbar .pill > svg *{
+  vector-effect: non-scaling-stroke;
+}
+
+/* Mobilde biraz daha kompakt ölçü */
+@media (max-width: 600px){
+  .topbar .icon-btn{ width: 34px; height: 34px; }
+  .topbar .icon-btn > svg{ width: 17px; height: 17px; }
+  .topbar .pill > svg{ width: 15px; height: 15px; }
 }

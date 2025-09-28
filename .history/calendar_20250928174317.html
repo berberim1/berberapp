@@ -15,7 +15,6 @@
   <!-- Mobil stilleri (@media max-width:900px içeride) -->
   <link rel="stylesheet" href="css/mobil_calendar.css">
 
-
   <style>
     /* Sadece masaüstü sabitle (mobilde devre dışı) */
     @media (min-width: 1200px) {
@@ -43,10 +42,10 @@
             </button>
             <div class="view-pop" id="viewPop" role="listbox" aria-labelledby="viewChip">
               <button class="view-item selected" role="option" data-view="Gün">
-                <span>Gün</span>
+             
               </button>
               <button class="view-item" role="option" data-view="Hafta">
-                <span>Hafta</span>
+                <span>Hafta</span><span class="right">✓</span>
               </button>
             </div>
           </div>
@@ -383,7 +382,5 @@
       }
     });
   </script>
-
-
 </body>
 </html>
