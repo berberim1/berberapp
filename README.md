@@ -1,2 +1,2 @@
 deneme 123
-selam
+selama
